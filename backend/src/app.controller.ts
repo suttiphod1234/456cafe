@@ -3,6 +3,7 @@ import { OrderService } from './order.service';
 import { BranchService } from './branch.service';
 import { InventoryService } from './inventory.service';
 import { ProductService } from './product.service';
+import { MenuService } from './menu.service';
 
 @Controller('api')
 export class AppController {
@@ -11,6 +12,7 @@ export class AppController {
     private readonly branchService: BranchService,
     private readonly inventoryService: InventoryService,
     private readonly productService: ProductService,
+    private readonly menuService: MenuService,
   ) {}
 
   // ─── Branch CRUD ────────────────────────────────────────────────────────────
@@ -88,58 +90,150 @@ export class AppController {
     return this.branchService.deleteManager(managerId);
   }
 
+  // ─── Legacy /api/products (buyer-liff backward compat) ──────────────────
   @Get('products')
   async getProducts() {
-    return this.productService.getAllProducts();
+    return this.menuService.getAllMenuItems();
   }
 
   @Get('products/ingredients')
   async getIngredients() {
-    return this.productService.getAllIngredients();
+    return this.menuService.getAllIngredients();
   }
 
   @Get('products/:id')
   async getProduct(@Param('id') id: string) {
-    return this.productService.getProductById(id);
-  }
-
-  @Post('products')
-  async createProduct(@Body() body: any) {
-    return this.productService.createProduct(body);
-  }
-
-  @Patch('products/:id')
-  async updateProduct(@Param('id') id: string, @Body() body: any) {
-    return this.productService.updateProduct(id, body);
-  }
-
-  @Delete('products/:id')
-  @HttpCode(200)
-  async deleteProduct(@Param('id') id: string) {
-    return this.productService.deleteProduct(id);
+    return this.menuService.getMenuItemById(id);
   }
 
   @Post('products/:id/recipes')
-  async addRecipe(
+  async addRecipeLegacy(
     @Param('id') id: string,
     @Body() body: { ingredientId: string; quantity: number },
   ) {
-    return this.productService.addRecipe(id, body.ingredientId, body.quantity);
+    return this.menuService.addRecipe(id, body.ingredientId, body.quantity);
   }
 
   @Patch('recipes/:recipeId')
-  async updateRecipe(
+  async updateRecipeLegacy(
     @Param('recipeId') recipeId: string,
     @Body('quantity') quantity: number,
   ) {
-    return this.productService.updateRecipe(recipeId, quantity);
+    return this.menuService.updateRecipe(recipeId, quantity);
   }
 
   @Delete('recipes/:recipeId')
   @HttpCode(200)
-  async deleteRecipe(@Param('recipeId') recipeId: string) {
-    return this.productService.deleteRecipe(recipeId);
+  async deleteRecipeLegacy(@Param('recipeId') recipeId: string) {
+    return this.menuService.deleteRecipe(recipeId);
   }
+
+  // ─── Categories ───────────────────────────────────────────────────────────
+  @Get('categories')
+  async getCategories() {
+    return this.menuService.getAllCategories();
+  }
+
+  @Post('categories')
+  async createCategory(@Body() body: any) {
+    return this.menuService.createCategory(body);
+  }
+
+  @Patch('categories/reorder')
+  async reorderCategories(@Body() body: { items: { id: string; sortOrder: number }[] }) {
+    return this.menuService.reorderCategories(body.items);
+  }
+
+  @Patch('categories/:id')
+  async updateCategory(@Param('id') id: string, @Body() body: any) {
+    return this.menuService.updateCategory(id, body);
+  }
+
+  @Delete('categories/:id')
+  @HttpCode(200)
+  async deleteCategory(@Param('id') id: string) {
+    return this.menuService.deleteCategory(id);
+  }
+
+  // ─── Menu Items ──────────────────────────────────────────────────────────
+  @Get('menu')
+  async getMenu(@Query('categoryId') categoryId?: string) {
+    return this.menuService.getAllMenuItems(categoryId);
+  }
+
+  @Get('menu/ingredients')
+  async getMenuIngredients() {
+    return this.menuService.getAllIngredients();
+  }
+
+  @Get('menu/:id')
+  async getMenuItem(@Param('id') id: string) {
+    return this.menuService.getMenuItemById(id);
+  }
+
+  @Post('menu')
+  async createMenuItem(@Body() body: any) {
+    return this.menuService.createMenuItem(body);
+  }
+
+  @Patch('menu/:id')
+  async updateMenuItem(@Param('id') id: string, @Body() body: any) {
+    return this.menuService.updateMenuItem(id, body);
+  }
+
+  @Delete('menu/:id')
+  @HttpCode(200)
+  async deleteMenuItem(@Param('id') id: string) {
+    return this.menuService.deleteMenuItem(id);
+  }
+
+  @Patch('menu/:id/status')
+  async setMenuStatus(@Param('id') id: string, @Body('status') status: string) {
+    return this.menuService.setMenuStatus(id, status);
+  }
+
+  @Post('menu/:id/recipes')
+  async addMenuRecipe(
+    @Param('id') id: string,
+    @Body() body: { ingredientId: string; quantity: number },
+  ) {
+    return this.menuService.addRecipe(id, body.ingredientId, body.quantity);
+  }
+
+  // ─── Option Groups ────────────────────────────────────────────────────────
+  @Post('menu/:id/option-groups')
+  async createOptionGroup(@Param('id') id: string, @Body() body: any) {
+    return this.menuService.createOptionGroup(id, body);
+  }
+
+  @Patch('menu/option-groups/:groupId')
+  async updateOptionGroup(@Param('groupId') groupId: string, @Body() body: any) {
+    return this.menuService.updateOptionGroup(groupId, body);
+  }
+
+  @Delete('menu/option-groups/:groupId')
+  @HttpCode(200)
+  async deleteOptionGroup(@Param('groupId') groupId: string) {
+    return this.menuService.deleteOptionGroup(groupId);
+  }
+
+  // ─── Options ─────────────────────────────────────────────────────────────
+  @Post('menu/option-groups/:groupId/options')
+  async createOption(@Param('groupId') groupId: string, @Body() body: any) {
+    return this.menuService.createOption(groupId, body);
+  }
+
+  @Patch('menu/options/:optionId')
+  async updateOption(@Param('optionId') optionId: string, @Body() body: any) {
+    return this.menuService.updateOption(optionId, body);
+  }
+
+  @Delete('menu/options/:optionId')
+  @HttpCode(200)
+  async deleteOption(@Param('optionId') optionId: string) {
+    return this.menuService.deleteOption(optionId);
+  }
+
 
   @Get('orders/recent')
   async getRecentOrders() {

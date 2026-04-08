@@ -57,17 +57,56 @@ model BranchManager {
   updatedAt DateTime @updatedAt
 }
 
-model Product {
-  id          String   @id @default(uuid())
+model Category {
+  id          String    @id @default(uuid())
   name        String
   description String?
-  price       Float
-  category    String
+  icon        String?   // emoji or icon name
   imageUrl    String?
-  recipes     Recipe[]
-  orderItems  OrderItem[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  sortOrder   Int       @default(0)
+  isVisible   Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id           String            @id @default(uuid())
+  name         String
+  description  String?
+  price        Float
+  categoryId   String?
+  category     Category?         @relation(fields: [categoryId], references: [id])
+  imageUrl     String?
+  status       String            @default("AVAILABLE") // AVAILABLE | OUT_OF_STOCK | HIDDEN
+  tags         String            @default("[]")        // JSON: ["Bestseller","New"]
+  sortOrder    Int               @default(0)
+  optionGroups MenuOptionGroup[]
+  recipes      Recipe[]
+  orderItems   OrderItem[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model MenuOptionGroup {
+  id         String       @id @default(uuid())
+  productId  String
+  product    Product      @relation(fields: [productId], references: [id])
+  name       String       // e.g., "เลือก Size", "ความหวาน"
+  isRequired Boolean      @default(false)
+  maxSelect  Int          @default(1)
+  sortOrder  Int          @default(0)
+  options    MenuOption[]
+}
+
+model MenuOption {
+  id         String          @id @default(uuid())
+  groupId    String
+  group      MenuOptionGroup @relation(fields: [groupId], references: [id])
+  label      String          // e.g., "S", "M", "L"
+  priceAddon Float           @default(0)
+  isDefault  Boolean         @default(false)
+  sortOrder  Int             @default(0)
 }
 
 model Ingredient {

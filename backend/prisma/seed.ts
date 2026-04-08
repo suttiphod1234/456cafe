@@ -68,7 +68,6 @@ async function main() {
       id: 'prod-dirty',
       name: 'Dirty Coffee',
       price: 120,
-      category: 'Signature',
       description: 'Cold milk with hot espresso shot.',
     },
   });

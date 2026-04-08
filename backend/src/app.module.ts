@@ -7,10 +7,11 @@ import { AiService } from './ai.service';
 import { InventoryService } from './inventory.service';
 import { BranchService } from './branch.service';
 import { ProductService } from './product.service';
+import { MenuService } from './menu.service';
 
 @Module({
   imports: [],
   controllers: [AppController],
-  providers: [PrismaService, OrderService, OrderGateway, AiService, InventoryService, BranchService, ProductService],
+  providers: [PrismaService, OrderService, OrderGateway, AiService, InventoryService, BranchService, ProductService, MenuService],
 })
 export class AppModule {}

@@ -22,7 +22,6 @@ export default function App() {
   const [orders, setOrders] = useState<any[]>([]);
 
   useEffect(() => {
-    // 1. Initial Data Fetch
     const fetchData = async () => {
       try {
         const statsRes = await fetch('http://localhost:5001/api/stats/global');
@@ -39,53 +38,44 @@ export default function App() {
 
     fetchData();
 
-    // 2. Real-time Socket Connection
     const socket = io('http://localhost:5001');
-
     socket.on('new-order', (order) => {
-      // Update Stats
       setStats(prev => ({
         ...prev,
         totalOrders: prev.totalOrders + 1,
         revenue: prev.revenue + order.totalAmount
       }));
-
-      // Map API order to local UI model
       const newOrder = {
         ...order,
-        branch: { name: 'สาขาใหม่' } // Simplified mapping or fetch branch info if needed
+        branch: { name: 'สาขาใหม่' }
       };
-
-      // Add to list (limit to 10)
       setOrders(prev => [newOrder, ...prev].slice(0, 10));
     });
 
-    return () => {
-      socket.close();
-    };
+    return () => { socket.close(); };
   }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0b0e14]">
+    <div className="flex h-screen overflow-hidden" style={{ background: '#fdf8f0' }}>
       {/* Sidebar */}
-      <aside className="w-64 border-r border-white/5 flex flex-col p-6 shrink-0 bg-[#0d1117]">
-        <div className="flex items-center gap-3 mb-12 px-2">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center">
+      <aside className="w-64 flex flex-col p-6 shrink-0" style={{ background: '#ffffff', borderRight: '1px solid #e8d5c0' }}>
+        <div className="flex items-center gap-3 mb-10 px-2">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#b8956a' }}>
             <Coffee size={18} className="text-white" />
           </div>
-          <span className="font-bold text-xl tracking-tight">456 HQ</span>
+          <span className="font-extrabold text-xl tracking-tight" style={{ color: '#3d2d1a' }}>456 Coffee</span>
         </div>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-1">
           <NavItem icon={<BarChart3 size={20} />} label="ภาพรวม" active={activePage === 'overview'} onClick={() => setActivePage('overview')} />
           <NavItem icon={<Store size={20} />} label="สาขา" active={activePage === 'branches'} onClick={() => setActivePage('branches')} />
-          <NavItem icon={<Coffee size={20} />} label="สินค้า" active={activePage === 'products'} onClick={() => setActivePage('products')} />
+          <NavItem icon={<Coffee size={20} />} label="เมนู" active={activePage === 'products'} onClick={() => setActivePage('products')} />
           <NavItem icon={<ShoppingBag size={20} />} label="คำสั่งซื้อ" />
           <NavItem icon={<Users size={20} />} label="ลูกค้า" />
           <NavItem icon={<PieChartIcon size={20} />} label="รายงาน" />
         </nav>
 
-        <div className="pt-6 border-t border-white/5 space-y-2">
+        <div className="pt-6 space-y-1" style={{ borderTop: '1px solid #e8d5c0' }}>
           <NavItem icon={<Settings size={20} />} label="ตั้งค่า" />
           <NavItem icon={<LogOut size={20} />} label="ออกจากระบบ" />
         </div>
@@ -100,26 +90,27 @@ export default function App() {
         ) : (
           <>
             {/* Top Header */}
-            <header className="h-20 flex items-center justify-between px-10 border-b border-white/5 shrink-0">
+            <header className="h-20 flex items-center justify-between px-10 shrink-0" style={{ borderBottom: '1px solid #e8d5c0', background: '#ffffff' }}>
               <div className="relative w-96">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2" size={18} style={{ color: '#b8956a' }} />
                 <input
                   type="text"
                   placeholder="ค้นหาข้อมูล, รายงาน, ออเดอร์..."
-                  className="w-full bg-white/5 border border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/50 placeholder:text-gray-600"
+                  className="w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 transition-all"
+                  style={{ background: '#fdf8f0', border: '1px solid #e8d5c0', color: '#3d2d1a', focusRingColor: '#b8956a' }}
                 />
               </div>
               <div className="flex items-center gap-6">
-                <button className="relative w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
-                  <Bell size={20} className="text-gray-400" />
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-[#0b0e14]" />
+                <button className="relative w-10 h-10 rounded-xl flex items-center justify-center transition-colors hover:opacity-80" style={{ background: '#f5ebe0', border: '1px solid #e8d5c0' }}>
+                  <Bell size={20} style={{ color: '#7a5c3a' }} />
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white" />
                 </button>
-                <div className="flex items-center gap-3 pl-6 border-l border-white/5">
+                <div className="flex items-center gap-3 pl-6" style={{ borderLeft: '1px solid #e8d5c0' }}>
                   <div className="text-right">
-                    <p className="text-sm font-bold">แอดมินสำนักงานใหญ่</p>
-                    <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Super Admin</p>
+                    <p className="text-sm font-bold" style={{ color: '#3d2d1a' }}>แอดมินสำนักงานใหญ่</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#b8956a' }}>Super Admin</p>
                   </div>
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600" />
+                  <div className="w-10 h-10 rounded-xl" style={{ background: 'linear-gradient(135deg, #b8956a, #7a5c3a)' }} />
                 </div>
               </div>
             </header>
@@ -127,32 +118,32 @@ export default function App() {
             {/* Dashboard Grid */}
             <div className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">ภาพรวมระบบทั้งหมด</h2>
-                <div className="flex gap-3">
-                  <button className="px-4 py-2 bg-indigo-600 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">ดาวน์โหลดรายงาน</button>
-                </div>
+                <h2 className="text-2xl font-extrabold" style={{ color: '#3d2d1a' }}>ภาพรวมระบบทั้งหมด</h2>
+                <button className="px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-md active:scale-95 transition-all" style={{ background: '#b8956a', boxShadow: '0 4px 12px rgba(184,149,106,0.3)' }}>
+                  ดาวน์โหลดรายงาน
+                </button>
               </div>
 
               {/* Stats Grid */}
               <div className="grid grid-cols-4 gap-6">
-                <StatCard icon={<TrendingUp size={24} className="text-emerald-500" />} label="รายได้ทั้งหมด" value={`฿${stats.revenue.toLocaleString()}`} delta="+12.5%" />
-                <StatCard icon={<ShoppingBag size={24} className="text-blue-500" />} label="ยอดสั่งซื้อทั้งหมด" value={stats.totalOrders.toLocaleString()} delta="+8.2%" />
-                <StatCard icon={<Users size={24} className="text-purple-500" />} label="จำนวนลูกค้า" value={stats.customers.toLocaleString()} delta="+24.1%" />
-                <StatCard icon={<Store size={24} className="text-amber-500" />} label="สาขาที่เปิดอยู่" value={stats.branches.toString()} delta="0%" />
+                <StatCard icon={<TrendingUp size={24} className="text-emerald-600" />} label="รายได้ทั้งหมด" value={`฿${stats.revenue.toLocaleString()}`} delta="+12.5%" />
+                <StatCard icon={<ShoppingBag size={24} style={{ color: '#b8956a' }} />} label="ยอดสั่งซื้อทั้งหมด" value={stats.totalOrders.toLocaleString()} delta="+8.2%" />
+                <StatCard icon={<Users size={24} className="text-purple-600" />} label="จำนวนลูกค้า" value={stats.customers.toLocaleString()} delta="+24.1%" />
+                <StatCard icon={<Store size={24} style={{ color: '#7a5c3a' }} />} label="สาขาที่เปิดอยู่" value={stats.branches.toString()} delta="0%" />
               </div>
 
-              {/* Recent Orders & Inventory */}
+              {/* Recent Orders & Top Products */}
               <div className="grid grid-cols-3 gap-8">
                 <div className="col-span-2 admin-card p-6">
-                  <div className="flex items-center justify-between mb-8">
-                    <h3 className="font-bold flex items-center gap-2">
-                      <ShoppingBag size={18} className="text-indigo-400" /> รายการสั่งซื้อล่าสุด
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="font-bold flex items-center gap-2" style={{ color: '#3d2d1a' }}>
+                      <ShoppingBag size={18} style={{ color: '#b8956a' }} /> รายการสั่งซื้อล่าสุด
                     </h3>
-                    <button className="text-xs text-indigo-400 hover:underline">ดูทั้งหมด</button>
+                    <button className="text-xs font-bold hover:underline" style={{ color: '#b8956a' }}>ดูทั้งหมด</button>
                   </div>
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="text-[10px] uppercase font-bold tracking-widest text-gray-500 border-b border-white/5">
+                      <tr className="text-[10px] uppercase font-bold tracking-widest" style={{ color: '#9c7a50', borderBottom: '1px solid #e8d5c0' }}>
                         <th className="pb-4">รหัสสั่งซื้อ</th>
                         <th className="pb-4">สาขา</th>
                         <th className="pb-4">ลูกค้า</th>
@@ -162,7 +153,7 @@ export default function App() {
                     </thead>
                     <tbody className="text-sm">
                       {orders.length === 0 ? (
-                        <tr><td colSpan={5} className="py-4 text-center text-gray-500">ยังไม่มีรายการสั่งซื้อเร็วๆ นี้</td></tr>
+                        <tr><td colSpan={5} className="py-8 text-center" style={{ color: '#9c7a50' }}>ยังไม่มีรายการสั่งซื้อ</td></tr>
                       ) : orders.map((o: any) => (
                         <OrderRow
                           key={o.id}
@@ -178,12 +169,12 @@ export default function App() {
                 </div>
 
                 <div className="admin-card p-6">
-                  <div className="flex items-center justify-between mb-8">
-                    <h3 className="font-bold flex items-center gap-2">
-                      <Coffee size={18} className="text-amber-400" /> สินค้าขายดี
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="font-bold flex items-center gap-2" style={{ color: '#3d2d1a' }}>
+                      <Coffee size={18} style={{ color: '#b8956a' }} /> สินค้าขายดี
                     </h3>
                   </div>
-                  <div className="space-y-6">
+                  <div className="space-y-5">
                     <TopProduct name="Dirty Coffee" sales="458" trend="+12%" />
                     <TopProduct name="Iced Americano" sales="382" trend="+5%" />
                     <TopProduct name="Caramel Macchiato" sales="291" trend="+2%" />
@@ -204,7 +195,7 @@ function NavItem({ icon, label, active, onClick }: { icon: React.ReactNode, labe
   return (
     <button onClick={onClick} className={`sidebar-item w-full ${active ? 'active' : ''}`}>
       {icon}
-      <span className="text-sm font-medium">{label}</span>
+      <span className="text-sm">{label}</span>
     </button>
   );
 }
@@ -213,23 +204,23 @@ function StatCard({ icon, label, value, delta }: { icon: React.ReactNode, label:
   return (
     <div className="admin-card p-6">
       <div className="flex items-center justify-between mb-4">
-        <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">{icon}</div>
-        <span className={`text-xs font-bold ${delta.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'}`}>{delta}</span>
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#f5ebe0' }}>{icon}</div>
+        <span className={`text-xs font-bold ${delta.startsWith('+') ? 'text-emerald-600' : 'text-rose-500'}`}>{delta}</span>
       </div>
-      <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">{label}</p>
-      <h4 className="text-2xl font-bold tracking-tight">{value}</h4>
+      <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#9c7a50' }}>{label}</p>
+      <h4 className="text-2xl font-extrabold tracking-tight" style={{ color: '#3d2d1a' }}>{value}</h4>
     </div>
   );
 }
 
 function OrderRow({ id, branch, customer, date, amount }: { id: string, branch: string, customer: string, date: string, amount: string }) {
   return (
-    <tr className="border-b border-white/5 hover:bg-white/[0.02] transition-colors cursor-pointer group">
-      <td className="py-4 font-mono text-gray-400">{id}</td>
-      <td className="py-4 font-medium">{branch}</td>
-      <td className="py-4 text-gray-300">{customer}</td>
-      <td className="py-4 text-gray-500 text-xs">{date}</td>
-      <td className="py-4 text-right font-bold text-indigo-400">{amount}</td>
+    <tr className="hover:bg-[#fdf8f0] transition-colors cursor-pointer group" style={{ borderBottom: '1px solid #f5ebe0' }}>
+      <td className="py-4 font-mono" style={{ color: '#9c7a50' }}>{id}</td>
+      <td className="py-4 font-semibold" style={{ color: '#3d2d1a' }}>{branch}</td>
+      <td className="py-4" style={{ color: '#5c4428' }}>{customer}</td>
+      <td className="py-4 text-xs" style={{ color: '#9c7a50' }}>{date}</td>
+      <td className="py-4 text-right font-bold" style={{ color: '#b8956a' }}>{amount}</td>
     </tr>
   );
 }
@@ -238,13 +229,15 @@ function TopProduct({ name, sales, trend }: { name: string, sales: string, trend
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-500 underline underline-offset-4 cursor-pointer">ภาพ</div>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#f5ebe0' }}>
+          <Coffee size={16} style={{ color: '#b8956a' }} />
+        </div>
         <div>
-          <p className="text-sm font-bold">{name}</p>
-          <p className="text-[10px] text-gray-500">ขายได้ {sales} แก้ว</p>
+          <p className="text-sm font-bold" style={{ color: '#3d2d1a' }}>{name}</p>
+          <p className="text-[11px]" style={{ color: '#9c7a50' }}>ขายได้ {sales} แก้ว</p>
         </div>
       </div>
-      <span className={`text-[10px] font-bold ${trend.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'}`}>{trend}</span>
+      <span className={`text-[11px] font-bold ${trend.startsWith('+') ? 'text-emerald-600' : 'text-rose-500'}`}>{trend}</span>
     </div>
   );
 }

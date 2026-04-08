@@ -3,19 +3,36 @@
 @tailwind utilities;
 
 :root {
-  --bg-admin: #0b0e14;
+  --coffee-50: #fdf8f0;
+  --coffee-100: #f5ebe0;
+  --coffee-200: #e8d5c0;
+  --coffee-300: #d4b896;
+  --coffee-400: #b8956a;
+  --coffee-500: #9c7a50;
+  --coffee-600: #7a5c3a;
+  --coffee-700: #5c4428;
+  --coffee-800: #3d2d1a;
+  --coffee-900: #1e160d;
+  --accent: #b8956a;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--coffee-300) transparent;
 }
 
 body {
-  background-color: var(--bg-admin);
-  color: #e2e8f0;
-  font-family: 'Inter', sans-serif;
+  background-color: var(--coffee-50);
+  color: var(--coffee-800);
+  font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .admin-card {
-  background: #151921;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #ffffff;
+  border: 1px solid var(--coffee-200);
   border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .sidebar-item {
@@ -25,10 +42,26 @@ body {
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
   transition: all 0.2s;
-  color: #94a3b8;
+  color: var(--coffee-600);
+  font-weight: 500;
 }
 
-.sidebar-item:hover, .sidebar-item.active {
-  background: rgba(99, 102, 241, 0.1);
-  color: #818cf8;
+.sidebar-item:hover {
+  background: var(--coffee-100);
+  color: var(--coffee-700);
+}
+
+.sidebar-item.active {
+  background: var(--coffee-400);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(184, 149, 106, 0.3);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

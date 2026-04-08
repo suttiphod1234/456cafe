@@ -5,7 +5,7 @@ export interface CreateProductDto {
   name: string;
   description?: string;
   price: number;
-  category: string;
+  categoryId?: string;
   imageUrl?: string;
 }
 
@@ -13,7 +13,7 @@ export interface UpdateProductDto {
   name?: string;
   description?: string;
   price?: number;
-  category?: string;
+  categoryId?: string;
   imageUrl?: string;
 }
 
@@ -55,7 +55,7 @@ export class ProductService {
         name: data.name,
         description: data.description,
         price: data.price,
-        category: data.category,
+        categoryId: data.categoryId,
         imageUrl: data.imageUrl,
       },
       include: {
@@ -73,7 +73,7 @@ export class ProductService {
         name: data.name,
         description: data.description,
         price: data.price,
-        category: data.category,
+        categoryId: data.categoryId,
         imageUrl: data.imageUrl,
       },
       include: {
