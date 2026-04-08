@@ -27,6 +27,7 @@ export class AiService {
       ${productList}
       
       Suggest the best coffee for them. Keep it short (max 2 sentences) and friendly.
+      IMPORTANT: Please respond entirely in Thai (ภาษาไทย).
     `;
 
     try {

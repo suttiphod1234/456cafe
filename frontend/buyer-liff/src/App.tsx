@@ -34,6 +34,25 @@ const products = [
 export default function App() {
   const [activeCategory, setActiveCategory] = useState('ทั้งหมด');
   const [showAI, setShowAI] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiResponse, setAiResponse] = useState('');
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
+  const handleAiRecommendation = async () => {
+    if (!aiPrompt.trim()) return;
+    setIsAiLoading(true);
+    setAiResponse('');
+    try {
+      const res = await fetch(`http://localhost:5001/api/ai/recommend?prompt=${encodeURIComponent(aiPrompt)}`);
+      const data = await res.text();
+      setAiResponse(data);
+    } catch (error) {
+      console.error('Failed to get AI recommendation:', error);
+      setAiResponse('ขออภัยครับ ไม่สามารถเชื่อมต่อกับ AI ได้ในขณะนี้');
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen pb-24 text-white">
@@ -208,16 +227,46 @@ export default function App() {
               <p className="text-gray-300 mb-8 leading-relaxed">
                 บอกความรู้สึกของคุณวันนี้ แล้วผมจะแนะนำกาแฟที่เหมาะที่สุดจากเมนูของเรา
               </p>
-              <textarea 
-                className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 min-h-[120px] mb-8 focus:outline-none focus:ring-2 focus:ring-primary-500 placeholder:text-gray-600"
-                placeholder="เช่น 'ต้องการพลังงานสำหรับประชุมเช้า' หรือ 'อยากได้อะไรหวานๆ เย็นๆ...'"
-              />
-              <button 
-                className="w-full py-4 rounded-2xl coffee-gradient font-bold shadow-lg"
-                onClick={() => setShowAI(false)}
-              >
-                ขอคำแนะนำ
-              </button>
+              
+              {!aiResponse ? (
+                <>
+                  <textarea 
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 min-h-[120px] mb-8 focus:outline-none focus:ring-2 focus:ring-primary-500 placeholder:text-gray-600"
+                    placeholder="เช่น 'ต้องการพลังงานสำหรับประชุมเช้า' หรือ 'อยากได้อะไรหวานๆ เย็นๆ...'"
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    disabled={isAiLoading}
+                  />
+                  <button 
+                    className="w-full py-4 rounded-2xl coffee-gradient font-bold shadow-lg flex justify-center items-center gap-2"
+                    onClick={handleAiRecommendation}
+                    disabled={isAiLoading || !aiPrompt.trim()}
+                  >
+                    {isAiLoading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        กำลังคิด...
+                      </>
+                    ) : 'ขอคำแนะนำ'}
+                  </button>
+                </>
+              ) : (
+                <div className="animate-fade-in text-center">
+                  <div className="bg-primary-900/40 border border-primary-500/30 p-6 rounded-2xl mb-8">
+                    <p className="text-white/90 text-lg leading-relaxed">{aiResponse}</p>
+                  </div>
+                  <button 
+                    className="w-full py-4 rounded-2xl bg-white/10 hover:bg-white/20 font-bold transition-colors"
+                    onClick={() => {
+                      setAiResponse('');
+                      setAiPrompt('');
+                      setShowAI(false);
+                    }}
+                  >
+                    ปิดหน้าต่าง
+                  </button>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
