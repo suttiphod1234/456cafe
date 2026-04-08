@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Coffee, Search, ShoppingBag, Sparkles, User, ChevronRight, Loader2 } from 'lucide-react';
 import { useLiff } from './hooks/useLiff';
@@ -6,43 +6,30 @@ import PaymentModal from './components/PaymentModal';
 
 const categories = ['ทั้งหมด', 'เมนูแนะนำ', 'กาแฟร้อน', 'กาแฟเย็น', 'Non-Coffee'];
 
-const products = [
-  {
-    id: '1',
-    name: 'เดอร์ตี้คอฟฟี่ (Dirty Coffee)',
-    description: 'นมสดเย็นจัดท็อปด้วยเอสเพรสโซ่ช็อตเข้มข้น',
-    price: 120,
-    category: 'เมนูแนะนำ',
-    image: 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?auto=format&fit=crop&q=80&w=400',
-  },
-  {
-    id: '2',
-    name: 'อเมริกาโน่เย็น (Iced Americano)',
-    description: 'เอสเพรสโซ่ช็อตผสมน้ำเย็นและน้ำแข็ง',
-    price: 90,
-    category: 'กาแฟเย็น',
-    image: 'https://images.unsplash.com/photo-1551046710-23b0d9c3fa08?auto=format&fit=crop&q=80&w=400',
-  },
-  {
-    id: '3',
-    name: 'คาราเมล มัคคิอาโต้ (Caramel Macchiato)',
-    description: 'นมวานิลลาหอมหวานท็อปด้วยเอสเพรสโซ่และซอสคาราเมล',
-    price: 135,
-    category: 'เมนูแนะนำ',
-    image: 'https://images.unsplash.com/photo-1485182708500-e8f1f318ba72?auto=format&fit=crop&q=80&w=400',
-  }
-];
-
 export default function App() {
   const [activeCategory, setActiveCategory] = useState('ทั้งหมด');
   const [showAI, setShowAI] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiResponse, setAiResponse] = useState('');
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [products, setProducts] = useState<any[]>([]);
 
   const { user, isLiffLoading } = useLiff();
   const [showPayment, setShowPayment] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch('http://localhost:5001/api/products');
+        const data = await res.json();
+        setProducts(data);
+      } catch (e) {
+        console.error('Failed to fetch products:', e);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const handleAiRecommendation = async () => {
     if (!aiPrompt.trim()) return;
@@ -141,7 +128,9 @@ export default function App() {
 
       {/* Product Grid */}
       <main className="px-6 grid grid-cols-2 gap-4">
-        {products.map((product) => (
+        {products
+          .filter(p => activeCategory === 'ทั้งหมด' || p.category === activeCategory)
+          .map((product) => (
           <motion.div
             key={product.id}
             initial={{ opacity: 0, y: 20 }}
@@ -150,7 +139,7 @@ export default function App() {
           >
             <div className="relative aspect-square rounded-2xl overflow-hidden mb-3">
               <img 
-                src={product.image} 
+                src={product.imageUrl || 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?auto=format&fit=crop&q=80&w=400'} 
                 className="w-full h-full object-cover transition-transform hover:scale-110" 
                 alt={product.name} 
               />

@@ -16,45 +16,50 @@ export class OrderService {
   async createOrder(data: any) {
     const { branchId, customerUid, items, totalAmount } = data;
 
-    // 1. Create Order in DB
-    const order = await this.prisma.order.create({
-      data: {
-        branchId,
-        customerUid,
-        totalAmount,
-        status: 'PENDING',
-        items: {
-          create: items.map((item: any) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-            customization: item.customization,
-          })),
+    try {
+      // 1. Create Order in DB
+      const order = await this.prisma.order.create({
+        data: {
+          branchId,
+          customerUid,
+          totalAmount,
+          status: 'PENDING',
+          items: {
+            create: items.map((item: any) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+              customization: item.customization,
+            })),
+          },
         },
-      },
-      include: {
-        items: {
-          include: {
-            product: true
-          }
+        include: {
+          items: {
+            include: {
+              product: true
+            }
+          },
         },
-      },
-    });
+      });
 
-    // 2. Notify Branch Real-time
-    this.gateway.notifyNewOrder(branchId, order);
+      // 2. Notify Branch Real-time
+      this.gateway.notifyNewOrder(branchId, order);
 
-    // 3. Create Audit Log
-    await this.prisma.auditLog.create({
-      data: {
-        action: 'CREATE_ORDER',
-        entity: 'Order',
-        entityId: order.id,
-        details: { customerUid, totalAmount },
-      },
-    });
+      // 3. Create Audit Log
+      await this.prisma.auditLog.create({
+        data: {
+          action: 'CREATE_ORDER',
+          entity: 'Order',
+          entityId: order.id,
+          details: { customerUid, totalAmount },
+        },
+      });
 
-    return order;
+      return order;
+    } catch (error) {
+      console.error('Order creation error:', error);
+      throw new BadRequestException('Could not create order. Please check if product IDs are valid.');
+    }
   }
 
   async updateOrderStatus(orderId: string, status: any) {

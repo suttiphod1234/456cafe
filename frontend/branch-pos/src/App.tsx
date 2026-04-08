@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, CheckCircle2, Play, Package, AlertTriangle, Coffee, MoreVertical } from 'lucide-react';
-import { io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 
-const mockOrders = [
-  { id: '101', customer: 'John Doe', items: ['Dirty Coffee', 'Espresso'], status: 'PENDING', time: '5m' },
-];
+const mockOrders: any[] = [];
 
 export default function App() {
   const [orders, setOrders] = useState<any[]>(mockOrders);
