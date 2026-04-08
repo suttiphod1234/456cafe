@@ -20,6 +20,11 @@ export class AppController {
     return this.orderService.getAiRecommendation(prompt);
   }
 
+  @Post('ai/translate')
+  async translate(@Body() body: { text: string, targetLanguage: 'Thai' | 'English' }) {
+    return this.orderService.getAiTranslate(body.text, body.targetLanguage);
+  }
+
   @Get('health')
   getHealth() {
     return { status: 'ok', timestamp: new Date().toISOString() };

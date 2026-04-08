@@ -67,4 +67,8 @@ export class OrderService {
     const products = await this.prisma.product.findMany({ take: 5 });
     return this.ai.recommendCoffee(userInput, products);
   }
+
+  async getAiTranslate(text: string, targetLanguage: 'Thai' | 'English') {
+    return this.ai.translate(text, targetLanguage);
+  }
 }

@@ -38,4 +38,24 @@ export class AiService {
       return "Based on your mood, I'd suggest our signature Dirty Coffee!";
     }
   }
+
+  async translate(text: string, targetLanguage: 'Thai' | 'English') {
+    if (!this.model) return "Translation service unavailable.";
+
+    const prompt = `
+      Translate the following text into ${targetLanguage}. 
+      Return ONLY the translated text without any explanations or quotes.
+      
+      Text: "${text}"
+    `;
+
+    try {
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      return response.text().trim();
+    } catch (error) {
+      console.error('Translation error:', error);
+      return "Translation failed. Please try again.";
+    }
+  }
 }
