@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>456 Coffee Ecosystem - Previews</title>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #C67D6D 0%, #8A4A3E 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+    }
+    .card-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .card {
+      background: #1e293b;
+      padding: 24px;
+      border-radius: 16px;
+      width: 250px;
+      text-decoration: none;
+      color: white;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      background: #334155;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: #818cf8;
+    }
+    .card p {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>456 Coffee Ecosystem</h1>
+  <div class="card-container">
+    <a href="/456cafe/liff/" class="card">
+      <h2>Buyer LIFF</h2>
+      <p>Customer mobile interface for ordering customized coffee and interacting with Gemini AI.</p>
+    </a>
+    <a href="/456cafe/pos/" class="card">
+      <h2>Branch POS</h2>
+      <p>Real-time Kanban board system for baristas to manage incoming orders and stock.</p>
+    </a>
+    <a href="/456cafe/admin/" class="card">
+      <h2>Admin HQ</h2>
+      <p>Global dashboard for headquarter management, financial tracking, and global settings.</p>
+    </a>
+  </div>
+</body>
+</html>
