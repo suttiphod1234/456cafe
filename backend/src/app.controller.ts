@@ -1,12 +1,27 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Post, Body, Param, Patch, Query } from '@nestjs/common';
+import { OrderService } from './order.service';
 
-@Controller()
+@Controller('api')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly orderService: OrderService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Post('orders')
+  async createOrder(@Body() orderData: any) {
+    return this.orderService.createOrder(orderData);
+  }
+
+  @Patch('orders/:id/status')
+  async updateStatus(@Param('id') id: string, @Body('status') status: string) {
+    return this.orderService.updateOrderStatus(id, status);
+  }
+
+  @Get('ai/recommend')
+  async getAiRecommend(@Query('prompt') prompt: string) {
+    return this.orderService.getAiRecommendation(prompt);
+  }
+
+  @Get('health')
+  getHealth() {
+    return { status: 'ok', timestamp: new Date().toISOString() };
   }
 }
