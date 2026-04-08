@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, CheckCircle2, Play, Package, AlertTriangle, Coffee, MoreVertical } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 
@@ -9,12 +9,11 @@ const mockOrders = [
 
 export default function App() {
   const [orders, setOrders] = useState<any[]>(mockOrders);
-  const [, setSocket] = useState<Socket | null>(null);
+  const [lowStockAlerts, setLowStockAlerts] = useState<any[]>([]);
 
   useEffect(() => {
     // 1. Connect to backend
     const newSocket = io('http://localhost:5001');
-    setSocket(newSocket);
 
     // 2. Join specific branch room
     newSocket.on('connect', () => {
@@ -23,8 +22,10 @@ export default function App() {
 
     // 3. Listen to incoming events
     newSocket.on('new-order', (order) => {
-      // Map API object to UI
-      const formattedItems = order.items.map((i: any) => i.productId); // Just IDs for now
+      const formattedItems = order.items.map((i: any) => ({
+        name: i.product.name,
+        customization: i.customization,
+      }));
       
       const newOrder = {
         id: order.id.substring(0, 5),
@@ -40,6 +41,14 @@ export default function App() {
 
     newSocket.on('update-order', (order) => {
       setOrders(prev => prev.map(o => o.rawId === order.id ? { ...o, status: order.status } : o));
+    });
+
+    newSocket.on('inventory-alert', (alerts) => {
+      setLowStockAlerts(alerts);
+    });
+
+    newSocket.on('inventory-error', (error) => {
+      alert(`[สต็อกไม่พอ!] ออเดอร์ #${error.orderId.substring(0,5)}: ${error.message}`);
     });
 
     return () => {
@@ -68,9 +77,18 @@ export default function App() {
           </div>
         </div>
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 bg-amber-500/10 text-amber-500 px-3 py-1.5 rounded-lg text-xs font-bold border border-amber-500/20">
-            <AlertTriangle size={14} /> วัตถุดิบใกล้หมด: นมสด
-          </div>
+          <AnimatePresence>
+            {lowStockAlerts.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="flex items-center gap-2 bg-rose-500/10 text-rose-500 px-3 py-1.5 rounded-lg text-xs font-bold border border-rose-500/20"
+              >
+                <AlertTriangle size={14} /> วัตถุดิบใกล้หมด: {lowStockAlerts.map(a => a.ingredient).join(', ')}
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div className="text-right">
             <p className="text-sm font-medium">8 เมษายน 2026</p>
             <p className="text-[10px] text-gray-500 uppercase tracking-widest">08:24 AM</p>
@@ -114,11 +132,22 @@ export default function App() {
                       </div>
                     </div>
                     
-                    <div className="space-y-2 mb-6">
-                      {order.items.map((item: string, idx: number) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm text-gray-300">
-                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 opacity-50" />
-                          {item}
+                    <div className="space-y-3 mb-6">
+                      {order.items.map((item: any, idx: number) => (
+                        <div key={idx} className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2 text-sm font-bold text-white">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            {item.name}
+                          </div>
+                          {item.customization && (
+                            <div className="flex flex-wrap gap-1.5 ml-3.5">
+                              {Object.entries(item.customization).map(([key, value]: [string, any]) => (
+                                <span key={key} className="text-[10px] bg-white/5 px-2 py-0.5 rounded-md text-gray-400 border border-white/5">
+                                  {key}: {value}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

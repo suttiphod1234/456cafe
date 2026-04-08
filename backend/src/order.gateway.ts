@@ -38,4 +38,8 @@ export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
   notifyUpdateOrder(branchId: string, order: any) {
     this.server.to(`branch-${branchId}`).emit('update-order', order);
   }
+
+  notifyInventoryAlert(branchId: string, alerts: any[]) {
+    this.server.to(`branch-${branchId}`).emit('inventory-alert', alerts);
+  }
 }

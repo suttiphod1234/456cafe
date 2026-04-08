@@ -33,7 +33,11 @@ export class OrderService {
         },
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: true
+          }
+        },
       },
     });
 
@@ -64,10 +68,17 @@ export class OrderService {
     // 2. If status is READY, cut stock automatically
     if (status === 'READY') {
       try {
-        await this.inventory.deductInventoryForOrder(orderId);
+        const result = await this.inventory.deductInventoryForOrder(orderId);
+        if (result.lowStockAlerts) {
+          this.gateway.notifyInventoryAlert(order.branchId, result.lowStockAlerts);
+        }
       } catch (e: any) {
-        // Here we could handle partial stock or fail the order, but for MVP we log it
         console.error(`Failed to deduct inventory for order ${orderId}:`, e.message);
+        // Notify the branch about the failure specifically
+        this.gateway.server.to(`branch-${order.branchId}`).emit('inventory-error', {
+          orderId,
+          message: e.message
+        });
       }
     }
 

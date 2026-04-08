@@ -12,21 +12,54 @@ import {
   LogOut,
   PieChart as PieChartIcon
 } from 'lucide-react';
+import { io } from 'socket.io-client';
 
 export default function App() {
   const [stats, setStats] = useState({ revenue: 0, totalOrders: 0, customers: 0, branches: 0 });
   const [orders, setOrders] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:5001/api/stats/global')
-      .then(r => r.json())
-      .then(d => setStats(d))
-      .catch(e => console.error(e));
+    // 1. Initial Data Fetch
+    const fetchData = async () => {
+      try {
+        const statsRes = await fetch('http://localhost:5001/api/stats/global');
+        const statsData = await statsRes.json();
+        setStats(statsData);
 
-    fetch('http://localhost:5001/api/orders/recent')
-      .then(r => r.json())
-      .then(d => setOrders(d))
-      .catch(e => console.error(e));
+        const ordersRes = await fetch('http://localhost:5001/api/orders/recent');
+        const ordersData = await ordersRes.json();
+        setOrders(ordersData);
+      } catch (e) {
+        console.error('Fetch error:', e);
+      }
+    };
+
+    fetchData();
+
+    // 2. Real-time Socket Connection
+    const socket = io('http://localhost:5001');
+
+    socket.on('new-order', (order) => {
+      // Update Stats
+      setStats(prev => ({
+        ...prev,
+        totalOrders: prev.totalOrders + 1,
+        revenue: prev.revenue + order.totalAmount
+      }));
+
+      // Map API order to local UI model
+      const newOrder = {
+        ...order,
+        branch: { name: 'สาขาใหม่' } // Simplified mapping or fetch branch info if needed
+      };
+
+      // Add to list (limit to 10)
+      setOrders(prev => [newOrder, ...prev].slice(0, 10));
+    });
+
+    return () => {
+      socket.close();
+    };
   }, []);
 
   return (

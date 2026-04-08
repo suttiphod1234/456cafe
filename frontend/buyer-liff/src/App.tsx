@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Coffee, Search, ShoppingBag, Sparkles, User, ChevronRight } from 'lucide-react';
+import { Coffee, Search, ShoppingBag, Sparkles, User, ChevronRight, Loader2 } from 'lucide-react';
+import { useLiff } from './hooks/useLiff';
+import PaymentModal from './components/PaymentModal';
 
 const categories = ['ทั้งหมด', 'เมนูแนะนำ', 'กาแฟร้อน', 'กาแฟเย็น', 'Non-Coffee'];
 
@@ -38,6 +40,10 @@ export default function App() {
   const [aiResponse, setAiResponse] = useState('');
   const [isAiLoading, setIsAiLoading] = useState(false);
 
+  const { user, isLiffLoading } = useLiff();
+  const [showPayment, setShowPayment] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
   const handleAiRecommendation = async () => {
     if (!aiPrompt.trim()) return;
     setIsAiLoading(true);
@@ -65,8 +71,19 @@ export default function App() {
               456 Coffee Ecosystem
             </h1>
           </div>
-          <div className="w-10 h-10 rounded-full glass-morphism flex items-center justify-center">
-            <User size={20} className="text-gray-300" />
+          <div className="flex items-center gap-3 bg-white/5 pr-4 pl-1.5 py-1.5 rounded-full border border-white/10">
+            {isLiffLoading ? (
+              <Loader2 size={24} className="text-primary-500 animate-spin m-1" />
+            ) : user ? (
+              <>
+                <img src={user.pictureUrl} alt="Profile" className="w-8 h-8 rounded-full border-2 border-primary-500" />
+                <span className="text-sm font-medium pr-1">{user.displayName}</span>
+              </>
+            ) : (
+              <div className="w-8 h-8 rounded-full glass-morphism flex items-center justify-center">
+                <User size={16} className="text-gray-300" />
+              </div>
+            )}
           </div>
         </div>
 
@@ -148,32 +165,9 @@ export default function App() {
                 <span className="font-bold text-primary-400">฿{product.price}</span>
                 <motion.button
                   whileTap={{ scale: 0.9 }}
-                  onClick={async () => {
-                    const orderData = {
-                      branchId: 'branch-1',
-                      customerUid: 'U1234567890', // Mock LINE User ID
-                      totalAmount: product.price,
-                      items: [
-                        {
-                          productId: product.id,
-                          quantity: 1,
-                          price: product.price,
-                          customization: { sweetness: '50%' }
-                        }
-                      ]
-                    };
-                    
-                    try {
-                      await fetch('http://localhost:5001/api/orders', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(orderData)
-                      });
-                      alert('Order placed successfully! Branch will prep your coffee soon.');
-                    } catch (e) {
-                      console.error('Failed to place order:', e);
-                      alert('Failed to place order.');
-                    }
+                  onClick={() => {
+                    setSelectedProduct(product);
+                    setShowPayment(true);
                   }}
                   className="w-8 h-8 rounded-xl coffee-gradient flex items-center justify-center text-white shadow-sm"
                 >
@@ -269,6 +263,47 @@ export default function App() {
               )}
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Payment Modal */}
+      <AnimatePresence>
+        {showPayment && selectedProduct && (
+          <PaymentModal 
+            totalAmount={selectedProduct.price}
+            onClose={() => setShowPayment(false)}
+            onSuccess={async () => {
+              try {
+                const orderData = {
+                  branchId: 'branch-1',
+                  customerUid: user?.userId || 'U1234567890',
+                  totalAmount: selectedProduct.price,
+                  items: [
+                    {
+                      productId: selectedProduct.id,
+                      quantity: 1,
+                      price: selectedProduct.price,
+                      customization: { sweetness: '50%' }
+                    }
+                  ]
+                };
+
+                await fetch('http://localhost:5001/api/orders', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(orderData)
+                });
+                
+                alert('ส่งออเดอร์ให้สาขาเรียบร้อยแล้ว!');
+              } catch (e) {
+                console.error('Failed to place order:', e);
+                alert('ไม่สามารถส่งออเดอร์ได้ กรุณาลองใหม่');
+              } finally {
+                setShowPayment(false);
+                setSelectedProduct(null);
+              }
+            }}
+          />
         )}
       </AnimatePresence>
     </div>
