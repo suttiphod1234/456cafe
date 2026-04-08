@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 
 @Injectable()
@@ -39,5 +39,39 @@ export class BranchService {
       totalOrders,
       revenue: revenueRaw._sum.totalAmount || 0,
     };
+  }
+
+  async createBranch(data: { name: string; location?: string }) {
+    return this.prisma.branch.create({
+      data: {
+        name: data.name,
+        location: data.location,
+      },
+      include: {
+        _count: { select: { orders: true, inventory: true } }
+      }
+    });
+  }
+
+  async updateBranch(id: string, data: { name?: string; location?: string }) {
+    const branch = await this.prisma.branch.findUnique({ where: { id } });
+    if (!branch) throw new NotFoundException(`Branch ${id} not found`);
+
+    return this.prisma.branch.update({
+      where: { id },
+      data: {
+        name: data.name,
+        location: data.location,
+      },
+      include: {
+        _count: { select: { orders: true, inventory: true } }
+      }
+    });
+  }
+
+  async deleteBranch(id: string) {
+    const branch = await this.prisma.branch.findUnique({ where: { id } });
+    if (!branch) throw new NotFoundException(`Branch ${id} not found`);
+    return this.prisma.branch.delete({ where: { id } });
   }
 }

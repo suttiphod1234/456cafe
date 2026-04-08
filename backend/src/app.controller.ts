@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, Delete, HttpCode } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { BranchService } from './branch.service';
 import { InventoryService } from './inventory.service';
@@ -14,6 +14,22 @@ export class AppController {
   @Get('branches')
   async getBranches() {
     return this.branchService.getAllBranches();
+  }
+
+  @Post('branches')
+  async createBranch(@Body() body: { name: string; location?: string }) {
+    return this.branchService.createBranch(body);
+  }
+
+  @Patch('branches/:id')
+  async updateBranch(@Param('id') id: string, @Body() body: { name?: string; location?: string }) {
+    return this.branchService.updateBranch(id, body);
+  }
+
+  @Delete('branches/:id')
+  @HttpCode(200)
+  async deleteBranch(@Param('id') id: string) {
+    return this.branchService.deleteBranch(id);
   }
 
   @Get('branches/:id/stats')
