@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --coffee-dark: #121212;
+  --coffee-accent: #C67D6D;
+}
+
+body {
+  background-color: var(--coffee-dark);
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.coffee-gradient {
+  background: linear-gradient(135deg, #C67D6D 0%, #8A4A3E 100%);
+}

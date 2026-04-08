@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-admin: #0b0e14;
+}
+
+body {
+  background-color: var(--bg-admin);
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-card {
+  background: #151921;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s;
+  color: #94a3b8;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+  background: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+}
