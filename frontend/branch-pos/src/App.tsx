@@ -1,16 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, CheckCircle2, Play, Package, AlertTriangle, Coffee, MoreVertical } from 'lucide-react';
+import { io, Socket } from 'socket.io-client';
 
 const mockOrders = [
   { id: '101', customer: 'John Doe', items: ['Dirty Coffee', 'Espresso'], status: 'PENDING', time: '5m' },
-  { id: '102', customer: 'Jane Smith', items: ['Iced Americano'], status: 'PREPARING', time: '2m' },
-  { id: '103', customer: 'Bob White', items: ['Latte', 'Croissant'], status: 'READY', time: '8m' },
-  { id: '104', customer: 'Alice Green', items: ['Flat White'], status: 'PENDING', time: '1m' },
 ];
 
 export default function App() {
-  const [orders, setOrders] = useState(mockOrders);
+  const [orders, setOrders] = useState<any[]>(mockOrders);
+  const [, setSocket] = useState<Socket | null>(null);
+
+  useEffect(() => {
+    // 1. Connect to backend
+    const newSocket = io('http://localhost:5001');
+    setSocket(newSocket);
+
+    // 2. Join specific branch room
+    newSocket.on('connect', () => {
+      newSocket.emit('join-branch', 'branch-1');
+    });
+
+    // 3. Listen to incoming events
+    newSocket.on('new-order', (order) => {
+      // Map API object to UI
+      const formattedItems = order.items.map((i: any) => i.productId); // Just IDs for now
+      
+      const newOrder = {
+        id: order.id.substring(0, 5),
+        customer: 'Customer ' + order.customerUid.substring(0, 4),
+        items: formattedItems,
+        status: order.status,
+        time: 'Just now',
+        rawId: order.id,
+      };
+      
+      setOrders(prev => [...prev, newOrder]);
+    });
+
+    newSocket.on('update-order', (order) => {
+      setOrders(prev => prev.map(o => o.rawId === order.id ? { ...o, status: order.status } : o));
+    });
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
 
   const columns = [
     { id: 'PENDING', title: 'รอรับออเดอร์', icon: <Clock size={20} className="text-amber-500" />, color: 'border-amber-500/50' },
@@ -80,7 +115,7 @@ export default function App() {
                     </div>
                     
                     <div className="space-y-2 mb-6">
-                      {order.items.map((item, idx) => (
+                      {order.items.map((item: string, idx: number) => (
                         <div key={idx} className="flex items-center gap-2 text-sm text-gray-300">
                           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 opacity-50" />
                           {item}
@@ -94,10 +129,25 @@ export default function App() {
                       </button>
                       <button 
                         className="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-black hover:bg-gray-200 transition-all"
-                        onClick={() => {
+                        onClick={async () => {
                           const nextStatusIndex = columns.findIndex(c => c.id === order.status) + 1;
                           if (nextStatusIndex < columns.length) {
-                            setOrders(orders.map(o => o.id === order.id ? { ...o, status: columns[nextStatusIndex].id } : o));
+                            const newStatus = columns[nextStatusIndex].id;
+                            // Optimistic update
+                            setOrders(orders.map(o => o.id === order.id ? { ...o, status: newStatus } : o));
+                            
+                            // Send to backend
+                            if (order.rawId) {
+                               try {
+                                  await fetch(`http://localhost:5001/api/orders/${order.rawId}/status`, {
+                                    method: 'PATCH',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ status: newStatus })
+                                  });
+                               } catch (e) {
+                                  console.error("Failed to update status", e);
+                               }
+                            }
                           }
                         }}
                       >

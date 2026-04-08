@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { OrderGateway } from './order.gateway';
 import { AiService } from './ai.service';
+import { InventoryService } from './inventory.service';
 
 @Injectable()
 export class OrderService {
@@ -9,6 +10,7 @@ export class OrderService {
     private prisma: PrismaService,
     private gateway: OrderGateway,
     private ai: AiService,
+    private inventory: InventoryService,
   ) {}
 
   async createOrder(data: any) {
@@ -52,15 +54,55 @@ export class OrderService {
   }
 
   async updateOrderStatus(orderId: string, status: any) {
+    // 1. Update status
     const order = await this.prisma.order.update({
       where: { id: orderId },
       data: { status },
       include: { items: true },
     });
 
+    // 2. If status is READY, cut stock automatically
+    if (status === 'READY') {
+      try {
+        await this.inventory.deductInventoryForOrder(orderId);
+      } catch (e: any) {
+        // Here we could handle partial stock or fail the order, but for MVP we log it
+        console.error(`Failed to deduct inventory for order ${orderId}:`, e.message);
+      }
+    }
+
+    // 3. Notify clients
     this.gateway.notifyUpdateOrder(order.branchId, order);
     
     return order;
+  }
+
+  async getRecentOrders() {
+    return this.prisma.order.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 10,
+      include: {
+        branch: true
+      }
+    });
+  }
+
+  async getGlobalStats() {
+    const totalOrders = await this.prisma.order.count();
+    const aggregate = await this.prisma.order.aggregate({
+      _sum: { totalAmount: true },
+    });
+    const customerCount = await this.prisma.order.groupBy({
+      by: ['customerUid'],
+    });
+    const branches = await this.prisma.branch.count();
+
+    return {
+      revenue: aggregate._sum.totalAmount || 0,
+      totalOrders,
+      customers: customerCount.length,
+      branches
+    };
   }
 
   async getAiRecommendation(userInput: string) {

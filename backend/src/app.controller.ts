@@ -1,9 +1,45 @@
 import { Controller, Get, Post, Body, Param, Patch, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
+import { BranchService } from './branch.service';
+import { InventoryService } from './inventory.service';
 
 @Controller('api')
 export class AppController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(
+    private readonly orderService: OrderService,
+    private readonly branchService: BranchService,
+    private readonly inventoryService: InventoryService
+  ) {}
+
+  @Get('branches')
+  async getBranches() {
+    return this.branchService.getAllBranches();
+  }
+
+  @Get('branches/:id/stats')
+  async getBranchStats(@Param('id') id: string) {
+    return this.branchService.getBranchStats(id);
+  }
+
+  @Get('branches/:id/inventory')
+  async getInventory(@Param('id') id: string) {
+    return this.inventoryService.getBranchInventory(id);
+  }
+
+  @Get('products')
+  async getProducts() {
+    return this.branchService.getProducts();
+  }
+
+  @Get('orders/recent')
+  async getRecentOrders() {
+    return this.orderService.getRecentOrders();
+  }
+
+  @Get('stats/global')
+  async getGlobalStats() {
+    return this.orderService.getGlobalStats();
+  }
 
   @Post('orders')
   async createOrder(@Body() orderData: any) {

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { 
   BarChart3, 
   Users, 
@@ -13,6 +14,21 @@ import {
 } from 'lucide-react';
 
 export default function App() {
+  const [stats, setStats] = useState({ revenue: 0, totalOrders: 0, customers: 0, branches: 0 });
+  const [orders, setOrders] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5001/api/stats/global')
+      .then(r => r.json())
+      .then(d => setStats(d))
+      .catch(e => console.error(e));
+
+    fetch('http://localhost:5001/api/orders/recent')
+      .then(r => r.json())
+      .then(d => setOrders(d))
+      .catch(e => console.error(e));
+  }, []);
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#0b0e14]">
       {/* Sidebar */}
@@ -77,10 +93,10 @@ export default function App() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-4 gap-6">
-            <StatCard icon={<TrendingUp size={24} className="text-emerald-500" />} label="รายได้ทั้งหมด" value="฿222.6K" delta="+12.5%" />
-            <StatCard icon={<ShoppingBag size={24} className="text-blue-500" />} label="ยอดสั่งซื้อทั้งหมด" value="3,456" delta="+8.2%" />
-            <StatCard icon={<Users size={24} className="text-purple-500" />} label="จำนวนลูกค้า" value="1,280" delta="+24.1%" />
-            <StatCard icon={<Store size={24} className="text-amber-500" />} label="สาขาที่เปิดอยู่" value="12" delta="0%" />
+            <StatCard icon={<TrendingUp size={24} className="text-emerald-500" />} label="รายได้ทั้งหมด" value={`฿${stats.revenue.toLocaleString()}`} delta="+12.5%" />
+            <StatCard icon={<ShoppingBag size={24} className="text-blue-500" />} label="ยอดสั่งซื้อทั้งหมด" value={stats.totalOrders.toLocaleString()} delta="+8.2%" />
+            <StatCard icon={<Users size={24} className="text-purple-500" />} label="จำนวนลูกค้า" value={stats.customers.toLocaleString()} delta="+24.1%" />
+            <StatCard icon={<Store size={24} className="text-amber-500" />} label="สาขาที่เปิดอยู่" value={stats.branches.toString()} delta="0%" />
           </div>
 
           {/* Recent Orders & Inventory */}
@@ -103,10 +119,18 @@ export default function App() {
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  <OrderRow id="#3491" branch="สยามสแควร์" customer="วินัย ส." date="8 เม.ย., 08:12" amount="฿120.00" />
-                  <OrderRow id="#3490" branch="อารีย์ เซ็นเตอร์" customer="สมศักดิ์ ก." date="8 เม.ย., 07:58" amount="฿95.00" />
-                  <OrderRow id="#3489" branch="ทองหล่อ" customer="ปริศนา ล." date="8 เม.ย., 07:45" amount="฿240.00" />
-                  <OrderRow id="#3488" branch="สยามสแควร์" customer="อานนท์ พ." date="7 เม.ย., 22:30" amount="฿135.00" />
+                  {orders.length === 0 ? (
+                    <tr><td colSpan={5} className="py-4 text-center text-gray-500">ยังไม่มีรายการสั่งซื้อเร็วๆ นี้</td></tr>
+                  ) : orders.map((o: any) => (
+                    <OrderRow 
+                      key={o.id}
+                      id={`#${o.id.substring(0, 4)}`} 
+                      branch={o.branch?.name || "ไม่ระบุสาขา"} 
+                      customer={o.customerUid ? `LINE-${o.customerUid.substring(0,4)}` : 'ลูกค้าหน้าร้าน'} 
+                      date={new Date(o.createdAt).toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })} 
+                      amount={`฿${o.totalAmount}`} 
+                    />
+                  ))}
                 </tbody>
               </table>
             </div>

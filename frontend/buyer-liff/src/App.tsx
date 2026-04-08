@@ -129,6 +129,33 @@ export default function App() {
                 <span className="font-bold text-primary-400">฿{product.price}</span>
                 <motion.button
                   whileTap={{ scale: 0.9 }}
+                  onClick={async () => {
+                    const orderData = {
+                      branchId: 'branch-1',
+                      customerUid: 'U1234567890', // Mock LINE User ID
+                      totalAmount: product.price,
+                      items: [
+                        {
+                          productId: product.id,
+                          quantity: 1,
+                          price: product.price,
+                          customization: { sweetness: '50%' }
+                        }
+                      ]
+                    };
+                    
+                    try {
+                      await fetch('http://localhost:5001/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                      });
+                      alert('Order placed successfully! Branch will prep your coffee soon.');
+                    } catch (e) {
+                      console.error('Failed to place order:', e);
+                      alert('Failed to place order.');
+                    }
+                  }}
                   className="w-8 h-8 rounded-xl coffee-gradient flex items-center justify-center text-white shadow-sm"
                 >
                   <ShoppingBag size={14} />
