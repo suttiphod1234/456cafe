@@ -6,10 +6,11 @@ import { OrderGateway } from './order.gateway';
 import { AiService } from './ai.service';
 import { InventoryService } from './inventory.service';
 import { BranchService } from './branch.service';
+import { ProductService } from './product.service';
 
 @Module({
   imports: [],
   controllers: [AppController],
-  providers: [PrismaService, OrderService, OrderGateway, AiService, InventoryService, BranchService],
+  providers: [PrismaService, OrderService, OrderGateway, AiService, InventoryService, BranchService, ProductService],
 })
 export class AppModule {}

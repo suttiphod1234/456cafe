@@ -31,8 +31,28 @@ model Branch {
   id        String   @id @default(uuid())
   name      String
   location  String?
+  address   String?
+  latitude  Float?
+  longitude Float?
+  isOpen    Boolean  @default(true)
+  openTime  String?
+  closeTime String?
   orders    Order[]
   inventory Inventory[]
+  managers  BranchManager[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BranchManager {
+  id        String   @id @default(uuid())
+  branchId  String
+  branch    Branch   @relation(fields: [branchId], references: [id])
+  name      String
+  email     String?
+  phone     String?
+  role      String   @default("BRANCH_MANAGER")
+  lineUid   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

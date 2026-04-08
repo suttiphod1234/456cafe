@@ -14,9 +14,10 @@ import {
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import BranchesPage from './pages/BranchesPage';
+import ProductsPage from './pages/ProductsPage';
 
 export default function App() {
-  const [activePage, setActivePage] = useState<'overview' | 'branches'>('overview');
+  const [activePage, setActivePage] = useState<'overview' | 'branches' | 'products'>('overview');
   const [stats, setStats] = useState({ revenue: 0, totalOrders: 0, customers: 0, branches: 0 });
   const [orders, setOrders] = useState<any[]>([]);
 
@@ -78,7 +79,7 @@ export default function App() {
         <nav className="flex-1 space-y-2">
           <NavItem icon={<BarChart3 size={20} />} label="ภาพรวม" active={activePage === 'overview'} onClick={() => setActivePage('overview')} />
           <NavItem icon={<Store size={20} />} label="สาขา" active={activePage === 'branches'} onClick={() => setActivePage('branches')} />
-          <NavItem icon={<Coffee size={20} />} label="สินค้า" />
+          <NavItem icon={<Coffee size={20} />} label="สินค้า" active={activePage === 'products'} onClick={() => setActivePage('products')} />
           <NavItem icon={<ShoppingBag size={20} />} label="คำสั่งซื้อ" />
           <NavItem icon={<Users size={20} />} label="ลูกค้า" />
           <NavItem icon={<PieChartIcon size={20} />} label="รายงาน" />
@@ -94,6 +95,8 @@ export default function App() {
       <main className="flex-1 flex flex-col overflow-hidden">
         {activePage === 'branches' ? (
           <BranchesPage />
+        ) : activePage === 'products' ? (
+          <ProductsPage />
         ) : (
           <>
             {/* Top Header */}
