@@ -2,37 +2,37 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Coffee, Search, ShoppingBag, Sparkles, User, ChevronRight } from 'lucide-react';
 
-const categories = ['All', 'Signature', 'Hot Coffee', 'Cold Brew', 'Non-Coffee'];
+const categories = ['ทั้งหมด', 'เมนูแนะนำ', 'กาแฟร้อน', 'กาแฟเย็น', 'Non-Coffee'];
 
 const products = [
   {
     id: '1',
-    name: 'Dirty Coffee',
-    description: 'Cold milk with hot espresso on top.',
+    name: 'เดอร์ตี้คอฟฟี่ (Dirty Coffee)',
+    description: 'นมสดเย็นจัดท็อปด้วยเอสเพรสโซ่ช็อตเข้มข้น',
     price: 120,
-    category: 'Signature',
+    category: 'เมนูแนะนำ',
     image: 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: '2',
-    name: 'Iced Americano',
-    description: 'Freshly brewed espresso with cold water.',
+    name: 'อเมริกาโน่เย็น (Iced Americano)',
+    description: 'เอสเพรสโซ่ช็อตผสมน้ำเย็นและน้ำแข็ง',
     price: 90,
-    category: 'Hot Coffee',
+    category: 'กาแฟเย็น',
     image: 'https://images.unsplash.com/photo-1551046710-23b0d9c3fa08?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: '3',
-    name: 'Caramel Macchiato',
-    description: 'Vanilla-flavored milk marked with espresso.',
+    name: 'คาราเมล มัคคิอาโต้ (Caramel Macchiato)',
+    description: 'นมวานิลลาหอมหวานท็อปด้วยเอสเพรสโซ่และซอสคาราเมล',
     price: 135,
-    category: 'Signature',
+    category: 'เมนูแนะนำ',
     image: 'https://images.unsplash.com/photo-1485182708500-e8f1f318ba72?auto=format&fit=crop&q=80&w=400',
   }
 ];
 
 export default function App() {
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState('ทั้งหมด');
   const [showAI, setShowAI] = useState(false);
 
   return (
@@ -41,7 +41,7 @@ export default function App() {
       <header className="px-6 pt-12 pb-6">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-gray-400 text-sm font-medium">Hello, Coffee Lover!</h2>
+            <h2 className="text-gray-400 text-sm font-medium">สวัสดี คนรักกาแฟ!</h2>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
               456 Coffee Ecosystem
             </h1>
@@ -59,7 +59,7 @@ export default function App() {
           <input
             type="text"
             className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-gray-600"
-            placeholder="Search your coffee..."
+            placeholder="ค้นหากาแฟที่คุณชอบ..."
           />
         </div>
 
@@ -72,12 +72,12 @@ export default function App() {
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles size={16} className="text-white/80" />
-              <span className="text-xs font-bold tracking-widest uppercase text-white/80">AI Recommended</span>
+              <span className="text-xs font-bold tracking-widest uppercase text-white/80">AI แนะนำ</span>
             </div>
-            <h3 className="text-xl font-bold mb-1">Pick for your mood?</h3>
-            <p className="text-white/70 text-sm mb-4">Let Gemini find your perfect match.</p>
+            <h3 className="text-xl font-bold mb-1">เลือกตามอารมณ์ของคุณไหม?</h3>
+            <p className="text-white/70 text-sm mb-4">ให้ Gemini ช่วยค้นหาเครื่องดื่มที่ใช่สำหรับคุณ</p>
             <div className="bg-white/20 backdrop-blur-sm w-fit px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-2">
-              Find out <ChevronRight size={14} />
+              ค้นหาเลย <ChevronRight size={14} />
             </div>
           </div>
           <div className="absolute right-[-20px] bottom-[-20px] opacity-20">
@@ -174,22 +174,22 @@ export default function App() {
                   <Sparkles size={24} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">AI Recommendation</h3>
-                  <p className="text-gray-500 text-sm">Powered by Gemini</p>
+                  <h3 className="text-xl font-bold">ระบบแนะนำโดย AI</h3>
+                  <p className="text-gray-500 text-sm">ขับเคลื่อนโดย Gemini</p>
                 </div>
               </div>
               <p className="text-gray-300 mb-8 leading-relaxed">
-                Describe how you feel today, and I'll recommend the perfect coffee from our menu.
+                บอกความรู้สึกของคุณวันนี้ แล้วผมจะแนะนำกาแฟที่เหมาะที่สุดจากเมนูของเรา
               </p>
               <textarea 
                 className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 min-h-[120px] mb-8 focus:outline-none focus:ring-2 focus:ring-primary-500 placeholder:text-gray-600"
-                placeholder="Ex. 'I need some energy for a morning meeting' or 'I want something sweet and cold...'"
+                placeholder="เช่น 'ต้องการพลังงานสำหรับประชุมเช้า' หรือ 'อยากได้อะไรหวานๆ เย็นๆ...'"
               />
               <button 
                 className="w-full py-4 rounded-2xl coffee-gradient font-bold shadow-lg"
                 onClick={() => setShowAI(false)}
               >
-                Get Recommendation
+                ขอคำแนะนำ
               </button>
             </motion.div>
           </motion.div>

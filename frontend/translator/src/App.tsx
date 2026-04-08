@@ -64,7 +64,7 @@ export default function App() {
           </div>
           <div>
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white mb-2">456 AI Translator</h1>
-            <p className="text-gray-400 max-w-md mx-auto">Premium AI-powered translation between Thai and English. Accurate, fast, and natural.</p>
+            <p className="text-gray-400 max-w-md mx-auto">ระบบแปลภาษาด้วย AI ระดับพรีเมียม ระหว่างภาษาไทยและอังกฤษ แม่นยำ รวดเร็ว และเป็นธรรมชาติ</p>
           </div>
         </div>
 
@@ -73,7 +73,7 @@ export default function App() {
           {/* Source Panel */}
           <div className="p-6 sm:p-8 flex flex-col space-y-4 border-b md:border-b-0 md:border-r border-white/5">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-indigo-400 tracking-widest uppercase">{sourceLang}</span>
+              <span className="text-sm font-bold text-indigo-400 tracking-widest uppercase">{sourceLang === 'Thai' ? 'ภาษาไทย' : 'English'}</span>
               <div className="flex gap-2">
                 <button 
                   onClick={() => setSourceText('')}
@@ -87,7 +87,7 @@ export default function App() {
             <textarea
               value={sourceText}
               onChange={(e) => setSourceText(e.target.value)}
-              placeholder="Enter text here..."
+              placeholder="กรอกข้อความที่ต้องการแปล..."
               className="w-full h-[200px] sm:h-[300px] bg-transparent resize-none text-xl sm:text-2xl font-medium focus:outline-none placeholder:text-gray-700 no-scrollbar"
             />
           </div>
@@ -107,7 +107,7 @@ export default function App() {
           {/* Target Panel */}
           <div className="p-6 sm:p-8 flex flex-col space-y-4 bg-white/[0.02]">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-purple-400 tracking-widest uppercase">{targetLang}</span>
+              <span className="text-sm font-bold text-purple-400 tracking-widest uppercase">{targetLang === 'Thai' ? 'ภาษาไทย' : 'English'}</span>
               <div className="flex gap-2">
                 <button 
                   onClick={copyToClipboard}
@@ -134,7 +134,7 @@ export default function App() {
                     >
                       <Sparkles size={40} />
                     </motion.div>
-                    <p className="text-sm animate-pulse">Translating with Gemini AI...</p>
+                    <p className="text-sm animate-pulse">กำลังแปลด้วย Gemini AI...</p>
                   </motion.div>
                 ) : (
                   <motion.p 
@@ -143,7 +143,7 @@ export default function App() {
                     animate={{ opacity: 1 }}
                     className={translatedText ? "text-white" : "text-gray-700"}
                   >
-                    {translatedText || "Translation will appear here..."}
+                    {translatedText || "คำแปลจะปรากฏที่นี่..."}
                   </motion.p>
                 )}
               </AnimatePresence>
@@ -155,11 +155,11 @@ export default function App() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 px-4">
           <div className="flex items-center gap-4 text-gray-500 text-sm">
             <div className="flex items-center gap-1.5 hover:text-white cursor-pointer transition-colors">
-              <History size={16} /> <span>History</span>
+              <History size={16} /> <span>ประวัติการแปล</span>
             </div>
             <div className="w-1 h-1 rounded-full bg-gray-800" />
             <div className="flex items-center gap-1.5 hover:text-white cursor-pointer transition-colors">
-              <Sparkles size={16} /> <span>Pro Features</span>
+              <Sparkles size={16} /> <span>ฟีเจอร์ระดับโปร</span>
             </div>
           </div>
 
@@ -170,7 +170,7 @@ export default function App() {
             disabled={isTranslating || !sourceText.trim()}
             className="w-full sm:w-auto px-12 py-4 rounded-2xl premium-gradient text-white font-black text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
-            Translate Now
+            เริ่มการแปล
           </motion.button>
         </div>
       </motion.div>

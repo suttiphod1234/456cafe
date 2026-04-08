@@ -13,10 +13,10 @@ export default function App() {
   const [orders, setOrders] = useState(mockOrders);
 
   const columns = [
-    { id: 'PENDING', title: 'Pending', icon: <Clock size={20} className="text-amber-500" />, color: 'border-amber-500/50' },
-    { id: 'PREPARING', title: 'Preparing', icon: <Play size={20} className="text-blue-500" />, color: 'border-blue-500/50' },
-    { id: 'READY', title: 'Ready', icon: <CheckCircle2 size={20} className="text-emerald-500" />, color: 'border-emerald-500/50' },
-    { id: 'PICKED_UP', title: 'Picked Up', icon: <Package size={20} className="text-indigo-500" />, color: 'border-indigo-500/50' },
+    { id: 'PENDING', title: 'รอรับออเดอร์', icon: <Clock size={20} className="text-amber-500" />, color: 'border-amber-500/50' },
+    { id: 'PREPARING', title: 'กำลังทำ', icon: <Play size={20} className="text-blue-500" />, color: 'border-blue-500/50' },
+    { id: 'READY', title: 'พร้อมเสิร์ฟ', icon: <CheckCircle2 size={20} className="text-emerald-500" />, color: 'border-emerald-500/50' },
+    { id: 'PICKED_UP', title: 'รับสินค้าแล้ว', icon: <Package size={20} className="text-indigo-500" />, color: 'border-indigo-500/50' },
   ];
 
   return (
@@ -28,16 +28,16 @@ export default function App() {
             <Coffee size={24} className="text-emerald-500" />
           </div>
           <div>
-            <h1 className="text-lg font-bold">Branch POS & Kanban</h1>
-            <p className="text-xs text-gray-400">Main Branch - Station 1</p>
+            <h1 className="text-lg font-bold">ระบบจัดการสาขา (POS & Kanban)</h1>
+            <p className="text-xs text-gray-400">สาขาหลัก - จุดเตรียมที่ 1</p>
           </div>
         </div>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 bg-amber-500/10 text-amber-500 px-3 py-1.5 rounded-lg text-xs font-bold border border-amber-500/20">
-            <AlertTriangle size={14} /> Low Stock: Milk
+            <AlertTriangle size={14} /> วัตถุดิบใกล้หมด: นมสด
           </div>
           <div className="text-right">
-            <p className="text-sm font-medium">8 April 2026</p>
+            <p className="text-sm font-medium">8 เมษายน 2026</p>
             <p className="text-[10px] text-gray-500 uppercase tracking-widest">08:24 AM</p>
           </div>
         </div>
@@ -71,7 +71,7 @@ export default function App() {
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Order #{order.id}</span>
+                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">ออเดอร์ #{order.id}</span>
                         <h4 className="font-bold text-lg">{order.customer}</h4>
                       </div>
                       <div className="text-xs text-gray-500 flex items-center gap-1.5 px-2 py-1 glass-morphism rounded-lg">
@@ -90,7 +90,7 @@ export default function App() {
 
                     <div className="flex gap-2">
                       <button className="flex-1 py-2 text-xs font-bold rounded-xl glass-morphism hover:bg-white/10 transition-all">
-                        Details
+                        รายละเอียด
                       </button>
                       <button 
                         className="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-black hover:bg-gray-200 transition-all"
@@ -101,7 +101,7 @@ export default function App() {
                           }
                         }}
                       >
-                        {column.id === 'READY' ? 'Pick Up' : 'Next Step'}
+                        {column.id === 'READY' ? 'ส่งมอบสินค้า' : 'ขั้นตอนถัดไป'}
                       </button>
                     </div>
                   </motion.div>

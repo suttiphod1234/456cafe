@@ -25,17 +25,17 @@ export default function App() {
         </div>
 
         <nav className="flex-1 space-y-2">
-          <NavItem icon={<BarChart3 size={20} />} label="Overview" active />
-          <NavItem icon={<Store size={20} />} label="Branches" />
-          <NavItem icon={<Coffee size={20} />} label="Products" />
-          <NavItem icon={<ShoppingBag size={20} />} label="Orders" />
-          <NavItem icon={<Users size={20} />} label="Customers" />
-          <NavItem icon={<PieChartIcon size={20} />} label="Reports" />
+          <NavItem icon={<BarChart3 size={20} />} label="ภาพรวม" active />
+          <NavItem icon={<Store size={20} />} label="สาขา" />
+          <NavItem icon={<Coffee size={20} />} label="สินค้า" />
+          <NavItem icon={<ShoppingBag size={20} />} label="คำสั่งซื้อ" />
+          <NavItem icon={<Users size={20} />} label="ลูกค้า" />
+          <NavItem icon={<PieChartIcon size={20} />} label="รายงาน" />
         </nav>
 
         <div className="pt-6 border-t border-white/5 space-y-2">
-          <NavItem icon={<Settings size={20} />} label="Settings" />
-          <NavItem icon={<LogOut size={20} />} label="Sign Out" />
+          <NavItem icon={<Settings size={20} />} label="ตั้งค่า" />
+          <NavItem icon={<LogOut size={20} />} label="ออกจากระบบ" />
         </div>
       </aside>
 
@@ -47,7 +47,7 @@ export default function App() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
             <input 
               type="text" 
-              placeholder="Search data, reports, orders..." 
+              placeholder="ค้นหาข้อมูล, รายงาน, ออเดอร์..." 
               className="w-full bg-white/5 border border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/50 placeholder:text-gray-600"
             />
           </div>
@@ -58,7 +58,7 @@ export default function App() {
             </button>
             <div className="flex items-center gap-3 pl-6 border-l border-white/5">
               <div className="text-right">
-                <p className="text-sm font-bold">Admin HQ</p>
+                <p className="text-sm font-bold">แอดมินสำนักงานใหญ่</p>
                 <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Super Admin</p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600" />
@@ -69,18 +69,18 @@ export default function App() {
         {/* Dashboard Grid */}
         <div className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Global Overview</h2>
+            <h2 className="text-2xl font-bold">ภาพรวมระบบทั้งหมด</h2>
             <div className="flex gap-3">
-              <button className="px-4 py-2 bg-indigo-600 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">Download Report</button>
+              <button className="px-4 py-2 bg-indigo-600 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">ดาวน์โหลดรายงาน</button>
             </div>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-4 gap-6">
-            <StatCard icon={<TrendingUp size={24} className="text-emerald-500" />} label="Total Revenue" value="฿222.6K" delta="+12.5%" />
-            <StatCard icon={<ShoppingBag size={24} className="text-blue-500" />} label="Total Orders" value="3,456" delta="+8.2%" />
-            <StatCard icon={<Users size={24} className="text-purple-500" />} label="Total Customers" value="1,280" delta="+24.1%" />
-            <StatCard icon={<Store size={24} className="text-amber-500" />} label="Active Branches" value="12" delta="0%" />
+            <StatCard icon={<TrendingUp size={24} className="text-emerald-500" />} label="รายได้ทั้งหมด" value="฿222.6K" delta="+12.5%" />
+            <StatCard icon={<ShoppingBag size={24} className="text-blue-500" />} label="ยอดสั่งซื้อทั้งหมด" value="3,456" delta="+8.2%" />
+            <StatCard icon={<Users size={24} className="text-purple-500" />} label="จำนวนลูกค้า" value="1,280" delta="+24.1%" />
+            <StatCard icon={<Store size={24} className="text-amber-500" />} label="สาขาที่เปิดอยู่" value="12" delta="0%" />
           </div>
 
           {/* Recent Orders & Inventory */}
@@ -88,25 +88,25 @@ export default function App() {
             <div className="col-span-2 admin-card p-6">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="font-bold flex items-center gap-2">
-                  <ShoppingBag size={18} className="text-indigo-400" /> Recent Global Orders
+                  <ShoppingBag size={18} className="text-indigo-400" /> รายการสั่งซื้อล่าสุด
                 </h3>
-                <button className="text-xs text-indigo-400 hover:underline">View All</button>
+                <button className="text-xs text-indigo-400 hover:underline">ดูทั้งหมด</button>
               </div>
               <table className="w-full text-left">
                 <thead>
                   <tr className="text-[10px] uppercase font-bold tracking-widest text-gray-500 border-b border-white/5">
-                    <th className="pb-4">Order ID</th>
-                    <th className="pb-4">Branch</th>
-                    <th className="pb-4">Customer</th>
-                    <th className="pb-4">Date</th>
-                    <th className="pb-4 text-right">Amount</th>
+                    <th className="pb-4">รหัสสั่งซื้อ</th>
+                    <th className="pb-4">สาขา</th>
+                    <th className="pb-4">ลูกค้า</th>
+                    <th className="pb-4">วันที่</th>
+                    <th className="pb-4 text-right">ยอดเงิน</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  <OrderRow id="#3491" branch="Siam Square" customer="Winai S." date="8 Apr, 08:12" amount="฿120.00" />
-                  <OrderRow id="#3490" branch="Ari Center" customer="Somsak K." date="8 Apr, 07:58" amount="฿95.00" />
-                  <OrderRow id="#3489" branch="Thong Lo" customer="Prisana L." date="8 Apr, 07:45" amount="฿240.00" />
-                  <OrderRow id="#3488" branch="Siam Square" customer="Anon P." date="7 Apr, 22:30" amount="฿135.00" />
+                  <OrderRow id="#3491" branch="สยามสแควร์" customer="วินัย ส." date="8 เม.ย., 08:12" amount="฿120.00" />
+                  <OrderRow id="#3490" branch="อารีย์ เซ็นเตอร์" customer="สมศักดิ์ ก." date="8 เม.ย., 07:58" amount="฿95.00" />
+                  <OrderRow id="#3489" branch="ทองหล่อ" customer="ปริศนา ล." date="8 เม.ย., 07:45" amount="฿240.00" />
+                  <OrderRow id="#3488" branch="สยามสแควร์" customer="อานนท์ พ." date="7 เม.ย., 22:30" amount="฿135.00" />
                 </tbody>
               </table>
             </div>
@@ -114,7 +114,7 @@ export default function App() {
             <div className="admin-card p-6">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="font-bold flex items-center gap-2">
-                  <Coffee size={18} className="text-amber-400" /> Top Products
+                  <Coffee size={18} className="text-amber-400" /> สินค้าขายดี
                 </h3>
               </div>
               <div className="space-y-6">
@@ -169,10 +169,10 @@ function TopProduct({ name, sales, trend }: { name: string, sales: string, trend
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-500 underline underline-offset-4 cursor-pointer">Img</div>
+        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-500 underline underline-offset-4 cursor-pointer">ภาพ</div>
         <div>
           <p className="text-sm font-bold">{name}</p>
-          <p className="text-[10px] text-gray-500">{sales} sold</p>
+          <p className="text-[10px] text-gray-500">ขายได้ {sales} แก้ว</p>
         </div>
       </div>
       <span className={`text-[10px] font-bold ${trend.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'}`}>{trend}</span>
