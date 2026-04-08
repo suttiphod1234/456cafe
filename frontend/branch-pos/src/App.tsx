@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, CheckCircle2, Play, Package, AlertTriangle, Coffee, MoreVertical } from 'lucide-react';
 

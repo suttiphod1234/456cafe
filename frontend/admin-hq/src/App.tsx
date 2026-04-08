@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   BarChart3, 
   Users, 
@@ -10,7 +9,6 @@ import {
   Search,
   Settings,
   LogOut,
-  ChevronRight,
   PieChart as PieChartIcon
 } from 'lucide-react';
 
