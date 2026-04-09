@@ -46,7 +46,10 @@ export class InventoryService {
       for (const recipe of item.product.recipes) {
         const totalNeeded = recipe.quantity * quantity;
         const currentAmount = requiredIngredients.get(recipe.ingredientId) || 0;
-        requiredIngredients.set(recipe.ingredientId, currentAmount + totalNeeded);
+        requiredIngredients.set(
+          recipe.ingredientId,
+          currentAmount + totalNeeded,
+        );
       }
     }
 
@@ -54,7 +57,10 @@ export class InventoryService {
     return this.prisma.$transaction(async (tx) => {
       const lowStockAlerts: any[] = [];
 
-      for (const [ingredientId, amountNeeded] of requiredIngredients.entries()) {
+      for (const [
+        ingredientId,
+        amountNeeded,
+      ] of requiredIngredients.entries()) {
         const inventoryItem = await tx.inventory.findUnique({
           where: {
             branchId_ingredientId: {
@@ -62,15 +68,19 @@ export class InventoryService {
               ingredientId,
             },
           },
-          include: { ingredient: true }
+          include: { ingredient: true },
         });
 
         if (!inventoryItem) {
-          throw new BadRequestException(`Missing inventory record for ingredient ID: ${ingredientId}`);
+          throw new BadRequestException(
+            `Missing inventory record for ingredient ID: ${ingredientId}`,
+          );
         }
 
         if (inventoryItem.quantity < amountNeeded) {
-          throw new BadRequestException(`Insufficient stock for ${inventoryItem.ingredient.name}. Needed: ${amountNeeded}, Available: ${inventoryItem.quantity}`);
+          throw new BadRequestException(
+            `Insufficient stock for ${inventoryItem.ingredient.name}. Needed: ${amountNeeded}, Available: ${inventoryItem.quantity}`,
+          );
         }
 
         const newQuantity = inventoryItem.quantity - amountNeeded;
@@ -80,7 +90,7 @@ export class InventoryService {
           lowStockAlerts.push({
             ingredient: inventoryItem.ingredient.name,
             remaining: newQuantity,
-            threshold: inventoryItem.lowStockThreshold
+            threshold: inventoryItem.lowStockThreshold,
           });
         }
 

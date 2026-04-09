@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Param, Patch, Query, Delete, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Query,
+  Delete,
+  HttpCode,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { BranchService } from './branch.service';
 import { InventoryService } from './inventory.service';
@@ -80,7 +90,10 @@ export class AppController {
   }
 
   @Patch('branches/managers/:managerId')
-  async updateManager(@Param('managerId') managerId: string, @Body() body: any) {
+  async updateManager(
+    @Param('managerId') managerId: string,
+    @Body() body: any,
+  ) {
     return this.branchService.updateManager(managerId, body);
   }
 
@@ -140,7 +153,9 @@ export class AppController {
   }
 
   @Patch('categories/reorder')
-  async reorderCategories(@Body() body: { items: { id: string; sortOrder: number }[] }) {
+  async reorderCategories(
+    @Body() body: { items: { id: string; sortOrder: number }[] },
+  ) {
     return this.menuService.reorderCategories(body.items);
   }
 
@@ -207,7 +222,10 @@ export class AppController {
   }
 
   @Patch('menu/option-groups/:groupId')
-  async updateOptionGroup(@Param('groupId') groupId: string, @Body() body: any) {
+  async updateOptionGroup(
+    @Param('groupId') groupId: string,
+    @Body() body: any,
+  ) {
     return this.menuService.updateOptionGroup(groupId, body);
   }
 
@@ -297,7 +315,9 @@ export class AppController {
   }
 
   @Post('ai/translate')
-  async translate(@Body() body: { text: string, targetLanguage: 'Thai' | 'English' }) {
+  async translate(
+    @Body() body: { text: string; targetLanguage: 'Thai' | 'English' },
+  ) {
     return this.orderService.getAiTranslate(body.text, body.targetLanguage);
   }
 

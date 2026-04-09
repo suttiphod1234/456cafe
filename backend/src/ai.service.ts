@@ -10,15 +10,18 @@ export class AiService {
     const apiKey = process.env.GEMINI_API_KEY || '';
     if (apiKey) {
       this.genAI = new GoogleGenerativeAI(apiKey);
-      this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     }
   }
 
   async recommendCoffee(userInput: string, products: any[]) {
-    if (!this.model) return "I can't recommend coffee right now, but our Dirty Coffee is great!";
+    if (!this.model)
+      return "I can't recommend coffee right now, but our Dirty Coffee is great!";
 
-    const productList = products.map(p => `${p.name}: ${p.description} (฿${p.price})`).join('\n');
-    
+    const productList = products
+      .map((p) => `${p.name}: ${p.description} (฿${p.price})`)
+      .join('\n');
+
     const prompt = `
       You are an expert barista at "456 Coffee". 
       A customer says: "${userInput}"
@@ -41,7 +44,7 @@ export class AiService {
   }
 
   async translate(text: string, targetLanguage: 'Thai' | 'English') {
-    if (!this.model) return "Translation service unavailable.";
+    if (!this.model) return 'Translation service unavailable.';
 
     const prompt = `
       Translate the following text into ${targetLanguage}. 
@@ -56,7 +59,7 @@ export class AiService {
       return response.text().trim();
     } catch (error) {
       console.error('Translation error:', error);
-      return "Translation failed. Please try again.";
+      return 'Translation failed. Please try again.';
     }
   }
 }

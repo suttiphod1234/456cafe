@@ -17,7 +17,24 @@ import { AddressController } from './address.controller';
 
 @Module({
   imports: [],
-  controllers: [AppController, AuthController, UserController, AddressController],
-  providers: [PrismaService, OrderService, OrderGateway, AiService, InventoryService, BranchService, ProductService, MenuService, AuthService, UserService, AddressService],
+  controllers: [
+    AppController,
+    AuthController,
+    UserController,
+    AddressController,
+  ],
+  providers: [
+    PrismaService,
+    OrderService,
+    OrderGateway,
+    AiService,
+    InventoryService,
+    BranchService,
+    ProductService,
+    MenuService,
+    AuthService,
+    UserService,
+    AddressService,
+  ],
 })
 export class AppModule {}

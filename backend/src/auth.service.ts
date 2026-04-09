@@ -12,7 +12,7 @@ export class AuthService {
     const code = '123456'; // Mocked OTP for development
     const expires = Date.now() + 5 * 60 * 1000; // 5 mins
     this.otpMap.set(phone, { code, expires });
-    
+
     console.log(`[AUTH] Mock OTP for ${phone}: ${code}`);
     return { success: true, message: 'OTP sent successfully (Check console)' };
   }
@@ -39,9 +39,9 @@ export class AuthService {
           phone,
           name: metadata?.name || 'Customer',
           authProviders: {
-            create: { provider: 'PHONE', providerId: phone }
-          }
-        }
+            create: { provider: 'PHONE', providerId: phone },
+          },
+        },
       });
     }
 
@@ -49,24 +49,33 @@ export class AuthService {
   }
 
   // ─── LINE Login ─────────────────────────────────────────────────────────
-  async loginWithLine(lineUid: string, profile: { displayName: string, pictureUrl?: string, email?: string }) {
+  async loginWithLine(
+    lineUid: string,
+    profile: { displayName: string; pictureUrl?: string; email?: string },
+  ) {
     // 1. Check if this LINE account exists as a provider
     const provider = await this.prisma.authProvider.findUnique({
       where: { providerId: lineUid },
-      include: { user: true }
+      include: { user: true },
     });
 
     if (provider) return provider.user;
 
     // 2. Check if a user with the same email exists to link
     if (profile.email) {
-       const existingUser = await this.prisma.user.findUnique({ where: { email: profile.email } });
-       if (existingUser) {
-          await this.prisma.authProvider.create({
-             data: { userId: existingUser.id, provider: 'LINE', providerId: lineUid }
-          });
-          return existingUser;
-       }
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: profile.email },
+      });
+      if (existingUser) {
+        await this.prisma.authProvider.create({
+          data: {
+            userId: existingUser.id,
+            provider: 'LINE',
+            providerId: lineUid,
+          },
+        });
+        return existingUser;
+      }
     }
 
     // 3. Create new user
@@ -75,22 +84,26 @@ export class AuthService {
         name: profile.displayName,
         email: profile.email,
         authProviders: {
-          create: { provider: 'LINE', providerId: lineUid }
-        }
-      }
+          create: { provider: 'LINE', providerId: lineUid },
+        },
+      },
     });
   }
 
   // ─── Account Linking ────────────────────────────────────────────────────
   async linkProvider(userId: string, provider: string, providerId: string) {
-    const existing = await this.prisma.authProvider.findUnique({ where: { providerId } });
+    const existing = await this.prisma.authProvider.findUnique({
+      where: { providerId },
+    });
     if (existing) {
-       if (existing.userId === userId) return; // Already linked
-       throw new BadRequestException('This account is already linked to another user');
+      if (existing.userId === userId) return; // Already linked
+      throw new BadRequestException(
+        'This account is already linked to another user',
+      );
     }
 
     await this.prisma.authProvider.create({
-      data: { userId, provider, providerId }
+      data: { userId, provider, providerId },
     });
   }
 }

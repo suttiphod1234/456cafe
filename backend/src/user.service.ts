@@ -20,10 +20,10 @@ export class UserService {
       include: {
         authProviders: true,
         _count: {
-          select: { orders: true }
-        }
+          select: { orders: true },
+        },
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -35,9 +35,9 @@ export class UserService {
         orders: {
           orderBy: { createdAt: 'desc' },
           take: 10,
-          include: { branch: true }
-        }
-      }
+          include: { branch: true },
+        },
+      },
     });
     if (!user) throw new NotFoundException(`User ${id} not found`);
     return user;
@@ -47,8 +47,8 @@ export class UserService {
     const user = await this.prisma.user.update({
       where: { id },
       data: {
-        points: { increment: delta }
-      }
+        points: { increment: delta },
+      },
     });
 
     // Audit Log for point adjustment
@@ -57,17 +57,17 @@ export class UserService {
         action: 'UPDATE_POINTS',
         entity: 'User',
         entityId: id,
-        details: { delta, reason, newPoints: user.points }
-      }
+        details: { delta, reason, newPoints: user.points },
+      },
     });
 
     return user;
   }
 
   async setRole(id: string, role: string) {
-     return this.prisma.user.update({
-       where: { id },
-       data: { role }
-     });
+    return this.prisma.user.update({
+      where: { id },
+      data: { role },
+    });
   }
 }

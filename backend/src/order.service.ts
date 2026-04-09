@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { OrderGateway } from './order.gateway';
 import { AiService } from './ai.service';
@@ -23,23 +27,42 @@ export class OrderService {
   // ─── Generate Order No ──────────────────────────────────────────────────
   private async generateOrderNo(): Promise<string> {
     const today = new Date();
-    const prefix = `ORD-${today.getFullYear().toString().slice(-2)}${(today.getMonth()+1).toString().padStart(2,'0')}${today.getDate().toString().padStart(2,'0')}`;
+    const prefix = `ORD-${today.getFullYear().toString().slice(-2)}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
     const count = await this.prisma.order.count({
-      where: { createdAt: { gte: new Date(today.getFullYear(), today.getMonth(), today.getDate()) } },
+      where: {
+        createdAt: {
+          gte: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+        },
+      },
     });
     return `${prefix}-${(count + 1).toString().padStart(4, '0')}`;
   }
 
   // ─── Create Order ───────────────────────────────────────────────────────
   async createOrder(data: any) {
-    const { branchId, userId, customerUid, customerName, items, totalAmount, fulfillmentType, note, scheduledAt, paymentMethod } = data;
+    const {
+      branchId,
+      userId,
+      customerUid,
+      customerName,
+      items,
+      totalAmount,
+      fulfillmentType,
+      note,
+      scheduledAt,
+      paymentMethod,
+    } = data;
 
     try {
       const orderNo = await this.generateOrderNo();
 
       // Sequential Daily Queue per Branch
       const today = new Date();
-      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const startOfDay = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+      );
       const dailyCount = await this.prisma.order.count({
         where: { branchId, createdAt: { gte: startOfDay } },
       });
@@ -87,7 +110,12 @@ export class OrderService {
 
       // Audit Log
       await this.prisma.auditLog.create({
-        data: { action: 'CREATE_ORDER', entity: 'Order', entityId: order.id, details: { customerUid, totalAmount, orderNo } },
+        data: {
+          action: 'CREATE_ORDER',
+          entity: 'Order',
+          entityId: order.id,
+          details: { customerUid, totalAmount, orderNo },
+        },
       });
 
       return order;
@@ -112,17 +140,26 @@ export class OrderService {
 
     // If READY_FOR_QC or READY_FOR_PICKUP, cut stock if not already cut
     // (In a more advanced system, we might cut stock at PAID or PREPARING)
-    if (status === 'READY_FOR_QC' || status === 'READY' || status === 'READY_FOR_PICKUP') {
+    if (
+      status === 'READY_FOR_QC' ||
+      status === 'READY' ||
+      status === 'READY_FOR_PICKUP'
+    ) {
       try {
-        // We check inventory here if we haven't already. 
+        // We check inventory here if we haven't already.
         // For simplicity, we'll keep logic in deductInventoryForOrder idempotent or check before calling.
         const result = await this.inventory.deductInventoryForOrder(orderId);
         if (result.lowStockAlerts) {
-          this.gateway.notifyInventoryAlert(order.branchId, result.lowStockAlerts);
+          this.gateway.notifyInventoryAlert(
+            order.branchId,
+            result.lowStockAlerts,
+          );
         }
       } catch (e: any) {
         console.error(`Inventory deduction failed for ${orderId}:`, e.message);
-        this.gateway.server.to(`branch-${order.branchId}`).emit('inventory-error', { orderId, message: e.message });
+        this.gateway.server
+          .to(`branch-${order.branchId}`)
+          .emit('inventory-error', { orderId, message: e.message });
       }
     }
 
@@ -132,7 +169,10 @@ export class OrderService {
   }
 
   // ─── Update Payment Status ──────────────────────────────────────────────
-  async updatePaymentStatus(orderId: string, data: { status: string; method?: string; transactionId?: string }) {
+  async updatePaymentStatus(
+    orderId: string,
+    data: { status: string; method?: string; transactionId?: string },
+  ) {
     const payment = await this.prisma.payment.update({
       where: { orderId },
       data: {
@@ -152,22 +192,22 @@ export class OrderService {
 
       // Award Points if member order
       if (order.userId) {
-         const pointsEarned = Math.floor(order.totalAmount / 10);
-         if (pointsEarned > 0) {
-            await this.prisma.user.update({
-               where: { id: order.userId },
-               data: { points: { increment: pointsEarned } }
-            });
+        const pointsEarned = Math.floor(order.totalAmount / 10);
+        if (pointsEarned > 0) {
+          await this.prisma.user.update({
+            where: { id: order.userId },
+            data: { points: { increment: pointsEarned } },
+          });
 
-            await this.prisma.pointTransaction.create({
-               data: {
-                  userId: order.userId,
-                  orderId,
-                  delta: pointsEarned,
-                  reason: `ได้แต้มจากออเดอร์ #${order.orderNo}`
-               }
-            });
-         }
+          await this.prisma.pointTransaction.create({
+            data: {
+              userId: order.userId,
+              orderId,
+              delta: pointsEarned,
+              reason: `ได้แต้มจากออเดอร์ #${order.orderNo}`,
+            },
+          });
+        }
       }
     }
 
@@ -175,7 +215,12 @@ export class OrderService {
   }
 
   // ─── Get All Orders (with filters) ──────────────────────────────────────
-  async getAllOrders(filters?: { branchId?: string; status?: string; date?: string; search?: string }) {
+  async getAllOrders(filters?: {
+    branchId?: string;
+    status?: string;
+    date?: string;
+    search?: string;
+  }) {
     const where: any = {};
     if (filters?.branchId) where.branchId = filters.branchId;
     if (filters?.status) where.status = filters.status;
@@ -201,7 +246,10 @@ export class OrderService {
 
   // ─── Get Order by ID ────────────────────────────────────────────────────
   async getOrderById(id: string) {
-    const order = await this.prisma.order.findUnique({ where: { id }, include: this.orderInclude });
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: this.orderInclude,
+    });
     if (!order) throw new NotFoundException(`Order ${id} not found`);
     return order;
   }
@@ -229,32 +277,51 @@ export class OrderService {
   async getOrderStats(branchId?: string) {
     const where = branchId ? { branchId } : {};
     const today = new Date();
-    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const startOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
 
-    const [total, todayCount, todayRevenue, byStatus, totalRevenue] = await Promise.all([
-      this.prisma.order.count({ where }),
-      this.prisma.order.count({ where: { ...where, createdAt: { gte: startOfDay } } }),
-      this.prisma.order.aggregate({ where: { ...where, createdAt: { gte: startOfDay } }, _sum: { totalAmount: true } }),
-      this.prisma.order.groupBy({ by: ['status'], where, _count: true }),
-      this.prisma.order.aggregate({ where, _sum: { totalAmount: true } }),
-    ]);
+    const [total, todayCount, todayRevenue, byStatus, totalRevenue] =
+      await Promise.all([
+        this.prisma.order.count({ where }),
+        this.prisma.order.count({
+          where: { ...where, createdAt: { gte: startOfDay } },
+        }),
+        this.prisma.order.aggregate({
+          where: { ...where, createdAt: { gte: startOfDay } },
+          _sum: { totalAmount: true },
+        }),
+        this.prisma.order.groupBy({ by: ['status'], where, _count: true }),
+        this.prisma.order.aggregate({ where, _sum: { totalAmount: true } }),
+      ]);
 
     return {
       total,
       todayCount,
       todayRevenue: todayRevenue._sum.totalAmount || 0,
       totalRevenue: totalRevenue._sum.totalAmount || 0,
-      byStatus: Object.fromEntries(byStatus.map(s => [s.status, s._count])),
+      byStatus: Object.fromEntries(byStatus.map((s) => [s.status, s._count])),
     };
   }
 
   // ─── Global Stats ──────────────────────────────────────────────────────
   async getGlobalStats() {
     const totalOrders = await this.prisma.order.count();
-    const aggregate = await this.prisma.order.aggregate({ _sum: { totalAmount: true } });
-    const customerCount = await this.prisma.order.groupBy({ by: ['customerUid'] });
+    const aggregate = await this.prisma.order.aggregate({
+      _sum: { totalAmount: true },
+    });
+    const customerCount = await this.prisma.order.groupBy({
+      by: ['customerUid'],
+    });
     const branches = await this.prisma.branch.count();
-    return { revenue: aggregate._sum.totalAmount || 0, totalOrders, customers: customerCount.length, branches };
+    return {
+      revenue: aggregate._sum.totalAmount || 0,
+      totalOrders,
+      customers: customerCount.length,
+      branches,
+    };
   }
 
   // ─── Cancel Order ───────────────────────────────────────────────────────
@@ -272,12 +339,20 @@ export class OrderService {
 
     // Refund if paid
     if (order.payment?.status === 'PAID') {
-      await this.prisma.payment.update({ where: { orderId }, data: { status: 'REFUNDED' } });
+      await this.prisma.payment.update({
+        where: { orderId },
+        data: { status: 'REFUNDED' },
+      });
     }
 
     this.gateway.notifyUpdateOrder(updated.branchId, updated);
     await this.prisma.auditLog.create({
-      data: { action: 'CANCEL_ORDER', entity: 'Order', entityId: orderId, details: { reason } },
+      data: {
+        action: 'CANCEL_ORDER',
+        entity: 'Order',
+        entityId: orderId,
+        details: { reason },
+      },
     });
 
     return updated;

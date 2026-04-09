@@ -132,7 +132,9 @@ export class BranchService {
   }
 
   async updateManager(managerId: string, data: Partial<CreateManagerDto>) {
-    const mgr = await this.prisma.branchManager.findUnique({ where: { id: managerId } });
+    const mgr = await this.prisma.branchManager.findUnique({
+      where: { id: managerId },
+    });
     if (!mgr) throw new NotFoundException(`Manager ${managerId} not found`);
     return this.prisma.branchManager.update({
       where: { id: managerId },
@@ -147,7 +149,9 @@ export class BranchService {
   }
 
   async deleteManager(managerId: string) {
-    const mgr = await this.prisma.branchManager.findUnique({ where: { id: managerId } });
+    const mgr = await this.prisma.branchManager.findUnique({
+      where: { id: managerId },
+    });
     if (!mgr) throw new NotFoundException(`Manager ${managerId} not found`);
     return this.prisma.branchManager.delete({ where: { id: managerId } });
   }
@@ -162,41 +166,47 @@ export class BranchService {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const [totalOrders, todayOrders, revenueRaw, todayRevenueRaw, recentOrders, topProducts] =
-      await Promise.all([
-        this.prisma.order.count({ where: { branchId } }),
-        this.prisma.order.count({
-          where: {
-            branchId,
-            createdAt: { gte: today, lt: tomorrow },
-          },
-        }),
-        this.prisma.order.aggregate({
-          _sum: { totalAmount: true },
-          where: { branchId, status: { in: ['PICKED_UP', 'READY'] } },
-        }),
-        this.prisma.order.aggregate({
-          _sum: { totalAmount: true },
-          where: {
-            branchId,
-            status: { in: ['PICKED_UP', 'READY'] },
-            createdAt: { gte: today, lt: tomorrow },
-          },
-        }),
-        this.prisma.order.findMany({
-          where: { branchId },
-          orderBy: { createdAt: 'desc' },
-          take: 10,
-          include: { items: { include: { product: true } } },
-        }),
-        this.prisma.orderItem.groupBy({
-          by: ['productId'],
-          where: { order: { branchId } },
-          _sum: { quantity: true },
-          orderBy: { _sum: { quantity: 'desc' } },
-          take: 5,
-        }),
-      ]);
+    const [
+      totalOrders,
+      todayOrders,
+      revenueRaw,
+      todayRevenueRaw,
+      recentOrders,
+      topProducts,
+    ] = await Promise.all([
+      this.prisma.order.count({ where: { branchId } }),
+      this.prisma.order.count({
+        where: {
+          branchId,
+          createdAt: { gte: today, lt: tomorrow },
+        },
+      }),
+      this.prisma.order.aggregate({
+        _sum: { totalAmount: true },
+        where: { branchId, status: { in: ['PICKED_UP', 'READY'] } },
+      }),
+      this.prisma.order.aggregate({
+        _sum: { totalAmount: true },
+        where: {
+          branchId,
+          status: { in: ['PICKED_UP', 'READY'] },
+          createdAt: { gte: today, lt: tomorrow },
+        },
+      }),
+      this.prisma.order.findMany({
+        where: { branchId },
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+        include: { items: { include: { product: true } } },
+      }),
+      this.prisma.orderItem.groupBy({
+        by: ['productId'],
+        where: { order: { branchId } },
+        _sum: { quantity: true },
+        orderBy: { _sum: { quantity: 'desc' } },
+        take: 5,
+      }),
+    ]);
 
     // Get product names for top products
     const productIds = topProducts.map((p) => p.productId);

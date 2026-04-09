@@ -8,7 +8,7 @@ export class AddressService {
   async getByUser(userId: string) {
     return this.prisma.address.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -17,18 +17,18 @@ export class AddressService {
     if (data.isDefault) {
       await this.prisma.address.updateMany({
         where: { userId },
-        data: { isDefault: false }
+        data: { isDefault: false },
       });
     }
 
     const count = await this.prisma.address.count({ where: { userId } });
-    
+
     return this.prisma.address.create({
       data: {
         ...data,
         userId,
-        isDefault: data.isDefault || count === 0
-      }
+        isDefault: data.isDefault || count === 0,
+      },
     });
   }
 
@@ -36,13 +36,13 @@ export class AddressService {
     if (data.isDefault) {
       await this.prisma.address.updateMany({
         where: { userId, NOT: { id } },
-        data: { isDefault: false }
+        data: { isDefault: false },
       });
     }
 
     return this.prisma.address.update({
       where: { id },
-      data
+      data,
     });
   }
 

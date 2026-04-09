@@ -22,7 +22,9 @@ export class MenuService {
     sortOrder?: number;
     isVisible?: boolean;
   }) {
-    const maxOrder = await this.prisma.category.aggregate({ _max: { sortOrder: true } });
+    const maxOrder = await this.prisma.category.aggregate({
+      _max: { sortOrder: true },
+    });
     return this.prisma.category.create({
       data: {
         ...data,
@@ -53,14 +55,20 @@ export class MenuService {
 
   async deleteCategory(id: string) {
     // Unlink products first
-    await this.prisma.product.updateMany({ where: { categoryId: id }, data: { categoryId: null } });
+    await this.prisma.product.updateMany({
+      where: { categoryId: id },
+      data: { categoryId: null },
+    });
     return this.prisma.category.delete({ where: { id } });
   }
 
   async reorderCategories(items: { id: string; sortOrder: number }[]) {
     await Promise.all(
       items.map((item) =>
-        this.prisma.category.update({ where: { id: item.id }, data: { sortOrder: item.sortOrder } }),
+        this.prisma.category.update({
+          where: { id: item.id },
+          data: { sortOrder: item.sortOrder },
+        }),
       ),
     );
     return this.getAllCategories();
@@ -87,7 +95,10 @@ export class MenuService {
   }
 
   async getMenuItemById(id: string) {
-    const item = await this.prisma.product.findUnique({ where: { id }, include: this.menuInclude });
+    const item = await this.prisma.product.findUnique({
+      where: { id },
+      include: this.menuInclude,
+    });
     if (!item) throw new NotFoundException(`Menu item ${id} not found`);
     return item;
   }
@@ -144,7 +155,11 @@ export class MenuService {
   async toggleMenuStatus(id: string) {
     const item = await this.getMenuItemById(id);
     const nextStatus =
-      item.status === 'AVAILABLE' ? 'OUT_OF_STOCK' : item.status === 'OUT_OF_STOCK' ? 'HIDDEN' : 'AVAILABLE';
+      item.status === 'AVAILABLE'
+        ? 'OUT_OF_STOCK'
+        : item.status === 'OUT_OF_STOCK'
+          ? 'HIDDEN'
+          : 'AVAILABLE';
     return this.prisma.product.update({
       where: { id },
       data: { status: nextStatus },
@@ -174,7 +189,15 @@ export class MenuService {
 
   // ─── Option Groups ─────────────────────────────────────────────────────────
 
-  async createOptionGroup(productId: string, data: { name: string; isRequired?: boolean; maxSelect?: number; sortOrder?: number }) {
+  async createOptionGroup(
+    productId: string,
+    data: {
+      name: string;
+      isRequired?: boolean;
+      maxSelect?: number;
+      sortOrder?: number;
+    },
+  ) {
     await this.getMenuItemById(productId);
     return this.prisma.menuOptionGroup.create({
       data: {
@@ -188,7 +211,15 @@ export class MenuService {
     });
   }
 
-  async updateOptionGroup(groupId: string, data: { name?: string; isRequired?: boolean; maxSelect?: number; sortOrder?: number }) {
+  async updateOptionGroup(
+    groupId: string,
+    data: {
+      name?: string;
+      isRequired?: boolean;
+      maxSelect?: number;
+      sortOrder?: number;
+    },
+  ) {
     return this.prisma.menuOptionGroup.update({
       where: { id: groupId },
       data,
@@ -203,7 +234,15 @@ export class MenuService {
 
   // ─── Options ───────────────────────────────────────────────────────────────
 
-  async createOption(groupId: string, data: { label: string; priceAddon?: number; isDefault?: boolean; sortOrder?: number }) {
+  async createOption(
+    groupId: string,
+    data: {
+      label: string;
+      priceAddon?: number;
+      isDefault?: boolean;
+      sortOrder?: number;
+    },
+  ) {
     return this.prisma.menuOption.create({
       data: {
         groupId,
@@ -215,7 +254,15 @@ export class MenuService {
     });
   }
 
-  async updateOption(optionId: string, data: { label?: string; priceAddon?: number; isDefault?: boolean; sortOrder?: number }) {
+  async updateOption(
+    optionId: string,
+    data: {
+      label?: string;
+      priceAddon?: number;
+      isDefault?: boolean;
+      sortOrder?: number;
+    },
+  ) {
     return this.prisma.menuOption.update({ where: { id: optionId }, data });
   }
 

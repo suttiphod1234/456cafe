@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { AddressService } from './address.service';
 
 @Controller('api/addresses')
@@ -12,7 +22,17 @@ export class AddressController {
   }
 
   @Post()
-  async create(@Body() body: { userId: string, label: string, address: string, latitude?: number, longitude?: number, isDefault?: boolean }) {
+  async create(
+    @Body()
+    body: {
+      userId: string;
+      label: string;
+      address: string;
+      latitude?: number;
+      longitude?: number;
+      isDefault?: boolean;
+    },
+  ) {
     return this.addressService.create(body.userId, body);
   }
 

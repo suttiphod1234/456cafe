@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Patch, Body, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Body,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('api/users')
@@ -18,7 +26,7 @@ export class UserController {
   @Patch(':id/points')
   async updatePoints(
     @Param('id') id: string,
-    @Body() body: { delta: number; reason?: string }
+    @Body() body: { delta: number; reason?: string },
   ) {
     return this.userService.updatePoints(id, body.delta, body.reason);
   }
