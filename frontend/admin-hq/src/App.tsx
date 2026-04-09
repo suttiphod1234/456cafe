@@ -15,9 +15,10 @@ import {
 import { io } from 'socket.io-client';
 import BranchesPage from './pages/BranchesPage';
 import ProductsPage from './pages/ProductsPage';
+import OrdersPage from './pages/OrdersPage';
 
 export default function App() {
-  const [activePage, setActivePage] = useState<'overview' | 'branches' | 'products'>('overview');
+  const [activePage, setActivePage] = useState<'overview' | 'branches' | 'products' | 'orders'>('overview');
   const [stats, setStats] = useState({ revenue: 0, totalOrders: 0, customers: 0, branches: 0 });
   const [orders, setOrders] = useState<any[]>([]);
 
@@ -70,7 +71,7 @@ export default function App() {
           <NavItem icon={<BarChart3 size={20} />} label="ภาพรวม" active={activePage === 'overview'} onClick={() => setActivePage('overview')} />
           <NavItem icon={<Store size={20} />} label="สาขา" active={activePage === 'branches'} onClick={() => setActivePage('branches')} />
           <NavItem icon={<Coffee size={20} />} label="เมนู" active={activePage === 'products'} onClick={() => setActivePage('products')} />
-          <NavItem icon={<ShoppingBag size={20} />} label="คำสั่งซื้อ" />
+          <NavItem icon={<ShoppingBag size={20} />} label="คำสั่งซื้อ" active={activePage === 'orders'} onClick={() => setActivePage('orders')} />
           <NavItem icon={<Users size={20} />} label="ลูกค้า" />
           <NavItem icon={<PieChartIcon size={20} />} label="รายงาน" />
         </nav>
@@ -87,6 +88,8 @@ export default function App() {
           <BranchesPage />
         ) : activePage === 'products' ? (
           <ProductsPage />
+        ) : activePage === 'orders' ? (
+          <OrdersPage />
         ) : (
           <>
             {/* Top Header */}
@@ -97,7 +100,7 @@ export default function App() {
                   type="text"
                   placeholder="ค้นหาข้อมูล, รายงาน, ออเดอร์..."
                   className="w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 transition-all"
-                  style={{ background: '#fdf8f0', border: '1px solid #e8d5c0', color: '#3d2d1a', focusRingColor: '#b8956a' }}
+                  style={{ background: '#fdf8f0', border: '1px solid #e8d5c0', color: '#3d2d1a' }}
                 />
               </div>
               <div className="flex items-center gap-6">

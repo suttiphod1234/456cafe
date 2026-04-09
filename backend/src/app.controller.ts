@@ -234,15 +234,35 @@ export class AppController {
     return this.menuService.deleteOption(optionId);
   }
 
-
-  @Get('orders/recent')
-  async getRecentOrders() {
-    return this.orderService.getRecentOrders();
+  // ─── Orders ────────────────────────────────────────────────────────────
+  @Get('orders')
+  async getOrders(
+    @Query('branchId') branchId?: string,
+    @Query('status') status?: string,
+    @Query('date') date?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.orderService.getAllOrders({ branchId, status, date, search });
   }
 
-  @Get('stats/global')
-  async getGlobalStats() {
-    return this.orderService.getGlobalStats();
+  @Get('orders/recent')
+  async getRecentOrders(@Query('limit') limit?: string) {
+    return this.orderService.getRecentOrders(limit ? parseInt(limit) : 10);
+  }
+
+  @Get('orders/stats')
+  async getOrderStats(@Query('branchId') branchId?: string) {
+    return this.orderService.getOrderStats(branchId);
+  }
+
+  @Get('orders/customer/:uid')
+  async getCustomerOrders(@Param('uid') uid: string) {
+    return this.orderService.getCustomerOrders(uid);
+  }
+
+  @Get('orders/:id')
+  async getOrder(@Param('id') id: string) {
+    return this.orderService.getOrderById(id);
   }
 
   @Post('orders')
@@ -251,10 +271,26 @@ export class AppController {
   }
 
   @Patch('orders/:id/status')
-  async updateStatus(@Param('id') id: string, @Body('status') status: string) {
+  async updateOrderStatus(@Param('id') id: string, @Body('status') status: string) {
     return this.orderService.updateOrderStatus(id, status);
   }
 
+  @Patch('orders/:id/payment')
+  async updatePayment(@Param('id') id: string, @Body() body: any) {
+    return this.orderService.updatePaymentStatus(id, body);
+  }
+
+  @Patch('orders/:id/cancel')
+  async cancelOrder(@Param('id') id: string, @Body('reason') reason?: string) {
+    return this.orderService.cancelOrder(id, reason);
+  }
+
+  @Get('stats/global')
+  async getGlobalStats() {
+    return this.orderService.getGlobalStats();
+  }
+
+  // ─── AI ────────────────────────────────────────────────────────────────
   @Get('ai/recommend')
   async getAiRecommend(@Query('prompt') prompt: string) {
     return this.orderService.getAiRecommendation(prompt);

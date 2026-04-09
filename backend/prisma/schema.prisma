@@ -14,8 +14,10 @@ datasource db {
 
 enum OrderStatus {
   PENDING
+  PAID
   PREPARING
   READY
+  COMPLETED
   PICKED_UP
   CANCELLED
 }
@@ -142,27 +144,36 @@ model Recipe {
 }
 
 model Order {
-  id          String      @id @default(uuid())
-  branchId    String
-  branch      Branch      @relation(fields: [branchId], references: [id])
-  customerUid String      // LINE UID
-  totalAmount Float
-  status      OrderStatus @default(PENDING)
-  items       OrderItem[]
-  payment     Payment?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id              String      @id @default(uuid())
+  orderNo         String      @unique @default(uuid()) // human-friendly order number
+  branchId        String
+  branch          Branch      @relation(fields: [branchId], references: [id])
+  customerUid     String      // LINE UID
+  customerName    String?
+  totalAmount     Float
+  status          OrderStatus @default(PENDING)
+  fulfillmentType String      @default("PICKUP") // PICKUP | DELIVERY
+  note            String?     // special instructions
+  scheduledAt     DateTime?   // pre-order pickup time
+  items           OrderItem[]
+  payment         Payment?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 model OrderItem {
-  id          String   @id @default(uuid())
-  orderId     String
-  order       Order    @relation(fields: [orderId], references: [id])
-  productId   String
-  product     Product  @relation(fields: [productId], references: [id])
-  quantity    Int      @default(1)
-  customization Json?    // { sweetness: "50%", milk: "oat", addOns: ["pearls"] }
-  price       Float    // Price at the time of order
+  id            String   @id @default(uuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id])
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id])
+  quantity      Int      @default(1)
+  unitPrice     Float    // base menu price at time of order
+  optionsPrice  Float    @default(0) // total addon price
+  price         Float    // final: (unitPrice + optionsPrice) * quantity
+  productName   String?  // snapshot: name at order time
+  customization Json?    // { sweetness: "50%", milk: "oat", size: "L" }
+  selectedOptions Json?  // snapshot: [{ group: "Size", label: "L", priceAddon: 20 }]
 }
 
 model Payment {
@@ -171,8 +182,10 @@ model Payment {
   order         Order         @relation(fields: [orderId], references: [id])
   amount        Float
   status        PaymentStatus @default(UNPAID)
+  method        String        @default("CASH") // CASH | QR | TRANSFER | ONLINE
   transactionId String?
   qrPayload     String?
+  paidAt        DateTime?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 }
