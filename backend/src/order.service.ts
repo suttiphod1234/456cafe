@@ -32,7 +32,7 @@ export class OrderService {
 
   // ─── Create Order ───────────────────────────────────────────────────────
   async createOrder(data: any) {
-    const { branchId, customerUid, customerName, items, totalAmount, fulfillmentType, note, scheduledAt, paymentMethod } = data;
+    const { branchId, userId, customerUid, customerName, items, totalAmount, fulfillmentType, note, scheduledAt, paymentMethod } = data;
 
     try {
       const orderNo = await this.generateOrderNo();
@@ -49,10 +49,10 @@ export class OrderService {
         data: {
           orderNo,
           branchId,
+          userId: userId || null,
           customerUid: customerUid || 'walk-in',
           customerName: customerName || null,
           totalAmount,
-          status: 'PENDING',
           fulfillmentType: fulfillmentType || 'PICKUP',
           platform: data.platform || 'STORE',
           note: note || null,
