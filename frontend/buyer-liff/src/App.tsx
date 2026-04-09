@@ -7,6 +7,7 @@ import {
   Gift, Settings, LogOut, Bell, Phone, RefreshCw, Receipt, ChevronDown
 } from 'lucide-react';
 import { useLiff } from './hooks/useLiff';
+import AuthModal from './components/AuthModal';
 
 const API = 'http://localhost:5001/api';
 const C = { bg:'#fdf8f0', card:'#ffffff', border:'#e8d5c0', accent:'#b8956a', dark:'#3d2d1a', mid:'#7a5c3a', light:'#f5ebe0', muted:'#9c7a50' };
@@ -18,7 +19,7 @@ interface OptionGroup { id:string; name:string; isRequired:boolean; maxSelect:nu
 interface MenuItem { id:string; name:string; description?:string; price:number; imageUrl?:string; status:string; tags:string; category?:Category; optionGroups:OptionGroup[]; }
 interface Branch { id:string; name:string; address?:string; latitude?:number; longitude?:number; isOpen:boolean; openTime?:string; closeTime?:string; _count:{orders:number}; }
 interface CartItem { menuItem:MenuItem; quantity:number; selectedOptions:Record<string,MenuOption[]>; note:string; unitTotal:number; }
-interface Order { id:string; orderNo:string; status:string; totalAmount:number; items:any[]; payment?:any; createdAt:string; branch?:Branch; }
+interface Order { id:string; orderNo:string; queueNo?:number; status:string; totalAmount:number; items:any[]; payment?:any; createdAt:string; branch?:Branch; }
 
 const STATUS_CFG:Record<string,{label:string;color:string;bg:string;step:number}> = {
   PENDING:   {label:'รอชำระเงิน',  color:'text-amber-700',   bg:'bg-amber-50',   step:0},
@@ -325,6 +326,8 @@ function CartPage({cart,onUpdateQty,onRemove,onCheckout,selectedBranch,setSelect
   const [showCheckout,setShowCheckout]=useState(false);
   const [isProcessing,setIsProcessing]=useState(false);
   const [branches,setBranches]=useState<Branch[]>([]);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [tempCheckoutData, setTempCheckoutData] = useState<any>(null);
 
   useEffect(()=>{fetch(`${API}/branches`).then(r=>r.json()).then(setBranches);},[]);
 
@@ -334,6 +337,14 @@ function CartPage({cart,onUpdateQty,onRemove,onCheckout,selectedBranch,setSelect
 
   const handleCheckout=async()=>{
     if(!selectedBranch){alert('กรุณาเลือกสาขา');return;}
+    
+    // Auth Check: If not logged in as a MEMBER (has db id), show modal
+    if (!localStorage.getItem('memberId')) {
+       setIsAuthModalOpen(true); // Fixed naming
+       setTempCheckoutData({ payMethod, fulfillType, note });
+       return;
+    }
+
     setIsProcessing(true);
     await new Promise(r=>setTimeout(r,800));
     onCheckout(payMethod,fulfillType,note);
@@ -482,7 +493,13 @@ function OrdersPage({customerUid}:{customerUid:string}) {
         {/* Status */}
         <div className="bg-white rounded-2xl p-5 border shadow-sm" style={{borderColor:C.border}}>
           <div className="flex items-center justify-between mb-4">
-            <div><p className="text-xs" style={{color:C.muted}}>{selected.orderNo}</p><p className="font-bold text-lg" style={{color:C.dark}}>฿{selected.totalAmount}</p></div>
+            <div>
+               <p className="text-xs" style={{color:C.muted}}>{selected.orderNo}</p>
+               <div className="flex items-center gap-2 mt-1">
+                  <span className="text-4xl font-black italic" style={{color:C.dark}}>#{selected.queueNo || '---'}</span>
+                  <p className="font-bold text-lg" style={{color:C.dark}}>฿{selected.totalAmount}</p>
+               </div>
+            </div>
             <span className={`px-3 py-1.5 rounded-xl text-xs font-bold ${STATUS_CFG[selected.status]?.bg||'bg-gray-50'} ${STATUS_CFG[selected.status]?.color||'text-gray-600'}`}>{STATUS_CFG[selected.status]?.label||selected.status}</span>
           </div>
           {/* Progress bar */}
@@ -533,7 +550,7 @@ function OrdersPage({customerUid}:{customerUid:string}) {
             return(
               <motion.div key={o.id} whileTap={{scale:0.97}} onClick={()=>setSelected(o)} className="bg-white rounded-2xl p-4 border shadow-sm" style={{borderColor:C.border}}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-mono font-bold" style={{color:C.muted}}>{o.orderNo}</span>
+                  <span className="text-xl font-black italic" style={{color:C.accent}}>#{o.queueNo || '---'}</span>
                   <span className={`text-[10px] px-2 py-0.5 rounded-lg font-bold ${cfg?.bg||'bg-gray-50'} ${cfg?.color||'text-gray-600'}`}>{cfg?.label||o.status}</span>
                 </div>
                 <p className="font-bold text-sm mb-1" style={{color:C.dark}}>{o.items?.slice(0,2).map((i:any)=>i.productName||i.product?.name).join(', ')}{(o.items?.length||0)>2?` +${o.items.length-2} รายการ`:''}</p>
@@ -552,23 +569,23 @@ function OrdersPage({customerUid}:{customerUid:string}) {
 }
 
 // ─── PROFILE PAGE ──────────────────────────────────────────────────────────
-function ProfilePage({user}:{user:any}) {
-  const menus=[{icon:Receipt,label:'ประวัติคำสั่งซื้อ'},{icon:Heart,label:'รายการโปรด'},{icon:Gift,label:'แต้มสะสม',sub:'120 แต้ม'},{icon:MapPin,label:'ที่อยู่ที่บันทึก'},{icon:Bell,label:'การแจ้งเตือน'},{icon:Settings,label:'ตั้งค่า'},{icon:Phone,label:'ติดต่อเรา'}];
+function ProfilePage({member}:{member:any}) {
+  const menus=[{icon:Receipt,label:'ประวัติคำสั่งซื้อ'},{icon:Heart,label:'รายการโปรด'},{icon:Gift,label:'แต้มสะสม',sub:`${member?.points||0} แต้ม`},{icon:MapPin,label:'ที่อยู่ที่บันทึก'},{icon:Bell,label:'การแจ้งเตือน'},{icon:Settings,label:'ตั้งค่า'},{icon:Phone,label:'ติดต่อเรา'}];
   return(
     <div className="flex-1 overflow-y-auto no-scrollbar" style={{background:C.bg}}>
       <div className="px-5 pt-8 pb-6" style={{background:`linear-gradient(135deg, ${C.accent}, ${C.mid})`}}>
         <div className="flex items-center gap-4">
-          {user?.pictureUrl?<img src={user.pictureUrl} alt="" className="w-16 h-16 rounded-full border-2 border-white/50 shadow-md"/>:<div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center"><User size={28} className="text-white"/></div>}
+          {member?.pictureUrl?<img src={member.pictureUrl} alt="" className="w-16 h-16 rounded-full border-2 border-white/50 shadow-md"/>:<div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center"><User size={28} className="text-white"/></div>}
           <div>
-            <h2 className="text-white font-bold text-lg">{user?.displayName||'ลูกค้า'}</h2>
-            <p className="text-white/70 text-xs">{user?.userId?.slice(0,16)||'LINE User'}</p>
+            <h2 className="text-white font-bold text-lg">{member?.name || member?.displayName||'ลูกค้า'}</h2>
+            <p className="text-white/70 text-xs">{member?.phone || member?.email || 'สมาชิกใหม่'}</p>
             <div className="flex items-center gap-1 mt-1"><span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full">⭐ Member</span></div>
           </div>
         </div>
         {/* Point card */}
         <div className="mt-4 bg-white/20 rounded-2xl p-3 flex items-center justify-between">
-          <div><p className="text-white/70 text-xs">แต้มสะสม</p><p className="text-white font-bold text-xl">120 <span className="text-sm font-normal">แต้ม</span></p></div>
-          <div className="text-right"><p className="text-white/70 text-xs">อีก 80 แต้ม</p><p className="text-white/70 text-xs">= รับฟรี 1 แก้ว</p></div>
+          <div><p className="text-white/70 text-xs">แต้มสะสม</p><p className="text-white font-bold text-xl">{member?.points||0} <span className="text-sm font-normal">แต้ม</span></p></div>
+          <div className="text-right"><p className="text-white/70 text-xs">ระบบคืนกำไร</p><p className="text-white/70 text-xs">ทุกการสั่งซื้อรับแต้ม</p></div>
         </div>
       </div>
       <div className="p-4 pb-24 space-y-2">
@@ -592,11 +609,27 @@ function ProfilePage({user}:{user:any}) {
 
 // ─── MAIN APP ──────────────────────────────────────────────────────────────
 export default function App() {
-  const {user,isLiffLoading}=useLiff();
+  const {user,isLiffLoading} = useLiff();
   const [tab,setTab]=useState<'home'|'menu'|'cart'|'orders'|'profile'>('home');
   const [cart,setCart]=useState<CartItem[]>([]);
   const [selectedBranch,setSelectedBranch]=useState<Branch|null>(null);
   const [justOrdered,setJustOrdered]=useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [member, setMember] = useState<any>(null);
+
+  // Sync Member state with local storage/backend
+  useEffect(() => {
+     const memberId = localStorage.getItem('memberId');
+     if (memberId) {
+        fetch(`${API}/auth/me?userId=${memberId}`)
+           .then(r => r.json())
+           .then(setMember);
+     } else if (user?.id) {
+        // LIFF already synced a user
+        setMember(user);
+        localStorage.setItem('memberId', user.id);
+     }
+  }, [user]);
 
   const addToCart=(item:MenuItem,qty:number,opts:Record<string,MenuOption[]>,note:string)=>{
     const optionsPrice=Object.values(opts).flat().reduce((s,o)=>s+o.priceAddon,0);
@@ -620,10 +653,15 @@ export default function App() {
   const handleCheckout=async(method:string,type:string,note:string)=>{
     if(!selectedBranch||cart.length===0)return;
     const total=cart.reduce((s,i)=>s+i.unitTotal,0);
+    const userId = member?.id || localStorage.getItem('memberId');
+
     await fetch(`${API}/orders`,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        branchId:selectedBranch.id,customerUid:user?.userId||'walk-in',customerName:user?.displayName,
+        branchId:selectedBranch.id,
+        userId, // Added for Member tracking
+        customerUid:user?.userId || 'walk-in',
+        customerName:user?.displayName || member?.name,
         totalAmount:total,fulfillmentType:type,paymentMethod:method,note,
         items:cart.map(i=>({productId:i.menuItem.id,productName:i.menuItem.name,quantity:i.quantity,unitPrice:i.menuItem.price,optionsPrice:Object.values(i.selectedOptions).flat().reduce((s,o)=>s+o.priceAddon,0),price:i.unitTotal/i.quantity,selectedOptions:Object.values(i.selectedOptions).flat()})),
       }),
@@ -657,9 +695,9 @@ export default function App() {
           <motion.div key={tab} initial={{opacity:0,x:10}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-10}} transition={{duration:0.15}} className="flex-1 flex flex-col overflow-hidden">
             {tab==='home'&&<HomePage cart={cart} onNavigate={p=>setTab(p as any)} onSelectBranch={b=>{setSelectedBranch(b);setTab('menu');}} user={user}/>}
             {tab==='menu'&&<MenuPage onAddToCart={addToCart} cart={cart}/>}
-            {tab==='cart'&&<CartPage cart={cart} onUpdateQty={updateQty} onRemove={idx=>setCart(p=>p.filter((_,i)=>i!==idx))} onCheckout={handleCheckout} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch}/>}
-            {tab==='orders'&&<OrdersPage customerUid={user?.userId||'walk-in'}/>}
-            {tab==='profile'&&<ProfilePage user={user}/>}
+            {tab==='cart'&&<CartPage cart={cart} onUpdateQty={updateQty} onRemove={idx=>setCart(p=>p.filter((_,i)=>i!==idx))} onCheckout={handleCheckout} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} setIsAuthModalOpen={setIsAuthModalOpen} setTempCheckoutData={setTempCheckoutData}/>}
+            {tab==='orders'&&<OrdersPage customerUid={user?.userId||member?.id||'walk-in'}/>}
+            {tab==='profile'&&<ProfilePage member={member}/>}
           </motion.div>
         </AnimatePresence>
       </main>
@@ -682,6 +720,15 @@ export default function App() {
           })}
         </div>
       </nav>
+
+      <AuthModal 
+         isOpen={isAuthModalOpen} 
+         onClose={() => setIsAuthModalOpen(false)} 
+         onLoginSuccess={(m: any) => {
+            setMember(m);
+            localStorage.setItem('memberId', m.id);
+         }} 
+      />
     </div>
   );
 }

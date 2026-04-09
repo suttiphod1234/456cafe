@@ -8,10 +8,14 @@ import { InventoryService } from './inventory.service';
 import { BranchService } from './branch.service';
 import { ProductService } from './product.service';
 import { MenuService } from './menu.service';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { UserService } from './user.service';
+import { UserController } from './user.controller';
 
 @Module({
   imports: [],
-  controllers: [AppController],
-  providers: [PrismaService, OrderService, OrderGateway, AiService, InventoryService, BranchService, ProductService, MenuService],
+  controllers: [AppController, AuthController, UserController],
+  providers: [PrismaService, OrderService, OrderGateway, AiService, InventoryService, BranchService, ProductService, MenuService, AuthService, UserService],
 })
 export class AppModule {}

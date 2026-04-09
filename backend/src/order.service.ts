@@ -37,6 +37,14 @@ export class OrderService {
     try {
       const orderNo = await this.generateOrderNo();
 
+      // Sequential Daily Queue per Branch
+      const today = new Date();
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const dailyCount = await this.prisma.order.count({
+        where: { branchId, createdAt: { gte: startOfDay } },
+      });
+      const queueNo = dailyCount + 1;
+
       const order = await this.prisma.order.create({
         data: {
           orderNo,
@@ -46,8 +54,11 @@ export class OrderService {
           totalAmount,
           status: 'PENDING',
           fulfillmentType: fulfillmentType || 'PICKUP',
+          platform: data.platform || 'STORE',
           note: note || null,
           scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+          queueNo, // New field
+          status: data.platform === 'STORE' ? 'PAID' : 'PENDING', // Store orders are PAID by default
           items: {
             create: items.map((item: any) => ({
               productId: item.productId,
@@ -87,16 +98,24 @@ export class OrderService {
   }
 
   // ─── Update Order Status ────────────────────────────────────────────────
-  async updateOrderStatus(orderId: string, status: string) {
+  async updateOrderStatus(orderId: string, status: string, metadata?: any) {
+    const data: any = { status: status as any };
+    if (metadata?.riderName) data.riderName = metadata.riderName;
+    if (metadata?.riderPhone) data.riderPhone = metadata.riderPhone;
+    if (metadata?.qcNote) data.qcNote = metadata.qcNote;
+
     const order = await this.prisma.order.update({
       where: { id: orderId },
-      data: { status: status as any },
+      data,
       include: this.orderInclude,
     });
 
-    // If READY, cut stock
-    if (status === 'READY') {
+    // If READY_FOR_QC or READY_FOR_PICKUP, cut stock if not already cut
+    // (In a more advanced system, we might cut stock at PAID or PREPARING)
+    if (status === 'READY_FOR_QC' || status === 'READY' || status === 'READY_FOR_PICKUP') {
       try {
+        // We check inventory here if we haven't already. 
+        // For simplicity, we'll keep logic in deductInventoryForOrder idempotent or check before calling.
         const result = await this.inventory.deductInventoryForOrder(orderId);
         if (result.lowStockAlerts) {
           this.gateway.notifyInventoryAlert(order.branchId, result.lowStockAlerts);

@@ -16,9 +16,10 @@ import { io } from 'socket.io-client';
 import BranchesPage from './pages/BranchesPage';
 import ProductsPage from './pages/ProductsPage';
 import OrdersPage from './pages/OrdersPage';
+import CustomersPage from './pages/CustomersPage';
 
 export default function App() {
-  const [activePage, setActivePage] = useState<'overview' | 'branches' | 'products' | 'orders'>('overview');
+  const [activePage, setActivePage] = useState<'overview' | 'branches' | 'products' | 'orders' | 'customers'>('overview');
   const [stats, setStats] = useState({ revenue: 0, totalOrders: 0, customers: 0, branches: 0 });
   const [orders, setOrders] = useState<any[]>([]);
 
@@ -72,7 +73,7 @@ export default function App() {
           <NavItem icon={<Store size={20} />} label="สาขา" active={activePage === 'branches'} onClick={() => setActivePage('branches')} />
           <NavItem icon={<Coffee size={20} />} label="เมนู" active={activePage === 'products'} onClick={() => setActivePage('products')} />
           <NavItem icon={<ShoppingBag size={20} />} label="คำสั่งซื้อ" active={activePage === 'orders'} onClick={() => setActivePage('orders')} />
-          <NavItem icon={<Users size={20} />} label="ลูกค้า" />
+          <NavItem icon={<Users size={20} />} label="ลูกค้า" active={activePage === 'customers'} onClick={() => setActivePage('customers')} />
           <NavItem icon={<PieChartIcon size={20} />} label="รายงาน" />
         </nav>
 
@@ -90,6 +91,8 @@ export default function App() {
           <ProductsPage />
         ) : activePage === 'orders' ? (
           <OrdersPage />
+        ) : activePage === 'customers' ? (
+          <CustomersPage />
         ) : (
           <>
             {/* Top Header */}
@@ -142,7 +145,7 @@ export default function App() {
                     <h3 className="font-bold flex items-center gap-2" style={{ color: '#3d2d1a' }}>
                       <ShoppingBag size={18} style={{ color: '#b8956a' }} /> รายการสั่งซื้อล่าสุด
                     </h3>
-                    <button className="text-xs font-bold hover:underline" style={{ color: '#b8956a' }}>ดูทั้งหมด</button>
+                    <button onClick={() => setActivePage('orders')} className="text-xs font-bold hover:underline" style={{ color: '#b8956a' }}>ดูทั้งหมด</button>
                   </div>
                   <table className="w-full text-left">
                     <thead>

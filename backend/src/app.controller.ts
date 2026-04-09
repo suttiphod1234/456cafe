@@ -271,8 +271,8 @@ export class AppController {
   }
 
   @Patch('orders/:id/status')
-  async updateOrderStatus(@Param('id') id: string, @Body('status') status: string) {
-    return this.orderService.updateOrderStatus(id, status);
+  async updateOrderStatus(@Param('id') id: string, @Body() body: any) {
+    return this.orderService.updateOrderStatus(id, body.status, body.metadata);
   }
 
   @Patch('orders/:id/payment')

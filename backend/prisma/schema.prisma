@@ -16,7 +16,10 @@ enum OrderStatus {
   PENDING
   PAID
   PREPARING
-  READY
+  READY_FOR_QC      // Added
+  READY_FOR_PICKUP  // Added
+  DISPATCHED        // Added
+  READY             // Legacy, keeping for compat if needed but will use the others
   COMPLETED
   PICKED_UP
   CANCELLED
@@ -148,17 +151,46 @@ model Order {
   orderNo         String      @unique @default(uuid()) // human-friendly order number
   branchId        String
   branch          Branch      @relation(fields: [branchId], references: [id])
-  customerUid     String      // LINE UID
+  userId          String?     // Optional: Link to a registered User
+  user            User?       @relation(fields: [userId], references: [id])
+  customerUid     String      // Legacy/Guest identification (LINE UID or random)
   customerName    String?
   totalAmount     Float
   status          OrderStatus @default(PENDING)
   fulfillmentType String      @default("PICKUP") // PICKUP | DELIVERY
   note            String?     // special instructions
+  platform        String      @default("STORE")  // STORE | LINE | GRAB | FOODPANDA
+  riderName       String?
+  riderPhone      String?
+  qcNote          String?
   scheduledAt     DateTime?   // pre-order pickup time
+  queueNo         Int         @default(0) // Added
   items           OrderItem[]
   payment         Payment?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+}
+
+model User {
+  id              String         @id @default(uuid())
+  name            String?
+  email           String?        @unique
+  phone           String?        @unique
+  points          Int            @default(0)
+  role            String         @default("CUSTOMER") // CUSTOMER | ADMIN
+  authProviders   AuthProvider[]
+  orders          Order[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model AuthProvider {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  provider    String   // LINE | GOOGLE | PHONE
+  providerId  String   @unique // The unique ID from the provider (e.g. LINE UID)
+  createdAt   DateTime @default(now())
 }
 
 model OrderItem {
