@@ -317,7 +317,7 @@ function MenuPage({onAddToCart,cart}:{onAddToCart:(item:MenuItem,qty:number,opts
 }
 
 // ─── CART PAGE ──────────────────────────────────────────────────────────────
-function CartPage({cart,onUpdateQty,onRemove,onCheckout,selectedBranch,setSelectedBranch,setIsAuthModalOpen,setTempCheckoutData,member}:{cart:CartItem[],onUpdateQty:(i:number,q:number)=>void,onRemove:(i:number)=>void,onCheckout:(m:string,t:string,n:string,addr?:string)=>void,selectedBranch:Branch|null,setSelectedBranch:(b:Branch|null)=>void,setIsAuthModalOpen:(o:boolean)=>void,setTempCheckoutData:(d:any)=>void,member:any}){
+function CartPage({cart,onUpdateQty,onRemove,onCheckout,selectedBranch,setSelectedBranch,setIsAuthModalOpen,setTempCheckoutData,member,setIsAddressFormOpen}:{cart:CartItem[],onUpdateQty:(i:number,q:number)=>void,onRemove:(i:number)=>void,onCheckout:(m:string,t:string,n:string,addr?:string)=>void,selectedBranch:Branch|null,setSelectedBranch:(b:Branch|null)=>void,setIsAuthModalOpen:(o:boolean)=>void,setTempCheckoutData:(d:any)=>void,member:any,setIsAddressFormOpen:(o:boolean)=>void}){
   const [payMethod,setPayMethod]=useState('QR');
   const [fulfillType,setFulfillType]=useState('PICKUP');
   const [note,setNote]=useState('');
@@ -522,7 +522,7 @@ function CartPage({cart,onUpdateQty,onRemove,onCheckout,selectedBranch,setSelect
                            {selectedAddress?.id===addr.id && <CheckCircle2 size={24} className="text-[#b8956a]"/>}
                         </button>
                      ))}
-                     <button className="w-full p-5 rounded-3xl border-2 border-dashed border-[#e8d5c0] text-sm font-black text-[#b8956a] flex items-center justify-center gap-3 bg-amber-50/20 active:scale-95 transition-all">
+                     <button onClick={()=>setIsAddressFormOpen(true)} className="w-full p-5 rounded-3xl border-2 border-dashed border-[#e8d5c0] text-sm font-black text-[#b8956a] flex items-center justify-center gap-3 bg-amber-50/20 active:scale-95 transition-all">
                         <Plus size={20} strokeWidth={3}/> เพิ่มที่อยู่จัดส่งใหม่
                      </button>
                   </div>
@@ -628,12 +628,140 @@ function OrdersPage({customerUid}:{customerUid:string}) {
   );
 }
 
+// ─── ADDRESS MANAGEMENT ─────────────────────────────────────────────────────
+function AddressFormSheet({isOpen, onClose, onSave, initialData}: {isOpen:boolean, onClose:()=>void, onSave:(data:any)=>void, initialData?:any}) {
+  const [label, setLabel] = useState(initialData?.label || 'Home');
+  const [address, setAddress] = useState(initialData?.address || '');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setLabel(initialData?.label || 'Home');
+      setAddress(initialData?.address || '');
+    }
+  }, [isOpen, initialData]);
+
+  const handleSave = async () => {
+    if (!address) return;
+    setLoading(true);
+    const memberId = localStorage.getItem('memberId');
+    const method = initialData?.id ? 'PATCH' : 'POST';
+    const url = initialData?.id ? `${API}/addresses/${initialData.id}` : `${API}/addresses`;
+    
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: memberId, label, address })
+      });
+      if (res.ok) {
+        onSave(await res.json());
+        onClose();
+      }
+    } catch (e) { console.error(e); }
+    finally { setLoading(false); }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[200] flex items-end justify-center">
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <motion.div initial={{y:'100%'}} animate={{y:0}} exit={{y:'100%'}} transition={{type:'spring',damping:25,stiffness:200}} className="relative bg-[#fdf8f0] w-full rounded-t-[3rem] p-8 pb-12 shadow-2xl border-t-4 border-white">
+            <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-8" />
+            <h3 className="text-2xl font-black mb-6 text-[#3d2d1a] italic uppercase tracking-tight">{initialData ? 'แก้ไขที่อยู่' : 'เพิ่มที่อยู่ใหม่'}</h3>
+            
+            <div className="space-y-6">
+               <section>
+                  <label className="text-[10px] font-bold text-[#b8956a] uppercase tracking-widest mb-3 block ml-1">ประเภทที่อยู่</label>
+                  <div className="flex gap-2">
+                     {['Home', 'Office', 'Other'].map(l => (
+                        <button key={l} onClick={()=>setLabel(l)} className={`flex-1 py-3 rounded-2xl font-black text-xs transition-all border-2 ${label===l ? 'bg-[#b8956a] text-white border-transparent shadow-lg' : 'bg-white text-gray-400 border-gray-100'}`}>{l}</button>
+                     ))}
+                  </div>
+               </section>
+
+               <section>
+                  <label className="text-[10px] font-bold text-[#b8956a] uppercase tracking-widest mb-3 block ml-1">รายละเอียดที่อยู่</label>
+                  <textarea value={address} onChange={e=>setAddress(e.target.value)} placeholder="บ้านเลขที่, ถนน, แขวง/ตำบล..." className="w-full p-5 rounded-3xl bg-white border-2 border-gray-50 text-sm focus:border-[#b8956a] outline-none transition-all resize-none h-32 no-scrollbar shadow-inner" />
+               </section>
+
+               <button disabled={loading || !address} onClick={handleSave} className="w-full h-16 bg-[#b8956a] text-white rounded-2xl font-black shadow-xl shadow-[#b8956a]/30 flex items-center justify-center gap-3 mt-4 active:scale-95 transition-all text-lg">
+                  {loading ? <Loader2 className="animate-spin"/> : <><CheckCircle2 size={24}/> บันทึกข้อมูล</>}
+               </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function AddressManagementSheet({isOpen, onClose, member, onRefresh, onAdd, onEdit}: {isOpen:boolean, onClose:()=>void, member:any, onRefresh:()=>void, onAdd:()=>void, onEdit:(a:any)=>void}) {
+  const handleDelete = async (id: string) => {
+    if (!confirm('ยืนยันการลบที่อยู่นี้?')) return;
+    try {
+      const res = await fetch(`${API}/addresses/${id}`, { method: 'DELETE' });
+      if (res.ok) onRefresh();
+    } catch (e) { console.error(e); }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[180] flex items-end justify-center">
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <motion.div initial={{y:'100%'}} animate={{y:0}} exit={{y:'100%'}} transition={{type:'spring',damping:25,stiffness:200}} className="relative bg-white w-full rounded-t-[3rem] max-h-[85vh] overflow-hidden flex flex-col shadow-2xl">
+            <div className="p-8 pb-4 flex justify-between items-center shrink-0">
+               <h3 className="text-2xl font-black text-[#3d2d1a] italic uppercase tracking-tight">SAVED ADDRESSES</h3>
+               <button onClick={onClose} className="p-2 border rounded-full bg-gray-50"><X size={20}/></button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar pb-32">
+               {member?.addresses?.map((addr: any) => (
+                  <div key={addr.id} className="bg-white p-5 rounded-3xl border-2 border-gray-50 shadow-sm flex items-center gap-4 group">
+                     <div className="w-12 h-12 rounded-2xl bg-amber-50 text-[#b8956a] flex items-center justify-center shrink-0 shadow-inner">
+                        {addr.label==='Home' ? <Home size={22}/> : addr.label==='Office' ? <Briefcase size={22}/> : <MapPin size={22}/>}
+                     </div>
+                     <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                           <p className="font-black text-sm text-[#3d2d1a] uppercase">{addr.label}</p>
+                           {addr.isDefault && <span className="text-[8px] bg-[#b8956a] text-white px-2 py-0.5 rounded-full font-black italic">DEFAULT</span>}
+                        </div>
+                        <p className="text-xs text-gray-400 truncate">{addr.address}</p>
+                     </div>
+                     <div className="flex items-center gap-1">
+                        <button onClick={()=>onEdit(addr)} className="p-2 text-gray-300 hover:text-[#b8956a] transition-colors"><Settings size={18}/></button>
+                        <button onClick={()=>handleDelete(addr.id)} className="p-2 text-gray-300 hover:text-rose-500 transition-colors"><X size={18}/></button>
+                     </div>
+                  </div>
+               ))}
+               {(!member?.addresses || member.addresses.length === 0) && (
+                  <div className="text-center py-20 opacity-20">
+                     <MapPin size={64} className="mx-auto mb-4"/>
+                     <p className="font-black">YOU HAVE NO SAVED ADDRESSES</p>
+                  </div>
+               )}
+            </div>
+            
+            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white to-transparent pt-10">
+               <button onClick={onAdd} className="w-full h-16 bg-[#b8956a] text-white rounded-2xl font-black shadow-xl shadow-[#b8956a]/30 flex items-center justify-center gap-3 active:scale-95 transition-all text-lg border-4 border-white">
+                  <Plus size={24} strokeWidth={3}/> เพิ่มที่อยู่ใหม่
+               </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 // ─── PROFILE PAGE ──────────────────────────────────────────────────────────
-function ProfilePage({member}:{member:any}) {
+function ProfilePage({member, setShowManage, setShowHistory}:{member:any; setShowManage:(o:boolean)=>void; setShowHistory:(o:boolean)=>void}) {
   const [showHistory, setShowHistory] = useState(false);
   const menus=[
     {icon:Receipt,label:'ประวัติคำสั่งซื้อ', action:()=>setShowHistory(true)},
-    {icon:MapPin,label:'ที่อยู่ที่บันทึก'},
+    {icon:MapPin,label:'ที่อยู่ที่บันทึก', action:()=>setShowManage(true)},
     {icon:Gift,label:'แต้มสะสม',sub:`${member?.points||0} แต้ม`},
     {icon:History,label:'ประวัติการรับแต้ม'},
     {icon:Heart,label:'รายการโปรด'},
@@ -666,7 +794,7 @@ function ProfilePage({member}:{member:any}) {
          <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-[#f5ebe0]">
             <div className="flex items-center justify-between mb-4">
                <h3 className="font-black text-[11px] text-[#3d2d1a] uppercase tracking-widest flex items-center gap-2">ที่อยู่ของฉัน</h3>
-               <button className="text-[10px] font-bold text-[#b8956a] underline">จัดการ</button>
+               <button onClick={()=>setShowManage(true)} className="text-[10px] font-bold text-[#b8956a] underline">จัดการ</button>
             </div>
             <div className="space-y-4">
                {member?.addresses?.length > 0 ? member.addresses.map((addr:any)=>(
@@ -749,9 +877,11 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [member, setMember] = useState<any>(null);
   const [tempCheckoutData, setTempCheckoutData] = useState<any>(null);
+  const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
+  const [isAddressManageOpen, setIsAddressManageOpen] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<any>(null);
 
-  // Sync Member state with local storage/backend
-  useEffect(() => {
+  const refreshMember = useCallback(() => {
      const memberId = localStorage.getItem('memberId');
      if (memberId) {
         fetch(`${API}/auth/me?userId=${memberId}`)
@@ -759,6 +889,11 @@ export default function App() {
            .then(setMember);
      }
   }, []);
+
+  // Sync Member state with local storage/backend
+  useEffect(() => {
+     refreshMember();
+  }, [refreshMember]);
 
   const addToCart=(item:MenuItem,qty:number,opts:Record<string,MenuOption[]>,note:string)=>{
     const optionsPrice=Object.values(opts).flat().reduce((s,o)=>s+o.priceAddon,0);
@@ -837,9 +972,9 @@ export default function App() {
           <motion.div key={tab} initial={{opacity:0,y:5}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-5}} transition={{duration:0.2}} className="flex-1 flex flex-col overflow-hidden">
             {tab==='home'&&<HomePage cart={cart} onNavigate={setTab as any} onSelectBranch={b=>{setSelectedBranch(b);setTab('menu');}} user={user || member}/>}
             {tab==='menu'&&<MenuPage onAddToCart={addToCart} cart={cart}/>}
-            {tab==='cart'&&<CartPage cart={cart} onUpdateQty={updateQty} onRemove={idx=>setCart(p=>p.filter((_,i)=>i!==idx))} onCheckout={handleCheckout} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} setIsAuthModalOpen={setIsAuthModalOpen} setTempCheckoutData={setTempCheckoutData} member={member}/>}
+            {tab==='cart'&&<CartPage cart={cart} onUpdateQty={updateQty} onRemove={idx=>setCart(p=>p.filter((_,i)=>i!==idx))} onCheckout={handleCheckout} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} setIsAuthModalOpen={setIsAuthModalOpen} setTempCheckoutData={setTempCheckoutData} member={member} setIsAddressFormOpen={setIsAddressFormOpen}/>}
             {tab==='orders'&&<OrdersPage customerUid={user?.userId||member?.id||'walk-in'}/>}
-            {tab==='profile'&&<ProfilePage member={member}/>}
+            {tab==='profile'&&<ProfilePage member={member} setShowManage={setIsAddressManageOpen} setShowHistory={()=>{}}/>}
           </motion.div>
         </AnimatePresence>
       </main>
@@ -868,8 +1003,23 @@ export default function App() {
          onLoginSuccess={(m: any) => {
             setMember(m);
             localStorage.setItem('memberId', m.id);
-            // If we had a pending checkout, resume it? (Optional polish)
          }} 
+      />
+
+      <AddressManagementSheet 
+          isOpen={isAddressManageOpen} 
+          onClose={()=>setIsAddressManageOpen(false)} 
+          member={member} 
+          onRefresh={refreshMember}
+          onAdd={()=>{setEditingAddress(null); setIsAddressFormOpen(true);}}
+          onEdit={(a)=>{setEditingAddress(a); setIsAddressFormOpen(true);}}
+      />
+
+      <AddressFormSheet 
+          isOpen={isAddressFormOpen} 
+          onClose={()=>{setIsAddressFormOpen(false); setEditingAddress(null);}} 
+          onSave={refreshMember}
+          initialData={editingAddress}
       />
     </div>
   );
