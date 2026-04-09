@@ -143,12 +143,32 @@ export class OrderService {
       },
     });
 
-    // Auto-advance order status to PAID
+    // Auto-advance order status to PAID and award points
     if (data.status === 'PAID') {
-      await this.prisma.order.update({
+      const order = await this.prisma.order.update({
         where: { id: orderId },
         data: { status: 'PAID' },
       });
+
+      // Award Points if member order
+      if (order.userId) {
+         const pointsEarned = Math.floor(order.totalAmount / 10);
+         if (pointsEarned > 0) {
+            await this.prisma.user.update({
+               where: { id: order.userId },
+               data: { points: { increment: pointsEarned } }
+            });
+
+            await this.prisma.pointTransaction.create({
+               data: {
+                  userId: order.userId,
+                  orderId,
+                  delta: pointsEarned,
+                  reason: `ได้แต้มจากออเดอร์ #${order.orderNo}`
+               }
+            });
+         }
+      }
     }
 
     return payment;

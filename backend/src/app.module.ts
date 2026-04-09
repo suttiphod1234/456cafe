@@ -12,10 +12,12 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
+import { AddressService } from './address.service';
+import { AddressController } from './address.controller';
 
 @Module({
   imports: [],
-  controllers: [AppController, AuthController, UserController],
-  providers: [PrismaService, OrderService, OrderGateway, AiService, InventoryService, BranchService, ProductService, MenuService, AuthService, UserService],
+  controllers: [AppController, AuthController, UserController, AddressController],
+  providers: [PrismaService, OrderService, OrderGateway, AiService, InventoryService, BranchService, ProductService, MenuService, AuthService, UserService, AddressService],
 })
 export class AppModule {}

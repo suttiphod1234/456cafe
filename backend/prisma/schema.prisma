@@ -179,9 +179,34 @@ model User {
   points          Int            @default(0)
   role            String         @default("CUSTOMER") // CUSTOMER | ADMIN
   authProviders   AuthProvider[]
+  addresses       Address[]      // New: Saved delivery locations
   orders          Order[]
+  pointHistory    PointTransaction[] // New: Loyalty history
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+}
+
+model Address {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  label           String   // e.g., "Home", "Office"
+  address         String
+  latitude        Float?
+  longitude       Float?
+  isDefault       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model PointTransaction {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  orderId     String?  // Optional: Link to an order
+  delta       Int      // e.g., +10 or -50
+  reason      String   // e.g., "Earned from Order #123", "Redeemed for Drink"
+  createdAt   DateTime @default(now())
 }
 
 model AuthProvider {

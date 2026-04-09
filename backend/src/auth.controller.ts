@@ -36,7 +36,11 @@ export class AuthController {
     if (!userId) return null;
     return this.prisma.user.findUnique({
       where: { id: userId },
-      include: { authProviders: true }
+      include: { 
+        authProviders: true,
+        addresses: true,
+        pointHistory: { orderBy: { createdAt: 'desc' }, take: 20 }
+      }
     });
   }
 
