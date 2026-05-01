@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { OrderService } from './order.service';
+import { BranchService } from './branch.service';
+import { InventoryService } from './inventory.service';
+import { ProductService } from './product.service';
+import { MenuService } from './menu.service';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -8,15 +12,21 @@ describe('AppController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        { provide: OrderService, useValue: { getGlobalStats: jest.fn().mockResolvedValue({ total: 0 }) } },
+        { provide: BranchService, useValue: { getAllBranches: jest.fn().mockResolvedValue([]) } },
+        { provide: InventoryService, useValue: { getBranchInventory: jest.fn().mockResolvedValue([]) } },
+        { provide: ProductService, useValue: { getAllProducts: jest.fn().mockResolvedValue([]) } },
+        { provide: MenuService, useValue: { getAllMenuItems: jest.fn().mockResolvedValue([]) } },
+      ],
     }).compile();
 
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+  describe('health', () => {
+    it('should return "ok"', () => {
+      expect(appController.getHealth().status).toBe('ok');
     });
   });
 });

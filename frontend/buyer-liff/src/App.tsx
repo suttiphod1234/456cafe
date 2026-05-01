@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  BarChart3, Users, Coffee, ShoppingBag, Store, TrendingUp, Bell, Search, 
-  MapPin, Heart, Clock, User, ChevronRight, X, Minus, Plus, ShoppingCart, 
-  CreditCard, Truck, MessageSquare, Star, Gift, Settings, LogOut, 
-  RefreshCw, Receipt, ChevronDown, CheckCircle2, History, Home, Briefcase,
-  Phone, ClipboardList, ArrowLeft, QrCode, Banknote, Sparkles, Loader2, Store as StoreIcon
+  Coffee, ShoppingBag, Bell, Search, 
+  MapPin, Heart, Clock, User, ChevronRight, X, Minus, Plus, 
+  Truck, Gift, Settings, LogOut, 
+  RefreshCw, Receipt, CheckCircle2, History, Home, Briefcase,
+  Phone, ClipboardList, ArrowLeft, QrCode, Banknote, Sparkles, Loader2, Store as StoreIcon, Check
 } from 'lucide-react';
 import { useLiff } from './hooks/useLiff';
 import AuthModal from './components/AuthModal';
@@ -177,10 +177,10 @@ function MenuDetailSheet({item,onClose,onAddToCart}:{item:MenuItem;onClose:()=>v
 }
 
 // ─── HOME PAGE ─────────────────────────────────────────────────────────────
-function HomePage({cart,onNavigate,onSelectBranch,user}:{cart:CartItem[];onNavigate:(p:string)=>void;onSelectBranch:(b:Branch)=>void;user:any}) {
+function HomePage({onNavigate,onSelectBranch,user}:{cart:CartItem[];onNavigate:(p:string)=>void;onSelectBranch:(b:Branch)=>void;user:any}) {
   const [branches,setBranches]=useState<Branch[]>([]);
   const [featured,setFeatured]=useState<MenuItem[]>([]);
-  const [loading,setLoading]=setLoading(true);
+  const [loading,setLoading]=useState(true);
   const [search,setSearch]=useState('');
 
   useEffect(()=>{
@@ -266,7 +266,7 @@ function HomePage({cart,onNavigate,onSelectBranch,user}:{cart:CartItem[];onNavig
 }
 
 // ─── MENU PAGE ─────────────────────────────────────────────────────────────
-function MenuPage({onAddToCart,cart}:{onAddToCart:(item:MenuItem,qty:number,opts:Record<string,MenuOption[]>,note:string)=>void;cart:CartItem[]}) {
+function MenuPage({onAddToCart}:{onAddToCart:(item:MenuItem,qty:number,opts:Record<string,MenuOption[]>,note:string)=>void;cart:CartItem[]}) {
   const [categories,setCategories]=useState<Category[]>([]);
   const [items,setItems]=useState<MenuItem[]>([]);
   const [activeCat,setActiveCat]=useState<string|null>(null);
@@ -758,12 +758,12 @@ function AddressManagementSheet({isOpen, onClose, member, onRefresh, onAdd, onEd
 
 // ─── PROFILE PAGE ──────────────────────────────────────────────────────────
 function ProfilePage({member, setShowManage, setShowHistory}:{member:any; setShowManage:(o:boolean)=>void; setShowHistory:(o:boolean)=>void}) {
-  const [showHistory, setShowHistory] = useState(false);
+  const [internalShowHistory, setInternalShowHistory] = useState(false);
   const menus=[
     {icon:Receipt,label:'ประวัติคำสั่งซื้อ', action:()=>setShowHistory(true)},
     {icon:MapPin,label:'ที่อยู่ที่บันทึก', action:()=>setShowManage(true)},
     {icon:Gift,label:'แต้มสะสม',sub:`${member?.points||0} แต้ม`},
-    {icon:History,label:'ประวัติการรับแต้ม'},
+    {icon:History,label:'ประวัติการรับแต้ม', action:()=>setInternalShowHistory(true)},
     {icon:Heart,label:'รายการโปรด'},
     {icon:Bell,label:'การแจ้งเตือน'},
     {icon:Settings,label:'ตั้งค่า'},
@@ -831,13 +831,13 @@ function ProfilePage({member, setShowManage, setShowHistory}:{member:any; setSho
 
       {/* Popups */}
       <AnimatePresence>
-         {showHistory && (
+         {internalShowHistory && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-               <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setShowHistory(false)} className="absolute inset-0 bg-black/60 backdrop-blur-md" />
+               <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setInternalShowHistory(false)} className="absolute inset-0 bg-black/60 backdrop-blur-md" />
                <motion.div initial={{scale:0.9, opacity:0}} animate={{scale:1, opacity:1}} exit={{scale:0.9, opacity:0}} className="relative bg-[#fdf8f0] w-full max-w-sm rounded-[3rem] overflow-hidden max-h-[80vh] flex flex-col shadow-2xl border-4 border-white">
                   <div className="p-6 border-b border-[#e8d5c0] flex items-center justify-between shrink-0 bg-white">
                      <h3 className="font-black text-lg italic text-[#b8956a]">POINT HISTORY</h3>
-                     <button onClick={()=>setShowHistory(false)} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><X size={20}/></button>
+                     <button onClick={()=>setInternalShowHistory(false)} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><X size={20}/></button>
                   </div>
                   <div className="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar pb-8">
                      {member?.pointHistory?.map((h:any)=>(
@@ -876,7 +876,7 @@ export default function App() {
   const [justOrdered,setJustOrdered]=useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [member, setMember] = useState<any>(null);
-  const [tempCheckoutData, setTempCheckoutData] = useState<any>(null);
+  const [, setTempCheckoutData] = useState<any>(null);
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
   const [isAddressManageOpen, setIsAddressManageOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
@@ -919,7 +919,7 @@ export default function App() {
     const total=cart.reduce((s,i)=>s+i.unitTotal,0);
     const userId = member?.id || localStorage.getItem('memberId');
 
-    const res = await fetch(`${API}/orders`,{
+    await fetch(`${API}/orders`,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         branchId:selectedBranch.id,
@@ -974,7 +974,7 @@ export default function App() {
             {tab==='menu'&&<MenuPage onAddToCart={addToCart} cart={cart}/>}
             {tab==='cart'&&<CartPage cart={cart} onUpdateQty={updateQty} onRemove={idx=>setCart(p=>p.filter((_,i)=>i!==idx))} onCheckout={handleCheckout} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} setIsAuthModalOpen={setIsAuthModalOpen} setTempCheckoutData={setTempCheckoutData} member={member} setIsAddressFormOpen={setIsAddressFormOpen}/>}
             {tab==='orders'&&<OrdersPage customerUid={user?.userId||member?.id||'walk-in'}/>}
-            {tab==='profile'&&<ProfilePage member={member} setShowManage={setIsAddressManageOpen} setShowHistory={()=>{}}/>}
+            {tab==='profile'&&<ProfilePage member={member} setShowManage={setIsAddressManageOpen} setShowHistory={()=>setTab('orders')}/>}
           </motion.div>
         </AnimatePresence>
       </main>
