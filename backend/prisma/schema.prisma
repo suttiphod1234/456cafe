@@ -39,10 +39,14 @@ model Branch {
   address   String?
   latitude  Float?
   longitude Float?
-  isOpen    Boolean  @default(true)
-  openTime  String?
-  closeTime String?
-  orders    Order[]
+  isOpen        Boolean  @default(true)
+  openTime      String?
+  closeTime     String?
+  phone         String?
+  promptpayId   String?
+  promptpayName String?
+  imageUrl      String?
+  orders        Order[]
   inventory Inventory[]
   managers  BranchManager[]
   createdAt DateTime @default(now())

@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ShoppingBag, Search, Filter, X, Check, Loader2, AlertTriangle,
-  Clock, DollarSign, Coffee, ChevronRight, User, MapPin,
-  CreditCard, Banknote, QrCode, Truck, Store, Eye, Ban,
+  ShoppingBag, Search, Check, Loader2, AlertTriangle,
+  Clock, Coffee, User, MapPin,
+  CreditCard, Banknote, QrCode, Truck, Store, Ban,
   TrendingUp, Package, CalendarDays, Receipt, ArrowRight
 } from 'lucide-react';
 
@@ -48,7 +48,7 @@ function StatusBadge({status}:{status:string}) {
 
 // ─── Order Detail Panel ─────────────────────────────────────────────────
 
-function OrderDetail({order,onStatusChange,onPayment,onCancel,showToast}:{order:Order;onStatusChange:(id:string,s:string)=>void;onPayment:(id:string,d:any)=>void;onCancel:(id:string)=>void;showToast:(m:string,t?:'success'|'error')=>void}) {
+function OrderDetail({order,onStatusChange,onPayment,onCancel}:{order:Order;onStatusChange:(id:string,s:string)=>void;onPayment:(id:string,d:any)=>void;onCancel:(id:string)=>void}) {
   const nextStatus=():string|null=>{
     const flow=['PENDING','PAID','PREPARING','READY','COMPLETED'];
     const idx=flow.indexOf(order.status);
@@ -141,7 +141,7 @@ function OrderDetail({order,onStatusChange,onPayment,onCancel,showToast}:{order:
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest mb-3 flex items-center gap-1.5" style={{color:C[500]}}><Clock size={10}/>สถานะ</p>
           <div className="flex gap-1">
-            {['PENDING','PAID','PREPARING','READY','COMPLETED'].map((s,i)=>{
+            {['PENDING','PAID','PREPARING','READY','COMPLETED'].map((s)=>{
               const isActive=STATUS_FLOW.indexOf(order.status as any)>=STATUS_FLOW.indexOf(s as any);
               const isCancelled=order.status==='CANCELLED';
               return (
@@ -279,7 +279,7 @@ export default function OrdersPage() {
       {/* Order Detail (Right) */}
       <div className="flex-1 overflow-hidden" style={{background:C[50]}}>
         {selected?(
-          <OrderDetail key={selected.id} order={selected} onStatusChange={handleStatusChange} onPayment={handlePayment} onCancel={handleCancel} showToast={showToast}/>
+          <OrderDetail key={selected.id} order={selected} onStatusChange={handleStatusChange} onPayment={handlePayment} onCancel={handleCancel} />
         ):(
           <div className="flex flex-col items-center justify-center h-full"><ShoppingBag size={40} className="mb-4" style={{color:C[300]}}/><p className="font-bold" style={{color:C[600]}}>เลือกคำสั่งซื้อเพื่อดูรายละเอียด</p></div>
         )}

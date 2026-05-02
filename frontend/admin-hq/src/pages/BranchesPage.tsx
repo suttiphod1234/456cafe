@@ -5,14 +5,14 @@ import {
   X, Check, Loader2, AlertTriangle, Users, Clock, ToggleLeft,
   ToggleRight, BarChart3, Coffee, TrendingUp,
   Phone, Mail, Shield, UserPlus, Crown, User, Navigation,
-  CalendarClock, DollarSign, AlertCircle
+  CalendarClock, DollarSign, AlertCircle, Image as ImageIcon, QrCode, Banknote
 } from 'lucide-react';
 
 const API = 'http://localhost:5001/api';
 const C = { 50:'#fdf8f0',100:'#f5ebe0',200:'#e8d5c0',300:'#d4b896',400:'#b8956a',500:'#9c7a50',600:'#7a5c3a',700:'#5c4428',800:'#3d2d1a',900:'#1e160d' };
 
 interface Manager { id:string; branchId:string; name:string; email:string|null; phone:string|null; role:string; lineUid:string|null; createdAt:string; }
-interface Branch { id:string; name:string; location:string|null; address:string|null; latitude:number|null; longitude:number|null; isOpen:boolean; openTime:string|null; closeTime:string|null; managers:Manager[]; createdAt:string; _count:{orders:number;inventory:number}; }
+interface Branch { id:string; name:string; location:string|null; address:string|null; latitude:number|null; longitude:number|null; isOpen:boolean; openTime:string|null; closeTime:string|null; phone:string|null; promptpayId:string|null; promptpayName:string|null; imageUrl:string|null; managers:Manager[]; createdAt:string; _count:{orders:number;inventory:number}; }
 interface DashboardData { totalOrders:number; todayOrders:number; totalRevenue:number; todayRevenue:number; recentOrders:any[]; topProducts:{name:string;totalSold:number;productId?:string}[]; }
 
 const ROLE_CONFIG:Record<string,{label:string;icon:typeof Crown;bg:string;text:string;border:string}> = {
@@ -37,7 +37,7 @@ function Toast({ msg, type }:{ msg:string; type:'success'|'error' }) {
 }
 
 function BranchFormModal({ branch, onClose, onSave }:{ branch?:Branch|null; onClose:()=>void; onSave:(d:any)=>Promise<void>; }) {
-  const [form,setForm]=useState({ name:branch?.name||'', location:branch?.location||'', address:branch?.address||'', latitude:branch?.latitude?.toString()||'', longitude:branch?.longitude?.toString()||'', openTime:branch?.openTime||'08:00', closeTime:branch?.closeTime||'22:00' });
+  const [form,setForm]=useState({ name:branch?.name||'', location:branch?.location||'', address:branch?.address||'', latitude:branch?.latitude?.toString()||'', longitude:branch?.longitude?.toString()||'', openTime:branch?.openTime||'08:00', closeTime:branch?.closeTime||'22:00', phone:branch?.phone||'', promptpayId:branch?.promptpayId||'', promptpayName:branch?.promptpayName||'', imageUrl:branch?.imageUrl||'' });
   const [isSaving,setIsSaving]=useState(false);
   const [error,setError]=useState('');
   const up=(k:string,v:string)=>setForm(p=>({...p,[k]:v}));
@@ -66,17 +66,37 @@ function BranchFormModal({ branch, onClose, onSave }:{ branch?:Branch|null; onCl
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center transition-all hover:bg-gray-100" style={{color:C[500]}}><X size={16}/></button>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar">
-          <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><Store size={11}/>ชื่อสาขา *</label><input value={form.name} onChange={e=>up('name',e.target.value)} placeholder="เช่น 456 Coffee - เซ็นทรัลลาดพร้าว" className={inputClass} style={{borderColor:C[200]}}/></div>
-          <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><MapPin size={11}/>ที่อยู่</label><textarea value={form.address} onChange={e=>up('address',e.target.value)} rows={2} placeholder="ที่อยู่เต็มของสาขา" className={inputClass+" resize-none"} style={{borderColor:C[200]}}/></div>
-          <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><Navigation size={11}/>Google Maps Link</label><input value={form.location} onChange={e=>up('location',e.target.value)} placeholder="https://maps.google.com/..." className={inputClass} style={{borderColor:C[200]}}/></div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}>ละติจูด</label><input type="number" step="any" value={form.latitude} onChange={e=>up('latitude',e.target.value)} placeholder="13.7563" className={inputClass} style={{borderColor:C[200]}}/></div>
-            <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}>ลองจิจูด</label><input type="number" step="any" value={form.longitude} onChange={e=>up('longitude',e.target.value)} placeholder="100.5018" className={inputClass} style={{borderColor:C[200]}}/></div>
+        <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto no-scrollbar">
+          {/* General Info */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-[#b8956a] flex items-center gap-2 pb-2 border-b border-[#e8d5c0]"><Store size={14}/>ข้อมูลทั่วไป</h3>
+            <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}>ชื่อสาขา *</label><input value={form.name} onChange={e=>up('name',e.target.value)} placeholder="เช่น 456 Coffee - เซ็นทรัลลาดพร้าว" className={inputClass} style={{borderColor:C[200]}}/></div>
+            <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><ImageIcon size={11}/>รูปภาพหน้าร้าน (URL)</label><input value={form.imageUrl} onChange={e=>up('imageUrl',e.target.value)} placeholder="https://example.com/image.jpg" className={inputClass} style={{borderColor:C[200]}}/></div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><Clock size={11}/>เวลาเปิด</label><input type="time" value={form.openTime} onChange={e=>up('openTime',e.target.value)} className={inputClass} style={{borderColor:C[200]}}/></div>
-            <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><Clock size={11}/>เวลาปิด</label><input type="time" value={form.closeTime} onChange={e=>up('closeTime',e.target.value)} className={inputClass} style={{borderColor:C[200]}}/></div>
+          
+          {/* Contact & Location */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-[#b8956a] flex items-center gap-2 pb-2 border-b border-[#e8d5c0]"><MapPin size={14}/>การติดต่อ & ที่ตั้ง</h3>
+            <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><Phone size={11}/>เบอร์โทรศัพท์สาขา</label><input value={form.phone} onChange={e=>up('phone',e.target.value)} placeholder="08x-xxx-xxxx" className={inputClass} style={{borderColor:C[200]}}/></div>
+            <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}>ที่อยู่</label><textarea value={form.address} onChange={e=>up('address',e.target.value)} rows={2} placeholder="ที่อยู่เต็มของสาขา" className={inputClass+" resize-none"} style={{borderColor:C[200]}}/></div>
+            <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><Navigation size={11}/>Google Maps Link</label><input value={form.location} onChange={e=>up('location',e.target.value)} placeholder="https://maps.google.com/..." className={inputClass} style={{borderColor:C[200]}}/></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}>ละติจูด</label><input type="number" step="any" value={form.latitude} onChange={e=>up('latitude',e.target.value)} placeholder="13.7563" className={inputClass} style={{borderColor:C[200]}}/></div>
+              <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}>ลองจิจูด</label><input type="number" step="any" value={form.longitude} onChange={e=>up('longitude',e.target.value)} placeholder="100.5018" className={inputClass} style={{borderColor:C[200]}}/></div>
+            </div>
+          </div>
+
+          {/* Operation & Payment */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-[#b8956a] flex items-center gap-2 pb-2 border-b border-[#e8d5c0]"><Clock size={14}/>เวลาทำการ & การรับเงิน</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}>เวลาเปิด</label><input type="time" value={form.openTime} onChange={e=>up('openTime',e.target.value)} className={inputClass} style={{borderColor:C[200]}}/></div>
+              <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}>เวลาปิด</label><input type="time" value={form.closeTime} onChange={e=>up('closeTime',e.target.value)} className={inputClass} style={{borderColor:C[200]}}/></div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><QrCode size={11}/>พร้อมเพย์ (PromptPay)</label><input value={form.promptpayId} onChange={e=>up('promptpayId',e.target.value)} placeholder="เบอร์โทร / บัตร ปชช." className={inputClass} style={{borderColor:C[200]}}/></div>
+              <div className="space-y-1.5"><label className={labelClass} style={{color:C[500]}}><Banknote size={11}/>ชื่อบัญชีพร้อมเพย์</label><input value={form.promptpayName} onChange={e=>up('promptpayName',e.target.value)} placeholder="ชื่อบัญชีรับเงิน" className={inputClass} style={{borderColor:C[200]}}/></div>
+            </div>
           </div>
           <AnimatePresence>{error&&<motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:'auto'}} exit={{opacity:0,height:0}} className="flex items-center gap-2 text-rose-600 text-sm bg-rose-50 border border-rose-200 rounded-xl px-4 py-3"><AlertTriangle size={14}/>{error}</motion.div>}</AnimatePresence>
           <div className="flex gap-3 pt-2">
@@ -220,6 +240,13 @@ function BranchDetail({ branch, onRefresh, showToast }:{ branch:Branch; onRefres
         <AnimatePresence mode="wait">
           {tab==='info'&&(
             <motion.div key="info" initial={{opacity:0,x:10}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-10}} className="p-8 space-y-6">
+              {branch.imageUrl&&<div className="w-full h-48 rounded-2xl bg-cover bg-center mb-6" style={{backgroundImage:`url(${branch.imageUrl})`}} />}
+              <div className="grid grid-cols-2 gap-6">
+                <div><p className="text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5" style={{color:C[500]}}><Phone size={10}/>เบอร์โทรศัพท์</p><p className="text-sm font-bold" style={{color:C[800]}}>{branch.phone||<span className="italic" style={{color:C[400]}}>ไม่มีข้อมูล</span>}</p></div>
+                <div><p className="text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5" style={{color:C[500]}}><QrCode size={10}/>พร้อมเพย์</p>
+                  {branch.promptpayId?<div className="text-sm font-bold" style={{color:C[800]}}>{branch.promptpayId} <span className="block text-[10px] font-normal" style={{color:C[500]}}>{branch.promptpayName}</span></div>:<span className="text-sm italic" style={{color:C[400]}}>ไม่มีข้อมูล</span>}
+                </div>
+              </div>
               <div><p className="text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5" style={{color:C[500]}}><MapPin size={10}/>ที่อยู่</p><p className="text-sm leading-relaxed" style={{color:C[700]}}>{branch.address||<span className="italic" style={{color:C[400]}}>ยังไม่ได้ระบุที่อยู่</span>}</p></div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5" style={{color:C[500]}}><Navigation size={10}/>พิกัด GPS</p>

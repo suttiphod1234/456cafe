@@ -10,6 +10,10 @@ export interface BranchDetailDto {
   isOpen?: boolean;
   openTime?: string;
   closeTime?: string;
+  phone?: string;
+  promptpayId?: string;
+  promptpayName?: string;
+  imageUrl?: string;
 }
 
 export interface CreateManagerDto {
@@ -59,6 +63,10 @@ export class BranchService {
         isOpen: data.isOpen ?? true,
         openTime: data.openTime,
         closeTime: data.closeTime,
+        phone: data.phone,
+        promptpayId: data.promptpayId,
+        promptpayName: data.promptpayName,
+        imageUrl: data.imageUrl,
       },
       include: {
         managers: true,
@@ -80,6 +88,10 @@ export class BranchService {
         isOpen: data.isOpen,
         openTime: data.openTime,
         closeTime: data.closeTime,
+        phone: data.phone,
+        promptpayId: data.promptpayId,
+        promptpayName: data.promptpayName,
+        imageUrl: data.imageUrl,
       },
       include: {
         managers: true,

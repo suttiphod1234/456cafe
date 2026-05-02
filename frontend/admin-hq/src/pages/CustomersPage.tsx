@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Users, Search, Plus, Edit2, Trash2, X, Check, Loader2, 
-  Gift, ShoppingBag, History, Mail, Phone, MessageCircle,
-  ArrowUpRight, ArrowDownRight, ChevronRight, Filter, AlertTriangle
+  Users, Search, Plus, Edit2, X, Loader2, 
+  Gift, History, Phone, MessageCircle, Mail, Filter,
+  ChevronRight
 } from 'lucide-react';
 
 const API = 'http://localhost:5001/api';
@@ -334,4 +334,4 @@ function PointsModal({ user, onClose, onSave }: any) {
    );
 }
 
-function Minus({ size, className }: any) { return <span className={className}>-</span>; }
+function Minus({ className }: any) { return <span className={className}>-</span>; }
