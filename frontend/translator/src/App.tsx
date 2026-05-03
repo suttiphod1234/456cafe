@@ -25,7 +25,7 @@ export default function App() {
 
     setIsTranslating(true);
     try {
-      const response = await axios.post('http://localhost:5001/api/ai/translate', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/ai/translate`, {
         text: sourceText,
         targetLanguage: targetLang
       });

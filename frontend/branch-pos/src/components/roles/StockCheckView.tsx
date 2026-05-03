@@ -6,7 +6,7 @@ import {
   Search, RefreshCw, Layers, Info
 } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5001/api';
+const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api`;
 
 export default function StockCheckView({ branch }: any) {
   const [activeTab, setActiveTab] = useState<'open' | 'close'>('open');

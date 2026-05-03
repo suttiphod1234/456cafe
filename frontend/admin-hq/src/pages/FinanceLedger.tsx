@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Banknote, Plus, Loader2, ArrowUpRight, ArrowDownRight, Filter } from 'lucide-react';
 
-const API = 'http://localhost:5001/api';
+const API = `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api`;
 
 interface Cashflow {
   id: string;

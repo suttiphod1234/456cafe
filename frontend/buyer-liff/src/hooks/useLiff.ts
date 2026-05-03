@@ -20,7 +20,7 @@ export function useLiff() {
         await liff.init({ liffId: 'mock-liff-id' });
         if (liff.isLoggedIn()) {
           const profile = await liff.getProfile();
-          const syncRes = await fetch('http://localhost:5001/api/auth/line', {
+          const syncRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/auth/line`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -51,7 +51,7 @@ export function useLiff() {
 
     const loadMockUser = async () => {
       // For localhost testing, we'll sync a mock user too
-      const syncRes = await fetch('http://localhost:5001/api/auth/line', {
+      const syncRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/auth/line`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

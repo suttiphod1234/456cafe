@@ -14,8 +14,8 @@ import DispatchView from './components/roles/DispatchView';
 import QueueMonitorView from './components/roles/QueueMonitorView';
 import StockCheckView from './components/roles/StockCheckView';
 
-const API_BASE = 'http://localhost:5001/api';
-const SOCKET_URL = 'http://localhost:5001';
+const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api`;
+const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 type Role = 'SELECTOR' | 'CASHIER' | 'BARISTA' | 'QC' | 'DISPATCHER' | 'QUEUE_MONITOR' | 'STOCK_CHECK';
 

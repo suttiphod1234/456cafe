@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 // import { motion } from 'framer-motion';
 import { DollarSign, Loader2, AlertCircle, Coffee } from 'lucide-react';
 
-const API = 'http://localhost:5001/api';
+const API = `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api`;
 
 export default function CostManagement() {
   const [costingData, setCostingData] = useState<any[]>([]);

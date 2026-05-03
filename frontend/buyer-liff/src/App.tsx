@@ -10,7 +10,7 @@ import {
 import { useLiff } from './hooks/useLiff';
 import AuthModal from './components/AuthModal';
 
-const API = 'http://localhost:5001/api';
+const API = `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api`;
 const C = { bg:'#f5f5f5', card:'#ffffff', border:'#ffedc4', accent:'#ffba0a', dark:'#252627', mid:'#5a3b16', light:'#ffedc4', muted:'#5a3b16' };
 
 // ─── Types ─────────────────────────────────────────────────────────────────

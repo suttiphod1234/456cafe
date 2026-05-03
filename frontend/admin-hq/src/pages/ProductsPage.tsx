@@ -7,7 +7,7 @@ import {
   GripVertical, Layers, Search
 } from 'lucide-react';
 
-const API = 'http://localhost:5001/api';
+const API = `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api`;
 const C = { 
   50: 'var(--bg-main)', 
   100: 'var(--bg-card)', 

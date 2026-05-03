@@ -48,11 +48,11 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const statsRes = await fetch('http://localhost:5001/api/stats/global');
+        const statsRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/stats/global`);
         const statsData = await statsRes.json();
         setStats(statsData);
 
-        const ordersRes = await fetch('http://localhost:5001/api/orders/recent');
+        const ordersRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/orders/recent`);
         const ordersData = await ordersRes.json();
         setOrders(ordersData);
       } catch (e) {
@@ -62,7 +62,7 @@ export default function App() {
 
     fetchData();
 
-    const socket = io('http://localhost:5001');
+    const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:5001');
     socket.on('new-order', (order) => {
       setStats(prev => ({
         ...prev,

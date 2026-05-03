@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Phone, Mail, MessageCircle, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 
-const API = 'http://localhost:5001/api';
+const API = `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api`;
 
 export default function AuthModal({ isOpen, onClose, onLoginSuccess }: any) {
   const [step, setStep] = useState<'methods' | 'phone' | 'otp' | 'success'>('methods');
