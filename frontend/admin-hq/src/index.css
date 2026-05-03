@@ -93,3 +93,25 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ── Contrast Rules ──────────────────────────────── */
+/* Light theme: ensure text is dark on light backgrounds */
+[data-theme="light"] .admin-card,
+[data-theme="light"] table,
+[data-theme="light"] input {
+  color: #1a1a2e;
+}
+
+[data-theme="light"] .admin-card p,
+[data-theme="light"] .admin-card h3,
+[data-theme="light"] .admin-card h4,
+[data-theme="light"] td {
+  color: #1a1a2e;
+}
+
+/* Dark theme: ensure text is light on dark backgrounds */
+[data-theme="dark"] .admin-card,
+[data-theme="dark"] table,
+[data-theme="dark"] input {
+  color: #f8fafc;
+}

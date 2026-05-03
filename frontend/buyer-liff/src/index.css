@@ -37,3 +37,17 @@ body {
 .coffee-gradient {
   background: linear-gradient(135deg, var(--coffee-brown) 0%, var(--coffee-dark) 100%);
 }
+
+/* ── Contrast Rules ──────────────────────────────── */
+/* Light backgrounds → dark text */
+.bg-white, .bg-gray-50, .bg-amber-50, [style*="background:#f5f5f5"],
+[style*="background: #f5f5f5"], [style*="background:#ffffff"],
+[style*="background: #ffffff"] {
+  color: var(--coffee-dark);
+}
+
+/* Dark / gradient backgrounds → white text */
+.coffee-gradient, [style*="background:#252627"],
+[style*="background: #252627"] {
+  color: #ffffff;
+}

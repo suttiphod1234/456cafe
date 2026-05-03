@@ -159,7 +159,7 @@ export default function App() {
             <div className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar">
               <div className="flex flex-col mb-10">
                 <h2 className="text-3xl font-black tracking-tight italic uppercase" style={{ color: 'var(--text-main)' }}>แดชบอร์ดภาพรวม</h2>
-                <p className="text-gray-400 font-bold text-xs mt-1">สรุปข้อมูลการขายและสถิติของทุกสาขาในระบบ</p>
+                <p className="font-bold text-xs mt-1" style={{ color: 'var(--text-muted)' }}>สรุปข้อมูลการขายและสถิติของทุกสาขาในระบบ</p>
               </div>
 
               {/* Stats Grid */}

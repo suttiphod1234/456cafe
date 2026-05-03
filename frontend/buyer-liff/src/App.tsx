@@ -167,7 +167,7 @@ function MenuDetailSheet({item,onClose,onAddToCart}:{item:MenuItem;onClose:()=>v
             <p className="font-extrabold text-lg" style={{color:C.dark}}>฿{total}</p>
           </div>
           <motion.button whileHover={{scale:1.02}} whileTap={{scale:0.98}} onClick={()=>{onAddToCart(item,qty,selected,note);onClose();}}
-            className="w-full py-4 rounded-2xl text-white font-bold text-base shadow-lg flex items-center justify-center gap-2" style={{background:C.accent}}>
+            className="w-full py-4 rounded-2xl text-[#252627] font-bold text-base shadow-lg flex items-center justify-center gap-2" style={{background:C.accent}}>
             <ShoppingBag size={20}/>เพิ่มลงตะกร้า · ฿{total}
           </motion.button>
         </div>
@@ -409,7 +409,7 @@ function CartPage({cart,onUpdateQty,onRemove,onCheckout,selectedBranch,setSelect
 
         <div className="flex items-center justify-between px-2">
            <div><p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">ยอดรวมทั้งหมด</p><p className="text-2xl font-black text-[#252627]">฿{total}</p></div>
-           <button onClick={()=>setShowCheckout(true)} className="bg-[#ffba0a] text-white px-10 h-14 rounded-2xl font-black shadow-lg shadow-[#ffba0a]/30 active:scale-95 transition-all flex items-center gap-3">ดำเนินการต่อ <ChevronRight size={20}/></button>
+           <button onClick={()=>setShowCheckout(true)} className="bg-[#ffba0a] text-[#252627] px-10 h-14 rounded-2xl font-black shadow-lg shadow-[#ffba0a]/30 active:scale-95 transition-all flex items-center gap-3">ดำเนินการต่อ <ChevronRight size={20}/></button>
         </div>
       </div>
 
@@ -476,7 +476,7 @@ function CartPage({cart,onUpdateQty,onRemove,onCheckout,selectedBranch,setSelect
                   <div className="flex justify-between text-gray-500 px-1 text-sm font-bold"><span>ราคาสินค้า</span><span>฿{total}</span></div>
                   <div className="flex justify-between text-gray-500 px-1 text-sm font-bold"><span>ค่าจัดส่ง</span><span>{fulfillType==='DELIVERY' ? '฿20' : '฿0'}</span></div>
                   <div className="flex justify-between text-2xl font-black pt-2 px-1 text-[#252627]"><span>ยอดรวมสุทธิ</span><span>฿{fulfillType==='DELIVERY' ? total+20 : total}</span></div>
-                  <button disabled={isProcessing} onClick={handleCheckout} className="w-full h-16 bg-[#ffba0a] text-white rounded-2xl font-black shadow-xl shadow-[#ffba0a]/30 flex items-center justify-center gap-3 mt-6 active:scale-95 transition-all text-lg relative overflow-hidden">
+                  <button disabled={isProcessing} onClick={handleCheckout} className="w-full h-16 bg-[#ffba0a] text-[#252627] rounded-2xl font-black shadow-xl shadow-[#ffba0a]/30 flex items-center justify-center gap-3 mt-6 active:scale-95 transition-all text-lg relative overflow-hidden">
                     {isProcessing ? <RefreshCw className="animate-spin" size={24}/> : <><CheckCircle2 size={24}/> ยืนยันชำระเงิน</>}
                     {!isProcessing && <div className="absolute right-6 bg-white/20 px-3 py-1 rounded-full text-[10px] uppercase font-bold text-white">แต้ม +{Math.floor(total/10)}</div>}
                   </button>
@@ -692,7 +692,7 @@ function AddressFormSheet({isOpen, onClose, onSave, initialData}: {isOpen:boolea
                   <textarea value={address} onChange={e=>setAddress(e.target.value)} placeholder="บ้านเลขที่, ถนน, แขวง/ตำบล..." className="w-full p-5 rounded-3xl bg-white border-2 border-gray-50 text-sm focus:border-[#ffba0a] outline-none transition-all resize-none h-32 no-scrollbar shadow-inner" />
                </section>
 
-               <button disabled={loading || !address} onClick={handleSave} className="w-full h-16 bg-[#ffba0a] text-white rounded-2xl font-black shadow-xl shadow-[#ffba0a]/30 flex items-center justify-center gap-3 mt-4 active:scale-95 transition-all text-lg">
+               <button disabled={loading || !address} onClick={handleSave} className="w-full h-16 bg-[#ffba0a] text-[#252627] rounded-2xl font-black shadow-xl shadow-[#ffba0a]/30 flex items-center justify-center gap-3 mt-4 active:scale-95 transition-all text-lg">
                   {loading ? <Loader2 className="animate-spin"/> : <><CheckCircle2 size={24}/> บันทึกข้อมูล</>}
                </button>
             </div>
@@ -751,7 +751,7 @@ function AddressManagementSheet({isOpen, onClose, member, onRefresh, onAdd, onEd
             </div>
             
             <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white to-transparent pt-10">
-               <button onClick={onAdd} className="w-full h-16 bg-[#ffba0a] text-white rounded-2xl font-black shadow-xl shadow-[#ffba0a]/30 flex items-center justify-center gap-3 active:scale-95 transition-all text-lg border-4 border-white">
+               <button onClick={onAdd} className="w-full h-16 bg-[#ffba0a] text-[#252627] rounded-2xl font-black shadow-xl shadow-[#ffba0a]/30 flex items-center justify-center gap-3 active:scale-95 transition-all text-lg border-4 border-white">
                   <Plus size={24} strokeWidth={3}/> เพิ่มที่อยู่ใหม่
                </button>
             </div>

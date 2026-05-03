@@ -4,6 +4,8 @@
 
 :root {
   --bg-dark: #0f172a;
+  --text-dark: #2d241e;
+  --text-light: #ffffff;
 }
 
 body {
@@ -12,23 +14,36 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+/* ── Contrast Rules ──────────────────────────────── */
+/* Ensure all light background elements use dark text */
+.bg-white, .bg-gray-50, .bg-amber-50, .bg-\[\#fdfaf6\] {
+  color: var(--text-dark);
+}
+
+/* Dark background header gets white text */
+.bg-\[\#2d241e\] {
+  color: var(--text-light);
+}
+
 .kanban-column {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 1.5rem;
+  color: var(--text-dark);
 }
 
 .order-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 1rem;
   transition: all 0.2s ease-in-out;
+  color: var(--text-dark);
 }
 
 .order-card:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.08);
+  background: #fdfaf6;
 }
 
 @media print {
