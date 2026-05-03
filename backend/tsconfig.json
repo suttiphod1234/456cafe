@@ -14,7 +14,7 @@
     "sourceMap": true,
     "outDir": "./dist-new",
     "baseUrl": "./",
-    "incremental": true,
+    "incremental": false,
     "skipLibCheck": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,

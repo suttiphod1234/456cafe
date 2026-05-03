@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 
-export interface CreateCashflowDto {
+export class CreateCashflowDto {
   branchId: string;
   type: string;
   category: string;
