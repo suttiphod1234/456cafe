@@ -1,83 +1,539 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-    Coffee,
-    Truck,
-    Search,
-    Plus,
-    Printer,
-    CreditCard,
-    User,
-    ShoppingBag,
-    X,
-    ChevronRight,
-    Check,
+import { 
+  Coffee, Truck, Search, 
+  Plus, Printer, CreditCard, User, 
+  ShoppingBag, X, ChevronRight, Check
 } from 'lucide-react';
 
-const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5001/api'}`;
+const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api`;
 
-export default function POSView({ branch, orders, updateStatus }: any) {    const [activeTab, setActiveTab] = useState<'feed' | 'menu'>('feed');
-    const [categories, setCategories] = useState<any[]>([]);
-    const [products, setProducts] = useState<any[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
+export default function POSView({ branch, orders, updateStatus }: any) {
+  const [activeTab, setActiveTab] = useState<'feed' | 'menu'>('feed');
+  const [categories, setCategories] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  
   // Ordering State
   const [cart, setCart] = useState<any[]>([]);
-    const [configuringProduct, setConfiguringProduct] = useState<any>(null);
-    const [selectedOptions, setSelectedOptions] = useState<any>({}); // groupId -> optionId
+  const [configuringProduct, setConfiguringProduct] = useState<any>(null);
+  const [selectedOptions, setSelectedOptions] = useState<any>({}); // groupId -> optionId
   const [showCheckout, setShowCheckout] = useState(false);
-    const [checkoutData, setCheckoutData] = useState({
-          customerName: '',
-          paymentMethod: 'CASH',
-          note: ''
-    });
-    const [viewingReceipt, setViewingReceipt] = useState<any>(null);
-
+  const [checkoutData, setCheckoutData] = useState({
+    customerName: '',
+    paymentMethod: 'CASH',
+    note: ''
+  });
+  const [viewingReceipt, setViewingReceipt] = useState<any>(null);
+  
   // Member Search State
   const [memberSearch, setMemberSearch] = useState('');
-    const [searchingMember, setSearchingMember] = useState(false);
-    const [foundMember, setFoundMember] = useState<any>(null);
-    const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [searchingMember, setSearchingMember] = useState(false);
+  const [foundMember, setFoundMember] = useState<any>(null);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
 
-  useEffect(() => {
-        fetchCategories();
-  }, []);
-
-  useEffect(() => {
-        if (selectedCategory) {
-                fetchProducts(selectedCategory);
-        }
-  }, [selectedCategory]);
-
-  const fetchCategories = async () => {
-        try {
-                const res = await fetch(`${API_BASE}/products/categories`);
-                const data = await res.json();
-                setCategories(data);
-                if (data.length > 0 && !selectedCategory) setSelectedCategory(data[0].id);
-        } catch (err) {
-                console.error('Failed to fetch categories', err);
-        }
+  // Print function
+  const handlePrint = () => {
+    window.print();
   };
 
-  const fetchProducts = async (catId: string) => {
-        try {
-                const res = await fetch(`${API_BASE}/products?categoryId=${catId}`);
-                const data = await res.json();
-                setProducts(data);
-        } catch (err) {
-                console.error('Failed to fetch products', err);
-        }
+  // 1. Fetch Menu Data
+  useEffect(() => {
+    if (activeTab === 'menu') {
+      Promise.all([
+        fetch(`${API_BASE}/categories`).then(res => res.json()),
+        fetch(`${API_BASE}/menu`).then(res => res.json())
+      ]).then(([cats, prods]) => {
+        setCategories(cats);
+        setProducts(prods);
+        if (cats.length > 0 && !selectedCategory) setSelectedCategory(cats[0].id);
+      });
+    }
+  }, [activeTab]);
+
+  const filteredProducts = products.filter(p => !selectedCategory || p.categoryId === selectedCategory);
+
+  const addToCart = () => {
+    if (!configuringProduct) return;
+    
+    // Calculate total item price
+    let optionsPrice = 0;
+    const selection: any[] = [];
+    
+    // Find selected options details
+    Object.keys(selectedOptions).forEach(groupId => {
+      const group = configuringProduct.optionGroups.find((g: any) => g.id === groupId);
+      const option = group.options.find((o: any) => o.id === selectedOptions[groupId]);
+      if (option) {
+        optionsPrice += option.priceAddon;
+        selection.push({ groupId, groupName: group.name, optionId: option.id, label: option.label, priceAddon: option.priceAddon });
+      }
+    });
+
+    const cartItem = {
+      productId: configuringProduct.id,
+      productName: configuringProduct.name,
+      basePrice: configuringProduct.price,
+      optionsPrice,
+      totalPrice: configuringProduct.price + optionsPrice,
+      quantity: 1,
+      selectedOptions: selection
+    };
+
+    setCart([...cart, cartItem]);
+    setConfiguringProduct(null);
+    setSelectedOptions({});
   };
 
-  const searchMember = async () => {
-        if (!memberSearch) return;
-        setSearchingMember(true);
-        setFoundMember(null);
-        try {
-                const res = await fetch(`${API_BASE}/users?search=${memberSearch}`);
-                const data = await res.json();
-                if (data && data.length > 0) {
-                          setFoundMember(data[0]);
-                } else {
-                          alert('
+  const handleSearchMember = async () => {
+    if (!memberSearch.trim()) return;
+    setSearchingMember(true);
+    setFoundMember(null);
+    try {
+      const res = await fetch(`${API_BASE}/users?search=${memberSearch}`);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setFoundMember(data[0]); // Take the first match
+      } else {
+        alert("ไม่พบสมาชิกในระบบ");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSearchingMember(false);
+    }
+  };
+
+  const removeFromCart = (index: number) => {
+    setCart(cart.filter((_, i) => i !== index));
+  };
+
+  const cartTotal = cart.reduce((sum, item) => sum + item.totalPrice * item.quantity, 0);
+
+  const handleCheckout = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          branchId: branch.id,
+          platform: 'STORE',
+          customerName: checkoutData.customerName || 'Walk-in',
+          note: checkoutData.note,
+          totalAmount: cartTotal,
+          userId: selectedMember?.id,
+          items: cart.map(item => ({
+            productId: item.productId,
+            name: item.productName,
+            quantity: item.quantity,
+            price: item.basePrice,
+            optionsPrice: item.optionsPrice,
+            selectedOptions: item.selectedOptions
+          })),
+          paymentMethod: checkoutData.paymentMethod,
+        })
+      });
+
+      if (res.ok) {
+        const createdOrder = await res.json();
+        setCart([]);
+        setShowCheckout(false);
+        setActiveTab('feed');
+        setCheckoutData({ customerName: '', paymentMethod: 'CASH', note: '' });
+        setViewingReceipt(createdOrder);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full bg-[#f8f5f1]">
+      {/* Tab Switcher */}
+      <div className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-8 shadow-sm">
+        <div className="flex bg-gray-100 p-1 rounded-2xl">
+           <button 
+             onClick={() => setActiveTab('feed')}
+             className={`px-8 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'feed' ? 'bg-white text-[#7c543c] shadow-sm' : 'text-gray-400'}`}
+           >
+              รายการออเดอร์
+           </button>
+           <button 
+             onClick={() => setActiveTab('menu')}
+             className={`px-8 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'menu' ? 'bg-white text-[#7c543c] shadow-sm' : 'text-gray-400'}`}
+           >
+              สั่งอาหาร/เครื่องดื่ม
+           </button>
+        </div>
+        
+        {activeTab === 'feed' && (
+           <div className="relative w-96">
+             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+             <input type="text" placeholder="ค้นหาเลขออเดอร์..." className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-[#7c543c]/20 text-sm" />
+           </div>
+        )}
+      </div>
+
+      <div className="flex-1 overflow-hidden flex">
+        {activeTab === 'feed' ? (
+          /* --- FEED VIEW --- */
+          <div className="flex-1 flex p-6 gap-6">
+            <div className="w-64 flex flex-col gap-2">
+               <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 px-2">ที่มาของออเดอร์</h3>
+               <div className="space-y-1">
+                 {['ทั้งหมด', 'หน้าร้าน', 'Grab', 'LINE'].map(s => (
+                   <button key={s} className="w-full text-left p-4 rounded-2xl hover:bg-white font-bold text-sm text-gray-500 hover:text-[#7c543c] transition-all">
+                      ออเดอร์ {s}
+                   </button>
+                 ))}
+               </div>
+            </div>
+            <div className="flex-1 overflow-y-auto pr-2 space-y-4 no-scrollbar">
+               {orders.map((order: any) => (
+                 <motion.div key={order.id} className="bg-white p-6 rounded-3xl shadow-sm border border-transparent hover:border-[#7c543c]/10 flex items-center justify-between group">
+                    <div className="flex items-center gap-6">
+                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl ${order.platform === 'GRAB' ? 'bg-[#00b14f]' : order.platform === 'LINE' ? 'bg-[#00c300]' : 'bg-[#7c543c]'}`}>
+                          {order.queueNo || order.platform.charAt(0)}
+                       </div>
+                       <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-[10px] font-black text-blue-500 uppercase">Q#${order.queueNo}</span>
+                            <span className="px-2 py-0.5 rounded-full bg-gray-100 text-[10px] font-bold text-gray-400">${order.status}</span>
+                          </div>
+                          <h4 className="font-black text-slate-800">{order.customerName || 'ลูกค้าหน้าร้าน'}</h4>
+                          <p className="text-[10px] text-gray-400 mt-0.5">{order.items?.length} รายการ • {new Date(order.createdAt).toLocaleTimeString()}</p>
+                       </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                       <button onClick={() => setViewingReceipt(order)} className="p-3 text-gray-300 opacity-0 group-hover:opacity-100 hover:text-[#7c543c] transition-colors"><Printer size={18} /></button>
+                       {order.status === 'PAID' && (
+                         <button onClick={() => updateStatus(order.id, 'PREPARING')} className="bg-[#7c543c] text-white px-6 py-3 rounded-2xl font-black text-xs shadow-md hover:bg-[#6a4731] transition-colors">
+                            เริ่มทำออเดอร์
+                         </button>
+                       )}
+                    </div>
+                 </motion.div>
+               ))}
+            </div>
+          </div>
+        ) : (
+          /* --- MENU VIEW --- */
+          <div className="flex-1 flex overflow-hidden">
+             {/* Categories */}
+             <div className="w-24 bg-white border-r border-gray-100 flex flex-col items-center py-6 gap-6">
+                {categories.map(cat => (
+                  <button 
+                    key={cat.id} 
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all ${selectedCategory === cat.id ? 'bg-[#7c543c] text-white shadow-xl' : 'text-gray-400 hover:bg-gray-50'}`}
+                  >
+                     <span className="text-2xl">{cat.icon || '☕'}</span>
+                     <span className="text-[8px] font-black uppercase mt-1 text-center px-1">{cat.name}</span>
+                  </button>
+                ))}
+             </div>
+
+             {/* Products Grid */}
+             <div className="flex-1 p-8 overflow-y-auto no-scrollbar">
+                <div className="grid grid-cols-4 gap-6">
+                   {filteredProducts.map(p => (
+                     <motion.button
+                       key={p.id}
+                       whileHover={{ y: -5 }}
+                       whileTap={{ scale: 0.95 }}
+                       onClick={() => {
+                          setConfiguringProduct(p);
+                          // Default options
+                          const defaults: any = {};
+                          p.optionGroups?.forEach((g: any) => {
+                             const def = g.options.find((o: any) => o.isDefault);
+                             if (def) defaults[g.id] = def.id;
+                          });
+                          setSelectedOptions(defaults);
+                       }}
+                       className="bg-white p-4 rounded-[2rem] shadow-sm border border-transparent hover:border-[#7c543c]/20 text-left group flex flex-col items-center"
+                     >
+                        <div className="w-full aspect-square rounded-2xl overflow-hidden mb-4 bg-gray-50">
+                           <img src={p.imageUrl || 'https://via.placeholder.com/150'} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={p.name} />
+                        </div>
+                        <h4 className="font-black text-slate-800 text-sm mb-1 text-center w-full truncate px-2">{p.name}</h4>
+                        <p className="text-amber-600 font-black text-xs">{p.price} ฿</p>
+                     </motion.button>
+                   ))}
+                </div>
+             </div>
+
+             {/* Cart Sidebar */}
+             <div className="w-96 bg-white border-l border-gray-100 flex flex-col shadow-2xl">
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                   <h3 className="font-black text-lg text-slate-800 flex items-center gap-2">
+                      <ShoppingBag size={20} className="text-[#7c543c]" /> ตะกร้าสินค้า
+                   </h3>
+                   <span className="bg-[#7c543c]/10 text-[#7c543c] px-3 py-1 rounded-full text-[10px] font-black">{cart.length} รายการ</span>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                   {cart.map((item, idx) => (
+                     <div key={idx} className="flex justify-between items-start group">
+                        <div className="flex-1">
+                           <p className="font-bold text-slate-800 text-sm">{item.productName}</p>
+                           <p className="text-[10px] text-gray-400 italic">
+                             {item.selectedOptions.map((o: any) => o.label).join(', ')}
+                           </p>
+                        </div>
+                        <div className="text-right flex items-center gap-4">
+                           <p className="font-black text-slate-800 text-sm">{item.totalPrice} ฿</p>
+                           <button onClick={() => removeFromCart(idx)} className="text-gray-300 hover:text-rose-500 transition-colors"><X size={14} /></button>
+                        </div>
+                     </div>
+                   ))}
+                   {cart.length === 0 && (
+                      <div className="h-full flex flex-col items-center justify-center opacity-20 py-20">
+                         <ShoppingBag size={48} />
+                         <p className="mt-4 font-black">ยังไม่มีสินค้าในตะกร้า</p>
+                      </div>
+                   )}
+                </div>
+
+                {/* Member Section */}
+                <div className="px-6 py-4 border-t border-gray-100 bg-white">
+                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      <User size={12} className="text-[#7c543c]" /> ข้อมูลสมาชิก
+                   </p>
+                   {selectedMember ? (
+                      <div className="flex items-center justify-between bg-amber-50 p-3 rounded-2xl border border-amber-100">
+                         <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md"><User size={20} /></div>
+                            <div>
+                               <p className="font-bold text-slate-800 text-xs">{selectedMember.name}</p>
+                               <p className="text-[10px] text-amber-600 font-bold">{selectedMember.points} แต้ม</p>
+                            </div>
+                         </div>
+                         <button onClick={() => setSelectedMember(null)} className="text-gray-300 hover:text-rose-500"><X size={16} /></button>
+                      </div>
+                   ) : (
+                      <div className="space-y-2">
+                         <div className="relative">
+                            <input 
+                               type="text" 
+                               value={memberSearch}
+                               onChange={e => setMemberSearch(e.target.value)}
+                               placeholder="เบอร์โทรศัพท์/ชื่อสมาชิก..." 
+                               className="w-full pl-4 pr-10 py-2.5 bg-gray-50 rounded-xl border-none text-[10px] font-bold focus:ring-2 focus:ring-[#7c543c]/10" 
+                            />
+                            <button 
+                               onClick={handleSearchMember}
+                               disabled={searchingMember}
+                               className="absolute right-2 top-1/2 -translate-y-1/2 text-[#7c543c]"
+                            >
+                               <Search size={16} />
+                            </button>
+                         </div>
+                         {foundMember && (
+                            <motion.button 
+                               initial={{ opacity: 0, y: 5 }}
+                               animate={{ opacity: 1, y: 0 }}
+                               onClick={() => { setSelectedMember(foundMember); setFoundMember(null); setMemberSearch(''); }}
+                               className="w-full p-2.5 rounded-xl border-2 border-dashed border-[#7c543c]/30 text-[#7c543c] text-[10px] font-black flex items-center justify-center gap-2 hover:bg-amber-50 transition-all"
+                            >
+                               เลือก {foundMember.name} ?
+                            </motion.button>
+                         )}
+                      </div>
+                   )}
+                </div>
+
+                <div className="p-8 border-t border-gray-100 bg-gray-50/50">
+                   <div className="flex justify-between items-center mb-6">
+                      <span className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">รวมทั้งสิ้น</span>
+                      <span className="text-3xl font-black text-slate-800 tracking-tighter">{cartTotal} ฿</span>
+                   </div>
+                   <button 
+                     disabled={cart.length === 0}
+                     onClick={() => setShowCheckout(true)}
+                     className="w-full py-4 rounded-2xl bg-[#7c543c] text-white font-black uppercase tracking-widest shadow-xl shadow-[#7c543c]/30 disabled:opacity-50 disabled:grayscale transition-all"
+                   >
+                      ชำระเงิน / ส่งออเดอร์
+                   </button>
+                </div>
+             </div>
+          </div>
+        )}
+      </div>
+
+      {/* --- Modals --- */}
+      <AnimatePresence>
+         {configuringProduct && (
+           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6">
+              <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 50, opacity: 0 }} className="bg-white w-full max-w-2xl rounded-[3rem] overflow-hidden shadow-2xl border border-white/20">
+                 <div className="h-48 relative">
+                    <img src={configuringProduct.imageUrl} className="w-full h-full object-cover" alt="" />
+                    <button onClick={() => setConfiguringProduct(null)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center backdrop-blur-md"><X size={20} /></button>
+                 </div>
+                 <div className="p-10">
+                    <h2 className="text-3xl font-black italic mb-6 text-slate-800">{configuringProduct.name}</h2>
+                    
+                    <div className="space-y-8 max-h-96 overflow-y-auto pr-2 no-scrollbar">
+                       {configuringProduct.optionGroups?.map((group: any) => (
+                         <div key={group.id}>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                               {group.name} {group.isRequired && <span className="text-rose-500">* จำเป็น</span>}
+                            </p>
+                            <div className="grid grid-cols-3 gap-3">
+                               {group.options.map((opt: any) => (
+                                 <button 
+                                   key={opt.id} 
+                                   onClick={() => setSelectedOptions({...selectedOptions, [group.id]: opt.id})}
+                                   className={`p-4 rounded-2xl border-2 transition-all text-left group ${selectedOptions[group.id] === opt.id ? 'bg-[#7c543c] border-[#7c543c] text-white' : 'bg-gray-50 border-transparent text-slate-600 hover:border-gray-200'}`}
+                                 >
+                                    <div className="flex justify-between items-start">
+                                       <span className="font-bold text-sm">{opt.label}</span>
+                                       {selectedOptions[group.id] === opt.id && <Check size={14} />}
+                                    </div>
+                                    {opt.priceAddon > 0 && <p className={`text-[10px] font-black mt-1 ${selectedOptions[group.id] === opt.id ? 'text-white/60' : 'text-amber-600'}`}>+{opt.priceAddon} ฿</p>}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                       ))}
+                    </div>
+
+                    <div className="mt-12 flex items-center gap-6 border-t border-gray-100 pt-8">
+                       <div className="flex-1">
+                          <p className="text-[10px] font-bold text-gray-400 uppercase">ราคาต่อชิ้น</p>
+                          <p className="text-3xl font-black text-slate-800">{configuringProduct.price + Object.keys(selectedOptions).reduce((s, gid) => {
+                             const opt = configuringProduct.optionGroups.find((g:any)=>g.id===gid).options.find((o:any)=>o.id===selectedOptions[gid]);
+                             return s + (opt?.priceAddon || 0);
+                          }, 0)} ฿</p>
+                       </div>
+                       <button onClick={addToCart} className="bg-[#7c543c] text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-[#7c543c]/20">
+                          ใส่ตะกร้า
+                       </button>
+                    </div>
+                 </div>
+              </motion.div>
+           </div>
+         )}
+
+         {showCheckout && (
+            <div className="fixed inset-0 bg-[#7c543c]/10 backdrop-blur-xl z-[100] flex items-center justify-center">
+               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white w-full max-w-md rounded-[3rem] p-10 shadow-3xl text-center">
+                  <div className="w-20 h-20 rounded-3xl bg-[#7c543c] text-white flex items-center justify-center mx-auto mb-6 shadow-xl">
+                     <CreditCard size={40} />
+                  </div>
+                  <h2 className="text-2xl font-black mb-8 text-slate-800 tracking-tight">ชำระเงินออเดอร์หน้าร้าน</h2>
+                  
+                  <div className="space-y-4 text-left mb-10">
+                     <div>
+                        <label className="text-[10px] font-black text-gray-400 uppercase ml-2">ชื่อลูกค้า</label>
+                        <input type="text" value={checkoutData.customerName} onChange={e=>setCheckoutData({...checkoutData, customerName: e.target.value})} className="w-full mt-1 p-4 bg-gray-50 rounded-2xl border-none font-bold text-slate-800" placeholder="ชื่อเล่น หรือ ชื่อลูกค้า" />
+                     </div>
+                     <div>
+                        <label className="text-[10px] font-black text-gray-400 uppercase ml-2">วิธีชำระเงิน</label>
+                        <div className="grid grid-cols-2 gap-3 mt-1">
+                           {['เงินสด (CASH)', 'สแกนจ่าย (QR)'].map((m, idx) => (
+                             <button key={m} onClick={()=>setCheckoutData({...checkoutData, paymentMethod: idx === 0 ? 'CASH' : 'QR'})} className={`py-4 rounded-xl border-2 font-black text-xs transition-all ${checkoutData.paymentMethod === (idx === 0 ? 'CASH' : 'QR') ? 'bg-[#7c543c] border-[#7c543c] text-white' : 'bg-white border-gray-100 text-gray-400'}`}>
+                                {m}
+                             </button>
+                           ))}
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                     <button onClick={()=>setShowCheckout(false)} className="flex-1 py-4 font-black text-gray-400 uppercase tracking-widest text-xs">แก้ไขรายการ</button>
+                     <button onClick={handleCheckout} className="flex-1 py-4 bg-[#7c543c] text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl text-xs">เก็บเงิน {cartTotal} ฿</button>
+                  </div>
+               </motion.div>
+            </div>
+         )}
+         {/* Receipt Modal */}
+         {viewingReceipt && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-6 receipt-overlay">
+               <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="relative bg-white w-full max-w-sm rounded-none shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                  
+                  {/* Actions (Not Printed) */}
+                  <div className="bg-gray-100 p-4 flex justify-end gap-3 no-print border-b border-gray-200">
+                     <button onClick={() => setViewingReceipt(null)} className="px-4 py-2 font-bold text-gray-500 hover:bg-gray-200 rounded-lg transition-colors text-sm">ปิดหน้าต่าง</button>
+                     <button onClick={handlePrint} className="px-4 py-2 bg-[#7c543c] text-white font-bold rounded-lg flex items-center gap-2 hover:bg-[#6a4731] transition-colors text-sm shadow-sm">
+                        <Printer size={16} /> พิมพ์ใบเสร็จ
+                     </button>
+                  </div>
+
+                  {/* Printable Receipt Content */}
+                  <div className="p-6 overflow-y-auto no-scrollbar bg-white" id="printable-receipt" style={{ fontFamily: 'monospace' }}>
+                     <div className="text-center mb-6">
+                        <h1 className="text-2xl font-black text-slate-800 tracking-tight">456 COFFEE</h1>
+                        <p className="text-sm text-gray-500 mt-1">สาขา: {branch?.name || 'Main'}</p>
+                        <p className="text-sm text-gray-500">เลขประจำตัวผู้เสียภาษี: 01055xxxxxxxx</p>
+                        <p className="text-sm text-gray-500 mt-1">--------------------------------</p>
+                        <h2 className="text-lg font-bold mt-2 text-slate-800">ใบเสร็จรับเงิน</h2>
+                     </div>
+                     
+                     <div className="flex justify-between text-sm mb-1 font-medium text-slate-700">
+                        <span>ออเดอร์: #{viewingReceipt.orderNo || viewingReceipt.id?.slice(0,8)}</span>
+                        <span>คิว: {viewingReceipt.queueNo || '-'}</span>
+                     </div>
+                     <div className="flex justify-between text-sm mb-4 font-medium text-slate-700">
+                        <span>วันที่: {new Date(viewingReceipt.createdAt || Date.now()).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })}</span>
+                        <span>{viewingReceipt.paymentMethod || 'CASH'}</span>
+                     </div>
+
+                     <div className="border-t-2 border-dashed border-gray-300 my-4"></div>
+                     
+                     <div className="space-y-3">
+                        {viewingReceipt.items?.map((item: any, idx: number) => {
+                          let opts: any[] = [];
+                          if (typeof item.selectedOptions === 'string') {
+                            try { opts = JSON.parse(item.selectedOptions); } catch(e){}
+                          } else if (Array.isArray(item.selectedOptions)) {
+                            opts = item.selectedOptions;
+                          }
+                          
+                          return (
+                            <div key={idx} className="text-sm font-medium text-slate-800">
+                               <div className="flex justify-between items-start">
+                                  <div className="flex-1 pr-2 leading-tight">
+                                     {item.quantity}x {item.productName || item.product?.name || 'Item'}
+                                     {opts && opts.length > 0 && (
+                                        <div className="text-[11px] text-gray-500 mt-0.5 ml-4">
+                                           {opts.map((o:any)=>o.label).join(', ')}
+                                        </div>
+                                     )}
+                                  </div>
+                                  <div className="text-right whitespace-nowrap">{(item.price).toLocaleString()} ฿</div>
+                               </div>
+                            </div>
+                          );
+                        })}
+                     </div>
+
+                     <div className="border-t-2 border-dashed border-gray-300 my-4"></div>
+                     
+                     <div className="flex justify-between items-center font-bold text-sm mb-1 text-slate-700">
+                        <span>รวมเป็นเงิน</span>
+                        <span>{(viewingReceipt.totalAmount || 0).toLocaleString()} ฿</span>
+                     </div>
+                     <div className="flex justify-between items-center font-bold text-sm mb-3 text-slate-700">
+                        <span>ภาษีมูลค่าเพิ่ม (7%)</span>
+                        <span>{((viewingReceipt.totalAmount || 0) * 0.07 / 1.07).toFixed(2)} ฿</span>
+                     </div>
+                     <div className="flex justify-between items-center font-black text-lg text-slate-900 border-t border-gray-200 pt-2">
+                        <span>รวมทั้งสิ้น</span>
+                        <span>{(viewingReceipt.totalAmount || 0).toLocaleString()} ฿</span>
+                     </div>
+
+                     <div className="border-t-2 border-dashed border-gray-300 my-4"></div>
+                     
+                     <div className="text-center text-sm font-medium text-gray-500 mt-6 pb-6">
+                        <p>ขอบคุณที่ใช้บริการครับ!</p>
+                        <p className="text-[11px] mt-1">ขับเคลื่อนโดย 456 Ecosystem</p>
+                     </div>
+                  </div>
+               </motion.div>
+            </div>
+         )}
+      </AnimatePresence>
+    </div>
+  );
+}
