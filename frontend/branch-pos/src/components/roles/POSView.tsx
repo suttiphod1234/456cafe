@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Store, Coffee, CheckSquare, Truck, Package, 
-  MapPin, Clock, Info, AlertCircle, Search, 
-  Plus, Printer, CreditCard, User, Phone, Globe,
+  Coffee, Truck, Search, 
+  Plus, Printer, CreditCard, User, 
   ShoppingBag, X, ChevronRight, Check
 } from 'lucide-react';
 

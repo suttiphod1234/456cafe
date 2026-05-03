@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Banknote, TrendingUp, TrendingDown, Plus, X, Loader2, ArrowUpRight, ArrowDownRight, Filter } from 'lucide-react';
+import { Banknote, Plus, Loader2, ArrowUpRight, ArrowDownRight, Filter } from 'lucide-react';
 
 const API = 'http://localhost:5001/api';
 

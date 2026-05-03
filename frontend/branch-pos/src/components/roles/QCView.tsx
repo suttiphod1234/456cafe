@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, CheckCircle2, ChevronRight, X, User, Package, Terminal } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, ChevronRight, Package } from 'lucide-react';
 
 export default function QCView({ orders, updateStatus }: any) {
   const qcOrders = orders.filter((o: any) => o.status === 'READY_FOR_QC');

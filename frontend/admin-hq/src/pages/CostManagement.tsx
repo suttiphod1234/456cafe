@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { DollarSign, Loader2, TrendingUp, AlertCircle, Coffee } from 'lucide-react';
+// import { motion } from 'framer-motion';
+import { DollarSign, Loader2, AlertCircle, Coffee } from 'lucide-react';
 
 const API = 'http://localhost:5001/api';
 

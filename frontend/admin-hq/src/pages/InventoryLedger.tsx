@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Package, ArrowDown, ArrowUp, X, Check, Loader2, AlertTriangle, Plus, ClipboardList } from 'lucide-react';
+import { X, Loader2, AlertTriangle, Plus, ClipboardList } from 'lucide-react';
 
 const API = 'http://localhost:5001/api';
-const C = { 50: '#0b0e14', 100: '#151821', 200: '#23283b', 300: '#475569', 400: '#7c3aed', 500: '#94a3b8', 600: '#cbd5e1', 700: '#e2e8f0', 800: '#f8fafc', 900: '#ffffff' };
+// const C = { ... };
 
 interface Transaction {
   id: string;

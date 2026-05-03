@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Coffee, Store, CheckSquare, Truck, LogOut, 
-  User, Settings, ChevronRight, Bell, HelpCircle
+  Settings, ChevronRight, Bell, HelpCircle
 } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 
@@ -77,27 +77,7 @@ export default function App() {
     }
   };
 
-  const createExternalOrder = async (data: any) => {
-    try {
-      // Mock some products for external entry
-      const res = await fetch(`${API_BASE}/orders`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          branchId: selectedBranchId,
-          platform: data.platform,
-          customerName: data.customerName,
-          note: data.note,
-          totalAmount: 150, // Mock
-          items: [{ productId: 'p-latte', quantity: 1, price: 150 }], // Mock
-          paymentMethod: 'CASH',
-        })
-      });
-      if (res.ok) refreshOrders();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // Removed unused createExternalOrder
 
   // --- View: Branch Selector ---
   if (!selectedBranchId) {

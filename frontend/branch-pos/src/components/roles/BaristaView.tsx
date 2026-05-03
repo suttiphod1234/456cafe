@@ -1,4 +1,4 @@
-import React from 'react';
+// Removed unused React
 import { motion, AnimatePresence } from 'framer-motion';
 import { Coffee, Clock, AlertCircle, CheckCircle2, Play } from 'lucide-react';
 

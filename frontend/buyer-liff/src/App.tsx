@@ -4,7 +4,7 @@ import {
   Coffee, ShoppingBag, Bell, Search, 
   MapPin, Heart, Clock, User, ChevronRight, X, Minus, Plus, 
   Truck, Gift, Settings, LogOut, 
-  RefreshCw, Receipt, CheckCircle2, History, Home, Briefcase,
+  RefreshCw, CheckCircle2, History, Home, Briefcase,
   Phone, ClipboardList, ArrowLeft, QrCode, Banknote, Sparkles, Loader2, Store as StoreIcon, Check
 } from 'lucide-react';
 import { useLiff } from './hooks/useLiff';
@@ -177,7 +177,7 @@ function MenuDetailSheet({item,onClose,onAddToCart}:{item:MenuItem;onClose:()=>v
 }
 
 // ─── HOME PAGE ─────────────────────────────────────────────────────────────
-function HomePage({onNavigate,onSelectBranch,user}:{cart:CartItem[];onNavigate:(p:string)=>void;onSelectBranch:(b:Branch)=>void;user:any}) {
+function HomePage({onNavigate,onSelectBranch,user}:{onNavigate:(p:string)=>void;onSelectBranch:(b:Branch)=>void;user:any}) {
   const [branches,setBranches]=useState<Branch[]>([]);
   const [featured,setFeatured]=useState<MenuItem[]>([]);
   const [loading,setLoading]=useState(true);
@@ -272,7 +272,7 @@ function HomePage({onNavigate,onSelectBranch,user}:{cart:CartItem[];onNavigate:(
 }
 
 // ─── MENU PAGE ─────────────────────────────────────────────────────────────
-function MenuPage({onAddToCart}:{onAddToCart:(item:MenuItem,qty:number,opts:Record<string,MenuOption[]>,note:string)=>void;cart:CartItem[]}) {
+function MenuPage({onAddToCart}:{onAddToCart:(item:MenuItem,qty:number,opts:Record<string,MenuOption[]>,note:string)=>void}) {
   const [categories,setCategories]=useState<Category[]>([]);
   const [items,setItems]=useState<MenuItem[]>([]);
   const [activeCat,setActiveCat]=useState<string|null>(null);
