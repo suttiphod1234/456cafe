@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --open /456cafe/pos/",
-    "build": "tsc -b && vite build",
+    "build": "tsc && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

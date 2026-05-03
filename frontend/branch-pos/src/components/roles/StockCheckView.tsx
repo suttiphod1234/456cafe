@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ClipboardCheck, Trash2, Save, ArrowRight, 
+  ClipboardCheck, Trash2, Save, 
   AlertCircle, CheckCircle2, ChevronRight, Package,
   Search, RefreshCw, Layers, Info
 } from 'lucide-react';

@@ -4,7 +4,7 @@ import {
   Coffee, ShoppingBag, Bell, Search, 
   MapPin, Heart, Clock, User, ChevronRight, X, Minus, Plus, 
   Truck, Gift, Settings, LogOut, 
-  RefreshCw, CheckCircle2, History, Home, Briefcase,
+  RefreshCw, Receipt, CheckCircle2, History, Home, Briefcase,
   Phone, ClipboardList, ArrowLeft, QrCode, Banknote, Sparkles, Loader2, Store as StoreIcon, Check
 } from 'lucide-react';
 import { useLiff } from './hooks/useLiff';
@@ -976,8 +976,8 @@ export default function App() {
       <main className="flex-1 flex flex-col overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div key={tab} initial={{opacity:0,y:5}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-5}} transition={{duration:0.2}} className="flex-1 flex flex-col overflow-hidden">
-            {tab==='home'&&<HomePage cart={cart} onNavigate={setTab as any} onSelectBranch={b=>{setSelectedBranch(b);setTab('menu');}} user={user || member}/>}
-            {tab==='menu'&&<MenuPage onAddToCart={addToCart} cart={cart}/>}
+            {tab==='home'&&<HomePage onNavigate={setTab as any} onSelectBranch={b=>{setSelectedBranch(b);setTab('menu');}} user={user || member}/>}
+            {tab==='menu'&&<MenuPage onAddToCart={addToCart}/>}
             {tab==='cart'&&<CartPage cart={cart} onUpdateQty={updateQty} onRemove={idx=>setCart(p=>p.filter((_,i)=>i!==idx))} onCheckout={handleCheckout} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} setIsAuthModalOpen={setIsAuthModalOpen} setTempCheckoutData={setTempCheckoutData} member={member} setIsAddressFormOpen={setIsAddressFormOpen}/>}
             {tab==='orders'&&<OrdersPage customerUid={user?.userId||member?.id||'walk-in'}/>}
             {tab==='profile'&&<ProfilePage member={member} setShowManage={setIsAddressManageOpen} setShowHistory={()=>setTab('orders')}/>}
