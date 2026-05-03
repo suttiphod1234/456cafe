@@ -5,6 +5,7 @@ import { BranchService } from './branch.service';
 import { InventoryService } from './inventory.service';
 import { ProductService } from './product.service';
 import { MenuService } from './menu.service';
+import { InventoryTransactionService } from './inventory-transaction.service';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -34,6 +35,13 @@ describe('AppController', () => {
         {
           provide: MenuService,
           useValue: { getAllMenuItems: jest.fn().mockResolvedValue([]) },
+        },
+        {
+          provide: InventoryTransactionService,
+          useValue: {
+            getTransactions: jest.fn().mockResolvedValue([]),
+            createTransaction: jest.fn().mockResolvedValue({}),
+          },
         },
       ],
     }).compile();
