@@ -13,11 +13,11 @@ export default function BaristaView({ orders, updateStatus }: any) {
             <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
                <Coffee size={24} className="text-amber-500" />
             </div>
-            <h1 className="text-xl font-black uppercase tracking-widest">Kitchen Display (KDS)</h1>
+            <h1 className="text-xl font-black uppercase tracking-widest">จอเตรียมเครื่องดื่ม (KDS)</h1>
          </div>
          <div className="flex gap-4">
             <div className="text-right">
-               <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Active Tickets</p>
+               <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">รายการที่กำลังทำ</p>
                <p className="text-xl font-black text-amber-500">{preparingOrders.length}</p>
             </div>
          </div>
@@ -39,14 +39,14 @@ export default function BaristaView({ orders, updateStatus }: any) {
                  <div className={`p-5 flex justify-between items-start ${order.status === 'PAID' ? 'bg-white/5' : 'bg-[#7c543c]'}`}>
                     <div>
                        <span className="text-[10px] font-black opacity-60 uppercase tracking-widest">#{order.orderNo.slice(-4)}</span>
-                       <h3 className="text-xl font-black truncate max-w-[200px] italic">{order.customerName || 'Walk-in'}</h3>
+                       <h3 className="text-xl font-black truncate max-w-[200px] italic">{order.customerName || 'ลูกค้า Walk-in'}</h3>
                     </div>
                     <div className="flex flex-col items-end">
                        <span className={`px-2 py-1 rounded-lg text-[10px] font-black mb-1 ${order.platform === 'GRAB' ? 'bg-grab' : order.platform === 'LINE' ? 'bg-line' : 'bg-white/10'}`}>
                           {order.platform}
                        </span>
                        <div className="flex items-center gap-1 text-[10px] font-bold opacity-60">
-                          <Clock size={10} /> {Math.floor((Date.now() - new Date(order.createdAt).getTime()) / 60000)}m ago
+                          <Clock size={10} /> เมื่อ {Math.floor((Date.now() - new Date(order.createdAt).getTime()) / 60000)} นาทีที่แล้ว
                        </div>
                     </div>
                  </div>
@@ -56,10 +56,10 @@ export default function BaristaView({ orders, updateStatus }: any) {
                     {order.items?.map((item: any, idx: number) => (
                       <div key={idx} className="border-b border-white/5 pb-4 last:border-0">
                          <div className="flex justify-between items-start">
-                           <div className="flex gap-3">
-                             <span className="text-xl font-black text-amber-500">x{item.quantity}</span>
-                             <span className="text-lg font-bold">{item.productName}</span>
-                           </div>
+                            <div className="flex gap-3">
+                              <span className="text-xl font-black text-amber-500">×{item.quantity}</span>
+                              <span className="text-lg font-bold">{item.productName}</span>
+                            </div>
                          </div>
                          {item.selectedOptions && (
                            <div className="flex flex-wrap gap-2 mt-2 ml-10">
@@ -87,14 +87,14 @@ export default function BaristaView({ orders, updateStatus }: any) {
                         onClick={() => updateStatus(order.id, 'PREPARING')}
                         className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase tracking-widest text-sm flex items-center justify-center gap-2"
                       >
-                         <Play size={18} /> Start Preparation
+                         <Play size={18} /> เริ่มทำเครื่องดื่ม
                       </button>
                     ) : (
                       <button 
                         onClick={() => updateStatus(order.id, 'READY_FOR_QC')}
                         className="w-full py-4 rounded-2xl bg-emerald-600 text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/40"
                       >
-                         <CheckCircle2 size={18} /> Completed (Send to QC)
+                         <CheckCircle2 size={18} /> ทำเสร็จแล้ว (ส่งไป QC)
                       </button>
                     )}
                  </div>
@@ -105,7 +105,7 @@ export default function BaristaView({ orders, updateStatus }: any) {
          {preparingOrders.length === 0 && (
            <div className="flex-1 flex flex-col items-center justify-center opacity-20">
               <Coffee size={100} strokeWidth={1} />
-              <p className="mt-6 font-black uppercase tracking-[0.2em]">Resting Time • No Orders</p>
+              <p className="mt-6 font-black uppercase tracking-[0.2em]">พักเบรก • ยังไม่มีออเดอร์</p>
            </div>
          )}
       </div>

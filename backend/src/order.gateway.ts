@@ -2,7 +2,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
-  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
@@ -27,7 +26,7 @@ export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('join-branch')
   handleJoinBranch(client: Socket, branchId: string) {
-    client.join(`branch-${branchId}`);
+    void client.join(`branch-${branchId}`);
     console.log(`Client ${client.id} joined branch: ${branchId}`);
   }
 

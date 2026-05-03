@@ -8,7 +8,7 @@ export class AuthService {
   constructor(private prisma: PrismaService) {}
 
   // ─── OTP Logic ──────────────────────────────────────────────────────────
-  async sendOtp(phone: string) {
+  sendOtp(phone: string) {
     const code = '123456'; // Mocked OTP for development
     const expires = Date.now() + 5 * 60 * 1000; // 5 mins
     this.otpMap.set(phone, { code, expires });
@@ -17,7 +17,11 @@ export class AuthService {
     return { success: true, message: 'OTP sent successfully (Check console)' };
   }
 
-  async verifyOtp(phone: string, inputCode: string, metadata?: any) {
+  async verifyOtp(
+    phone: string,
+    inputCode: string,
+    metadata?: { name?: string },
+  ) {
     const record = this.otpMap.get(phone);
     if (!record || record.expires < Date.now()) {
       throw new BadRequestException('OTP expired or not found');

@@ -99,6 +99,20 @@ export class InventoryService {
           where: { id: inventoryItem.id },
           data: { quantity: newQuantity },
         });
+
+        // Log Transaction
+        await tx.inventoryTransaction.create({
+          data: {
+            branchId,
+            ingredientId,
+            type: 'ORDER_DEDUCTION',
+            quantity: -amountNeeded,
+            unitCost: inventoryItem.ingredient.costPerUnit || 0,
+            totalCost: amountNeeded * (inventoryItem.ingredient.costPerUnit || 0),
+            referenceId: orderId,
+            note: `Deducted for order ${order.orderNo}`,
+          },
+        });
       }
 
       return {

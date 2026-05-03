@@ -1,5 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
+import { Prisma } from '@prisma/client';
+
+export interface CreateAddressDto {
+  label: string;
+  address: string;
+  latitude?: number;
+  longitude?: number;
+  isDefault?: boolean;
+}
 
 @Injectable()
 export class AddressService {
@@ -12,7 +21,7 @@ export class AddressService {
     });
   }
 
-  async create(userId: string, data: any) {
+  async create(userId: string, data: CreateAddressDto) {
     // If it's the first address or set as default, unset others
     if (data.isDefault) {
       await this.prisma.address.updateMany({
@@ -25,14 +34,17 @@ export class AddressService {
 
     return this.prisma.address.create({
       data: {
-        ...data,
+        label: data.label,
+        address: data.address,
+        latitude: data.latitude,
+        longitude: data.longitude,
         userId,
-        isDefault: data.isDefault || count === 0,
+        isDefault: data.isDefault ?? count === 0,
       },
     });
   }
 
-  async update(id: string, userId: string, data: any) {
+  async update(id: string, userId: string, data: Partial<CreateAddressDto>) {
     if (data.isDefault) {
       await this.prisma.address.updateMany({
         where: { userId, NOT: { id } },
@@ -40,9 +52,17 @@ export class AddressService {
       });
     }
 
+    const updateData: Prisma.AddressUpdateInput = {
+      label: data.label,
+      address: data.address,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      isDefault: data.isDefault,
+    };
+
     return this.prisma.address.update({
       where: { id },
-      data,
+      data: updateData,
     });
   }
 

@@ -3,59 +3,87 @@
 @tailwind utilities;
 
 :root {
-  --coffee-50: #fdf8f0;
-  --coffee-100: #f5ebe0;
-  --coffee-200: #e8d5c0;
-  --coffee-300: #d4b896;
-  --coffee-400: #b8956a;
-  --coffee-500: #9c7a50;
-  --coffee-600: #7a5c3a;
-  --coffee-700: #5c4428;
-  --coffee-800: #3d2d1a;
-  --coffee-900: #1e160d;
-  --accent: #b8956a;
+  --coffee-50: #0b0e14;
+  --coffee-100: #151821;
+  --coffee-200: #23283b;
+  --coffee-300: #475569;
+  --coffee-400: #7c3aed;
+  --coffee-500: #94a3b8;
+  --coffee-600: #cbd5e1;
+  --coffee-700: #e2e8f0;
+  --coffee-800: #f8fafc;
+  --coffee-900: #ffffff;
+  --accent: #7c3aed;
+}
+
+[data-theme="dark"] {
+  --bg-main: #0b0e14;
+  --bg-card: #151821;
+  --bg-hover: #23283b;
+  --border-color: #23283b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #7c3aed;
+}
+
+[data-theme="light"] {
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-hover: #e2e8f0;
+  --border-color: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --accent: #7c3aed;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--coffee-300) transparent;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+html {
+  /* Increase base font size for better readability */
+  font-size: 16px;
 }
 
 body {
-  background-color: var(--coffee-50);
-  color: var(--coffee-800);
+  background-color: var(--bg-main);
+  color: var(--text-main);
   font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .admin-card {
-  background: #ffffff;
-  border: 1px solid var(--coffee-200);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 .sidebar-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
   border-radius: 0.75rem;
   transition: all 0.2s;
-  color: var(--coffee-600);
-  font-weight: 500;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 1.05rem;
 }
 
 .sidebar-item:hover {
-  background: var(--coffee-100);
-  color: var(--coffee-700);
+  background: var(--bg-hover);
+  color: var(--text-main);
 }
 
 .sidebar-item.active {
-  background: var(--coffee-400);
-  color: #ffffff;
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(124, 58, 237, 0.3);
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(184, 149, 106, 0.3);
 }
 
 .no-scrollbar::-webkit-scrollbar {

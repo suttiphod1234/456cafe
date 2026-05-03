@@ -25,6 +25,12 @@ export default function POSView({ branch, orders, updateStatus }: any) {
     paymentMethod: 'CASH',
     note: ''
   });
+  const [viewingReceipt, setViewingReceipt] = useState<any>(null);
+
+  // Print function
+  const handlePrint = () => {
+    window.print();
+  };
 
   // 1. Fetch Menu Data
   useEffect(() => {
@@ -104,10 +110,12 @@ export default function POSView({ branch, orders, updateStatus }: any) {
       });
 
       if (res.ok) {
+        const createdOrder = await res.json();
         setCart([]);
         setShowCheckout(false);
         setActiveTab('feed');
         setCheckoutData({ customerName: '', paymentMethod: 'CASH', note: '' });
+        setViewingReceipt(createdOrder);
       }
     } catch (err) {
       console.error(err);
@@ -123,20 +131,20 @@ export default function POSView({ branch, orders, updateStatus }: any) {
              onClick={() => setActiveTab('feed')}
              className={`px-8 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'feed' ? 'bg-white text-[#7c543c] shadow-sm' : 'text-gray-400'}`}
            >
-              Active Orders
+              รายการออเดอร์
            </button>
            <button 
              onClick={() => setActiveTab('menu')}
              className={`px-8 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'menu' ? 'bg-white text-[#7c543c] shadow-sm' : 'text-gray-400'}`}
            >
-              Order Menu
+              สั่งอาหาร/เครื่องดื่ม
            </button>
         </div>
         
         {activeTab === 'feed' && (
            <div className="relative w-96">
              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-             <input type="text" placeholder="Search orders..." className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-[#7c543c]/20 text-sm" />
+             <input type="text" placeholder="ค้นหาเลขออเดอร์..." className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-[#7c543c]/20 text-sm" />
            </div>
         )}
       </div>
@@ -146,11 +154,11 @@ export default function POSView({ branch, orders, updateStatus }: any) {
           /* --- FEED VIEW --- */
           <div className="flex-1 flex p-6 gap-6">
             <div className="w-64 flex flex-col gap-2">
-               <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 px-2">Sources</h3>
+               <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 px-2">ที่มาของออเดอร์</h3>
                <div className="space-y-1">
-                 {['All', 'Store', 'Grab', 'LINE'].map(s => (
+                 {['ทั้งหมด', 'หน้าร้าน', 'Grab', 'LINE'].map(s => (
                    <button key={s} className="w-full text-left p-4 rounded-2xl hover:bg-white font-bold text-sm text-gray-500 hover:text-[#7c543c] transition-all">
-                      {s} Orders
+                      ออเดอร์ {s}
                    </button>
                  ))}
                </div>
@@ -167,15 +175,15 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                             <span className="text-[10px] font-black text-blue-500 uppercase">Q#{order.queueNo}</span>
                             <span className="px-2 py-0.5 rounded-full bg-gray-100 text-[10px] font-bold text-gray-400">{order.status}</span>
                           </div>
-                          <h4 className="font-black text-slate-800">{order.customerName || 'Walk-in'}</h4>
-                          <p className="text-[10px] text-gray-400 mt-0.5">{order.items?.length} items • {new Date(order.createdAt).toLocaleTimeString()}</p>
+                          <h4 className="font-black text-slate-800">{order.customerName || 'ลูกค้าหน้าร้าน'}</h4>
+                          <p className="text-[10px] text-gray-400 mt-0.5">{order.items?.length} รายการ • {new Date(order.createdAt).toLocaleTimeString()}</p>
                        </div>
                     </div>
                     <div className="flex items-center gap-3">
-                       <button className="p-3 text-gray-300 opacity-0 group-hover:opacity-100"><Printer size={18} /></button>
+                       <button onClick={() => setViewingReceipt(order)} className="p-3 text-gray-300 opacity-0 group-hover:opacity-100 hover:text-[#7c543c] transition-colors"><Printer size={18} /></button>
                        {order.status === 'PAID' && (
-                         <button onClick={() => updateStatus(order.id, 'PREPARING')} className="bg-[#7c543c] text-white px-6 py-3 rounded-2xl font-black text-xs shadow-md">
-                            PREPARE
+                         <button onClick={() => updateStatus(order.id, 'PREPARING')} className="bg-[#7c543c] text-white px-6 py-3 rounded-2xl font-black text-xs shadow-md hover:bg-[#6a4731] transition-colors">
+                            เริ่มทำออเดอร์
                          </button>
                        )}
                     </div>
@@ -234,9 +242,9 @@ export default function POSView({ branch, orders, updateStatus }: any) {
              <div className="w-96 bg-white border-l border-gray-100 flex flex-col shadow-2xl">
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between">
                    <h3 className="font-black text-lg text-slate-800 flex items-center gap-2">
-                      <ShoppingBag size={20} className="text-[#7c543c]" /> Cart
+                      <ShoppingBag size={20} className="text-[#7c543c]" /> ตะกร้าสินค้า
                    </h3>
-                   <span className="bg-[#7c543c]/10 text-[#7c543c] px-3 py-1 rounded-full text-[10px] font-black">{cart.length} ITEMS</span>
+                   <span className="bg-[#7c543c]/10 text-[#7c543c] px-3 py-1 rounded-full text-[10px] font-black">{cart.length} รายการ</span>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto p-6 space-y-4">
@@ -257,14 +265,14 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                    {cart.length === 0 && (
                       <div className="h-full flex flex-col items-center justify-center opacity-20 py-20">
                          <ShoppingBag size={48} />
-                         <p className="mt-4 font-black">Cart is empty</p>
+                         <p className="mt-4 font-black">ยังไม่มีสินค้าในตะกร้า</p>
                       </div>
                    )}
                 </div>
 
                 <div className="p-8 border-t border-gray-100 bg-gray-50/50">
                    <div className="flex justify-between items-center mb-6">
-                      <span className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Total</span>
+                      <span className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">รวมทั้งสิ้น</span>
                       <span className="text-3xl font-black text-slate-800 tracking-tighter">{cartTotal} ฿</span>
                    </div>
                    <button 
@@ -272,7 +280,7 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                      onClick={() => setShowCheckout(true)}
                      className="w-full py-4 rounded-2xl bg-[#7c543c] text-white font-black uppercase tracking-widest shadow-xl shadow-[#7c543c]/30 disabled:opacity-50 disabled:grayscale transition-all"
                    >
-                      Checkout Order
+                      ชำระเงิน / ส่งออเดอร์
                    </button>
                 </div>
              </div>
@@ -296,7 +304,7 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                        {configuringProduct.optionGroups?.map((group: any) => (
                          <div key={group.id}>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                               {group.name} {group.isRequired && <span className="text-rose-500">* Required</span>}
+                               {group.name} {group.isRequired && <span className="text-rose-500">* จำเป็น</span>}
                             </p>
                             <div className="grid grid-cols-3 gap-3">
                                {group.options.map((opt: any) => (
@@ -319,14 +327,14 @@ export default function POSView({ branch, orders, updateStatus }: any) {
 
                     <div className="mt-12 flex items-center gap-6 border-t border-gray-100 pt-8">
                        <div className="flex-1">
-                          <p className="text-[10px] font-bold text-gray-400 uppercase">Total Item Price</p>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase">ราคาต่อชิ้น</p>
                           <p className="text-3xl font-black text-slate-800">{configuringProduct.price + Object.keys(selectedOptions).reduce((s, gid) => {
                              const opt = configuringProduct.optionGroups.find((g:any)=>g.id===gid).options.find((o:any)=>o.id===selectedOptions[gid]);
                              return s + (opt?.priceAddon || 0);
                           }, 0)} ฿</p>
                        </div>
                        <button onClick={addToCart} className="bg-[#7c543c] text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-[#7c543c]/20">
-                          Add to Cart
+                          ใส่ตะกร้า
                        </button>
                     </div>
                  </div>
@@ -340,18 +348,18 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                   <div className="w-20 h-20 rounded-3xl bg-[#7c543c] text-white flex items-center justify-center mx-auto mb-6 shadow-xl">
                      <CreditCard size={40} />
                   </div>
-                  <h2 className="text-2xl font-black mb-8 text-slate-800 tracking-tight">Complete Store Order</h2>
+                  <h2 className="text-2xl font-black mb-8 text-slate-800 tracking-tight">ชำระเงินออเดอร์หน้าร้าน</h2>
                   
                   <div className="space-y-4 text-left mb-10">
                      <div>
-                        <label className="text-[10px] font-black text-gray-400 uppercase ml-2">Customer Name</label>
-                        <input type="text" value={checkoutData.customerName} onChange={e=>setCheckoutData({...checkoutData, customerName: e.target.value})} className="w-full mt-1 p-4 bg-gray-50 rounded-2xl border-none font-bold text-slate-800" placeholder="Walk-in Guest" />
+                        <label className="text-[10px] font-black text-gray-400 uppercase ml-2">ชื่อลูกค้า</label>
+                        <input type="text" value={checkoutData.customerName} onChange={e=>setCheckoutData({...checkoutData, customerName: e.target.value})} className="w-full mt-1 p-4 bg-gray-50 rounded-2xl border-none font-bold text-slate-800" placeholder="ชื่อเล่น หรือ ชื่อลูกค้า" />
                      </div>
                      <div>
-                        <label className="text-[10px] font-black text-gray-400 uppercase ml-2">Payment Method</label>
+                        <label className="text-[10px] font-black text-gray-400 uppercase ml-2">วิธีชำระเงิน</label>
                         <div className="grid grid-cols-2 gap-3 mt-1">
-                           {['CASH', 'QR'].map(m => (
-                             <button key={m} onClick={()=>setCheckoutData({...checkoutData, paymentMethod:m})} className={`py-4 rounded-xl border-2 font-black text-xs transition-all ${checkoutData.paymentMethod === m ? 'bg-[#7c543c] border-[#7c543c] text-white' : 'bg-white border-gray-100 text-gray-400'}`}>
+                           {['เงินสด (CASH)', 'สแกนจ่าย (QR)'].map((m, idx) => (
+                             <button key={m} onClick={()=>setCheckoutData({...checkoutData, paymentMethod: idx === 0 ? 'CASH' : 'QR'})} className={`py-4 rounded-xl border-2 font-black text-xs transition-all ${checkoutData.paymentMethod === (idx === 0 ? 'CASH' : 'QR') ? 'bg-[#7c543c] border-[#7c543c] text-white' : 'bg-white border-gray-100 text-gray-400'}`}>
                                 {m}
                              </button>
                            ))}
@@ -360,8 +368,94 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                   </div>
 
                   <div className="flex gap-4">
-                     <button onClick={()=>setShowCheckout(false)} className="flex-1 py-4 font-black text-gray-400 uppercase tracking-widest text-xs">Correction</button>
-                     <button onClick={handleCheckout} className="flex-1 py-4 bg-[#7c543c] text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl text-xs">Charge {cartTotal} ฿</button>
+                     <button onClick={()=>setShowCheckout(false)} className="flex-1 py-4 font-black text-gray-400 uppercase tracking-widest text-xs">แก้ไขรายการ</button>
+                     <button onClick={handleCheckout} className="flex-1 py-4 bg-[#7c543c] text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl text-xs">เก็บเงิน {cartTotal} ฿</button>
+                  </div>
+               </motion.div>
+            </div>
+         )}
+         {/* Receipt Modal */}
+         {viewingReceipt && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-6 receipt-overlay">
+               <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="relative bg-white w-full max-w-sm rounded-none shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                  
+                  {/* Actions (Not Printed) */}
+                  <div className="bg-gray-100 p-4 flex justify-end gap-3 no-print border-b border-gray-200">
+                     <button onClick={() => setViewingReceipt(null)} className="px-4 py-2 font-bold text-gray-500 hover:bg-gray-200 rounded-lg transition-colors text-sm">ปิดหน้าต่าง</button>
+                     <button onClick={handlePrint} className="px-4 py-2 bg-[#7c543c] text-white font-bold rounded-lg flex items-center gap-2 hover:bg-[#6a4731] transition-colors text-sm shadow-sm">
+                        <Printer size={16} /> พิมพ์ใบเสร็จ
+                     </button>
+                  </div>
+
+                  {/* Printable Receipt Content */}
+                  <div className="p-6 overflow-y-auto no-scrollbar bg-white" id="printable-receipt" style={{ fontFamily: 'monospace' }}>
+                     <div className="text-center mb-6">
+                        <h1 className="text-2xl font-black text-slate-800 tracking-tight">456 COFFEE</h1>
+                        <p className="text-sm text-gray-500 mt-1">สาขา: {branch?.name || 'Main'}</p>
+                        <p className="text-sm text-gray-500">เลขประจำตัวผู้เสียภาษี: 01055xxxxxxxx</p>
+                        <p className="text-sm text-gray-500 mt-1">--------------------------------</p>
+                        <h2 className="text-lg font-bold mt-2 text-slate-800">ใบเสร็จรับเงิน</h2>
+                     </div>
+                     
+                     <div className="flex justify-between text-sm mb-1 font-medium text-slate-700">
+                        <span>ออเดอร์: #{viewingReceipt.orderNo || viewingReceipt.id?.slice(0,8)}</span>
+                        <span>คิว: {viewingReceipt.queueNo || '-'}</span>
+                     </div>
+                     <div className="flex justify-between text-sm mb-4 font-medium text-slate-700">
+                        <span>วันที่: {new Date(viewingReceipt.createdAt || Date.now()).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })}</span>
+                        <span>{viewingReceipt.paymentMethod || 'CASH'}</span>
+                     </div>
+
+                     <div className="border-t-2 border-dashed border-gray-300 my-4"></div>
+                     
+                     <div className="space-y-3">
+                        {viewingReceipt.items?.map((item: any, idx: number) => {
+                          let opts: any[] = [];
+                          if (typeof item.selectedOptions === 'string') {
+                            try { opts = JSON.parse(item.selectedOptions); } catch(e){}
+                          } else if (Array.isArray(item.selectedOptions)) {
+                            opts = item.selectedOptions;
+                          }
+                          
+                          return (
+                            <div key={idx} className="text-sm font-medium text-slate-800">
+                               <div className="flex justify-between items-start">
+                                  <div className="flex-1 pr-2 leading-tight">
+                                     {item.quantity}x {item.productName || item.product?.name || 'Item'}
+                                     {opts && opts.length > 0 && (
+                                        <div className="text-[11px] text-gray-500 mt-0.5 ml-4">
+                                           {opts.map((o:any)=>o.label).join(', ')}
+                                        </div>
+                                     )}
+                                  </div>
+                                  <div className="text-right whitespace-nowrap">{(item.price).toLocaleString()} ฿</div>
+                               </div>
+                            </div>
+                          );
+                        })}
+                     </div>
+
+                     <div className="border-t-2 border-dashed border-gray-300 my-4"></div>
+                     
+                     <div className="flex justify-between items-center font-bold text-sm mb-1 text-slate-700">
+                        <span>รวมเป็นเงิน</span>
+                        <span>{(viewingReceipt.totalAmount || 0).toLocaleString()} ฿</span>
+                     </div>
+                     <div className="flex justify-between items-center font-bold text-sm mb-3 text-slate-700">
+                        <span>ภาษีมูลค่าเพิ่ม (7%)</span>
+                        <span>{((viewingReceipt.totalAmount || 0) * 0.07 / 1.07).toFixed(2)} ฿</span>
+                     </div>
+                     <div className="flex justify-between items-center font-black text-lg text-slate-900 border-t border-gray-200 pt-2">
+                        <span>รวมทั้งสิ้น</span>
+                        <span>{(viewingReceipt.totalAmount || 0).toLocaleString()} ฿</span>
+                     </div>
+
+                     <div className="border-t-2 border-dashed border-gray-300 my-4"></div>
+                     
+                     <div className="text-center text-sm font-medium text-gray-500 mt-6 pb-6">
+                        <p>ขอบคุณที่ใช้บริการครับ!</p>
+                        <p className="text-[11px] mt-1">ขับเคลื่อนโดย 456 Ecosystem</p>
+                     </div>
                   </div>
                </motion.div>
             </div>

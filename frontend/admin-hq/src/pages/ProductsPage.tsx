@@ -8,7 +8,18 @@ import {
 } from 'lucide-react';
 
 const API = 'http://localhost:5001/api';
-const C = { 50: '#fdf8f0', 100: '#f5ebe0', 200: '#e8d5c0', 300: '#d4b896', 400: '#b8956a', 500: '#9c7a50', 600: '#7a5c3a', 700: '#5c4428', 800: '#3d2d1a' };
+const C = { 
+  50: 'var(--bg-main)', 
+  100: 'var(--bg-card)', 
+  200: 'var(--border-color)', 
+  300: 'var(--text-muted)', 
+  400: 'var(--accent)', 
+  500: 'var(--text-muted)', 
+  600: 'var(--text-muted)', 
+  700: 'var(--text-main)', 
+  800: 'var(--text-main)', 
+  900: 'var(--text-main)' 
+};
 
 interface Category { id: string; name: string; description?: string; icon?: string; imageUrl?: string; sortOrder: number; isVisible: boolean; _count: { products: number }; }
 interface MenuOption { id: string; groupId: string; label: string; priceAddon: number; isDefault: boolean; sortOrder: number; }
@@ -312,7 +323,7 @@ export default function ProductsPage() {
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* Category Sidebar */}
-      <div className="w-56 shrink-0 flex flex-col overflow-hidden" style={{ borderRight: `1px solid ${C[200]}`, background: '#ffffff' }}>
+      <div className="w-56 shrink-0 flex flex-col overflow-hidden" style={{ borderRight: `1px solid ${C[200]}`, background: C[100] }}>
         <div className="px-5 pt-7 pb-3 shrink-0">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold flex items-center gap-1.5" style={{ color: C[800] }}><Layers size={14} style={{ color: C[400] }} />หมวดหมู่</h2>
@@ -341,7 +352,7 @@ export default function ProductsPage() {
       {/* Menu Grid */}
       <div className="flex-1 flex flex-col overflow-hidden" style={{ background: C[50] }}>
         {/* Toolbar */}
-        <div className="px-8 py-5 flex items-center gap-4 shrink-0" style={{ borderBottom: `1px solid ${C[200]}`, background: '#ffffff' }}>
+        <div className="px-8 py-5 flex items-center gap-4 shrink-0" style={{ borderBottom: `1px solid ${C[200]}`, background: C[100] }}>
           <div className="relative flex-1 max-w-sm">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: C[400] }} />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ค้นหาเมนู..." className="w-full bg-white border rounded-xl py-2 pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#b8956a]/30" style={{ borderColor: C[200] }} />

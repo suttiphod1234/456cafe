@@ -3,7 +3,6 @@ import {
   Post,
   Body,
   Get,
-  Param,
   Query,
   BadRequestException,
 } from '@nestjs/common';
@@ -18,7 +17,7 @@ export class AuthController {
   ) {}
 
   @Post('otp/send')
-  async sendOtp(@Body() body: { phone: string }) {
+  sendOtp(@Body() body: { phone: string }) {
     if (!body.phone) throw new BadRequestException('Phone is required');
     return this.authService.sendOtp(body.phone);
   }

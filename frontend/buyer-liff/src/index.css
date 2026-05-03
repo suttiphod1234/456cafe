@@ -3,24 +3,37 @@
 @tailwind utilities;
 
 :root {
-  --coffee-dark: #121212;
-  --coffee-accent: #C67D6D;
+  --coffee-dark: #252627;
+  --coffee-brown: #5a3b16;
+  --coffee-accent: #ffba0a;
+  --coffee-bg: #f5f5f5;
+  --coffee-cream: #ffedc4;
+
+  /* Generic aliases */
+  --accent: var(--coffee-accent);
+  --accent-bg: var(--coffee-cream);
+  --accent-border: var(--coffee-accent);
+  --border: var(--coffee-cream);
+  --text: var(--coffee-dark);
+  --text-h: var(--coffee-brown);
+  --social-bg: #ffffff;
+  --shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
 body {
-  background-color: var(--coffee-dark);
-  color: #ffffff;
+  background-color: var(--coffee-bg);
+  color: var(--coffee-dark);
   font-family: 'Inter', sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
 .glass-morphism {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--coffee-cream);
 }
 
 .coffee-gradient {
-  background: linear-gradient(135deg, #C67D6D 0%, #8A4A3E 100%);
+  background: linear-gradient(135deg, var(--coffee-brown) 0%, var(--coffee-dark) 100%);
 }

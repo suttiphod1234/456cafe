@@ -10,18 +10,40 @@ import {
   Search,
   Settings,
   LogOut,
-  PieChart as PieChartIcon
+  PieChart as PieChartIcon,
+  Sun,
+  Moon,
+  Banknote,
+  ClipboardList,
+  DollarSign
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import BranchesPage from './pages/BranchesPage';
 import ProductsPage from './pages/ProductsPage';
 import OrdersPage from './pages/OrdersPage';
 import CustomersPage from './pages/CustomersPage';
+import InventoryLedger from './pages/InventoryLedger';
+import CostManagement from './pages/CostManagement';
+import FinanceLedger from './pages/FinanceLedger';
 
 export default function App() {
-  const [activePage, setActivePage] = useState<'overview' | 'branches' | 'products' | 'orders' | 'customers'>('overview');
+  const [activePage, setActivePage] = useState<'overview' | 'branches' | 'products' | 'orders' | 'customers' | 'inventory' | 'cost' | 'finance'>('overview');
   const [stats, setStats] = useState({ revenue: 0, totalOrders: 0, customers: 0, branches: 0 });
   const [orders, setOrders] = useState<any[]>([]);
+  
+  // Theme state
+  const [theme, setTheme] = useState<'light' | 'dark'>(
+    (localStorage.getItem('theme') as 'light' | 'dark') || 'dark'
+  );
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,26 +80,29 @@ export default function App() {
   }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: '#fdf8f0' }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--bg-main)', color: 'var(--text-main)' }}>
       {/* Sidebar */}
-      <aside className="w-64 flex flex-col p-6 shrink-0" style={{ background: '#ffffff', borderRight: '1px solid #e8d5c0' }}>
+      <aside className="w-64 flex flex-col p-6 shrink-0" style={{ background: 'var(--bg-card)', borderRight: '1px solid var(--border-color)' }}>
         <div className="flex items-center gap-3 mb-10 px-2">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#b8956a' }}>
-            <Coffee size={18} className="text-white" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--accent)' }}>
+            <Coffee size={20} className="text-white" />
           </div>
-          <span className="font-extrabold text-xl tracking-tight" style={{ color: '#3d2d1a' }}>456 Coffee</span>
+          <span className="font-extrabold text-2xl tracking-tight" style={{ color: 'var(--text-main)' }}>456 HQ</span>
         </div>
 
         <nav className="flex-1 space-y-1">
           <NavItem icon={<BarChart3 size={20} />} label="ภาพรวม" active={activePage === 'overview'} onClick={() => setActivePage('overview')} />
           <NavItem icon={<Store size={20} />} label="สาขา" active={activePage === 'branches'} onClick={() => setActivePage('branches')} />
-          <NavItem icon={<Coffee size={20} />} label="เมนู" active={activePage === 'products'} onClick={() => setActivePage('products')} />
-          <NavItem icon={<ShoppingBag size={20} />} label="คำสั่งซื้อ" active={activePage === 'orders'} onClick={() => setActivePage('orders')} />
+          <NavItem icon={<Coffee size={20} />} label="เมนูสินค้า" active={activePage === 'products'} onClick={() => setActivePage('products')} />
+          <NavItem icon={<ShoppingBag size={20} />} label="ออเดอร์" active={activePage === 'orders'} onClick={() => setActivePage('orders')} />
           <NavItem icon={<Users size={20} />} label="ลูกค้า" active={activePage === 'customers'} onClick={() => setActivePage('customers')} />
-          <NavItem icon={<PieChartIcon size={20} />} label="รายงาน" />
+          <NavItem icon={<ClipboardList size={20} />} label="คลังวัตถุดิบ" active={activePage === 'inventory'} onClick={() => setActivePage('inventory')} />
+          <NavItem icon={<DollarSign size={20} />} label="ต้นทุนและกำไร" active={activePage === 'cost'} onClick={() => setActivePage('cost')} />
+          <NavItem icon={<Banknote size={20} />} label="รายรับ-รายจ่าย" active={activePage === 'finance'} onClick={() => setActivePage('finance')} />
+          <NavItem icon={<PieChartIcon size={20} />} label="รายงานสรุป" />
         </nav>
 
-        <div className="pt-6 space-y-1" style={{ borderTop: '1px solid #e8d5c0' }}>
+        <div className="pt-6 space-y-1 mt-auto" style={{ borderTop: '1px solid var(--border-color)' }}>
           <NavItem icon={<Settings size={20} />} label="ตั้งค่า" />
           <NavItem icon={<LogOut size={20} />} label="ออกจากระบบ" />
         </div>
@@ -93,63 +118,70 @@ export default function App() {
           <OrdersPage />
         ) : activePage === 'customers' ? (
           <CustomersPage />
+        ) : activePage === 'inventory' ? (
+          <InventoryLedger />
+        ) : activePage === 'cost' ? (
+          <CostManagement />
+        ) : activePage === 'finance' ? (
+          <FinanceLedger />
         ) : (
           <>
             {/* Top Header */}
-            <header className="h-20 flex items-center justify-between px-10 shrink-0" style={{ borderBottom: '1px solid #e8d5c0', background: '#ffffff' }}>
+            <header className="h-20 flex items-center justify-between px-10 shrink-0" style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--bg-main)' }}>
               <div className="relative w-96">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2" size={18} style={{ color: '#b8956a' }} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2" size={18} style={{ color: 'var(--text-muted)' }} />
                 <input
                   type="text"
                   placeholder="ค้นหาข้อมูล, รายงาน, ออเดอร์..."
-                  className="w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 transition-all"
-                  style={{ background: '#fdf8f0', border: '1px solid #e8d5c0', color: '#3d2d1a' }}
+                  className="w-full rounded-xl py-2.5 pl-10 pr-4 text-[1rem] focus:outline-none focus:ring-1 transition-all"
+                  style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-main)' }}
                 />
               </div>
               <div className="flex items-center gap-6">
-                <button className="relative w-10 h-10 rounded-xl flex items-center justify-center transition-colors hover:opacity-80" style={{ background: '#f5ebe0', border: '1px solid #e8d5c0' }}>
-                  <Bell size={20} style={{ color: '#7a5c3a' }} />
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white" />
+                <button onClick={toggleTheme} className="relative w-10 h-10 rounded-xl flex items-center justify-center transition-colors hover:opacity-80" style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-color)' }}>
+                  {theme === 'dark' ? <Sun size={20} style={{ color: 'var(--text-muted)' }} /> : <Moon size={20} style={{ color: 'var(--text-muted)' }} />}
                 </button>
-                <div className="flex items-center gap-3 pl-6" style={{ borderLeft: '1px solid #e8d5c0' }}>
+                <button className="relative w-10 h-10 rounded-xl flex items-center justify-center transition-colors hover:opacity-80" style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-color)' }}>
+                  <Bell size={20} style={{ color: 'var(--text-muted)' }} />
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-transparent" />
+                </button>
+                <div className="flex items-center gap-3 pl-6" style={{ borderLeft: '1px solid var(--border-color)' }}>
                   <div className="text-right">
-                    <p className="text-sm font-bold" style={{ color: '#3d2d1a' }}>แอดมินสำนักงานใหญ่</p>
-                    <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#b8956a' }}>Super Admin</p>
+                    <p className="text-[1rem] font-bold" style={{ color: 'var(--text-main)' }}>แอดมินสำนักงานใหญ่</p>
+                    <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>Super Admin</p>
                   </div>
-                  <div className="w-10 h-10 rounded-xl" style={{ background: 'linear-gradient(135deg, #b8956a, #7a5c3a)' }} />
+                  <div className="w-10 h-10 rounded-xl" style={{ background: 'var(--accent)' }} />
                 </div>
               </div>
             </header>
 
             {/* Dashboard Grid */}
             <div className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-extrabold" style={{ color: '#3d2d1a' }}>ภาพรวมระบบทั้งหมด</h2>
-                <button className="px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-md active:scale-95 transition-all" style={{ background: '#b8956a', boxShadow: '0 4px 12px rgba(184,149,106,0.3)' }}>
-                  ดาวน์โหลดรายงาน
-                </button>
+              <div className="flex flex-col mb-10">
+                <h2 className="text-3xl font-black tracking-tight italic uppercase" style={{ color: 'var(--text-main)' }}>แดชบอร์ดภาพรวม</h2>
+                <p className="text-gray-400 font-bold text-xs mt-1">สรุปข้อมูลการขายและสถิติของทุกสาขาในระบบ</p>
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-4 gap-6">
-                <StatCard icon={<TrendingUp size={24} className="text-emerald-600" />} label="รายได้ทั้งหมด" value={`฿${stats.revenue.toLocaleString()}`} delta="+12.5%" />
-                <StatCard icon={<ShoppingBag size={24} style={{ color: '#b8956a' }} />} label="ยอดสั่งซื้อทั้งหมด" value={stats.totalOrders.toLocaleString()} delta="+8.2%" />
-                <StatCard icon={<Users size={24} className="text-purple-600" />} label="จำนวนลูกค้า" value={stats.customers.toLocaleString()} delta="+24.1%" />
-                <StatCard icon={<Store size={24} style={{ color: '#7a5c3a' }} />} label="สาขาที่เปิดอยู่" value={stats.branches.toString()} delta="0%" />
+              <div className="grid grid-cols-4 gap-6 mb-10">
+                <StatCard icon={<TrendingUp size={24} className="text-emerald-500" />} label="รายได้รวมวันนี้" value={`${stats.revenue.toLocaleString()} ฿`} delta="+12.5%" />
+                <StatCard icon={<ShoppingBag size={24} style={{ color: 'var(--accent)' }} />} label="ออเดอร์ทั้งหมด" value={stats.totalOrders.toLocaleString()} delta="+8.2%" />
+                <StatCard icon={<Users size={24} className="text-purple-400" />} label="ลูกค้าใหม่" value={stats.customers.toLocaleString()} delta="+24.1%" />
+                <StatCard icon={<Store size={24} style={{ color: 'var(--text-muted)' }} />} label="สาขาที่เปิด" value={stats.branches.toString()} delta="คงที่" />
               </div>
 
               {/* Recent Orders & Top Products */}
               <div className="grid grid-cols-3 gap-8">
                 <div className="col-span-2 admin-card p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-bold flex items-center gap-2" style={{ color: '#3d2d1a' }}>
-                      <ShoppingBag size={18} style={{ color: '#b8956a' }} /> รายการสั่งซื้อล่าสุด
+                    <h3 className="font-bold text-lg flex items-center gap-2" style={{ color: 'var(--text-main)' }}>
+                      <ShoppingBag size={20} style={{ color: 'var(--accent)' }} /> รายการสั่งซื้อล่าสุด
                     </h3>
-                    <button onClick={() => setActivePage('orders')} className="text-xs font-bold hover:underline" style={{ color: '#b8956a' }}>ดูทั้งหมด</button>
+                    <button onClick={() => setActivePage('orders')} className="text-sm font-bold hover:underline" style={{ color: 'var(--accent)' }}>ดูทั้งหมด</button>
                   </div>
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="text-[10px] uppercase font-bold tracking-widest" style={{ color: '#9c7a50', borderBottom: '1px solid #e8d5c0' }}>
+                      <tr className="text-xs uppercase font-bold tracking-widest" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border-color)' }}>
                         <th className="pb-4">รหัสสั่งซื้อ</th>
                         <th className="pb-4">สาขา</th>
                         <th className="pb-4">ลูกค้า</th>
@@ -157,9 +189,9 @@ export default function App() {
                         <th className="pb-4 text-right">ยอดเงิน</th>
                       </tr>
                     </thead>
-                    <tbody className="text-sm">
+                    <tbody className="text-[1rem]">
                       {orders.length === 0 ? (
-                        <tr><td colSpan={5} className="py-8 text-center" style={{ color: '#9c7a50' }}>ยังไม่มีรายการสั่งซื้อ</td></tr>
+                        <tr><td colSpan={5} className="py-8 text-center" style={{ color: 'var(--text-muted)' }}>ยังไม่มีรายการสั่งซื้อเร็วๆ นี้</td></tr>
                       ) : orders.map((o: any) => (
                         <OrderRow
                           key={o.id}
@@ -176,8 +208,8 @@ export default function App() {
 
                 <div className="admin-card p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-bold flex items-center gap-2" style={{ color: '#3d2d1a' }}>
-                      <Coffee size={18} style={{ color: '#b8956a' }} /> สินค้าขายดี
+                    <h3 className="font-bold text-lg flex items-center gap-2" style={{ color: 'var(--text-main)' }}>
+                      <Coffee size={20} style={{ color: 'var(--accent)' }} /> สินค้าขายดี
                     </h3>
                   </div>
                   <div className="space-y-5">
@@ -210,23 +242,23 @@ function StatCard({ icon, label, value, delta }: { icon: React.ReactNode, label:
   return (
     <div className="admin-card p-6">
       <div className="flex items-center justify-between mb-4">
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#f5ebe0' }}>{icon}</div>
-        <span className={`text-xs font-bold ${delta.startsWith('+') ? 'text-emerald-600' : 'text-rose-500'}`}>{delta}</span>
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'var(--bg-hover)' }}>{icon}</div>
+        <span className={`text-sm font-bold ${delta.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'}`}>{delta}</span>
       </div>
-      <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#9c7a50' }}>{label}</p>
-      <h4 className="text-2xl font-extrabold tracking-tight" style={{ color: '#3d2d1a' }}>{value}</h4>
+      <p className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--text-muted)' }}>{label}</p>
+      <h4 className="text-3xl font-extrabold tracking-tight" style={{ color: 'var(--text-main)' }}>{value}</h4>
     </div>
   );
 }
 
 function OrderRow({ id, branch, customer, date, amount }: { id: string, branch: string, customer: string, date: string, amount: string }) {
   return (
-    <tr className="hover:bg-[#fdf8f0] transition-colors cursor-pointer group" style={{ borderBottom: '1px solid #f5ebe0' }}>
-      <td className="py-4 font-mono" style={{ color: '#9c7a50' }}>{id}</td>
-      <td className="py-4 font-semibold" style={{ color: '#3d2d1a' }}>{branch}</td>
-      <td className="py-4" style={{ color: '#5c4428' }}>{customer}</td>
-      <td className="py-4 text-xs" style={{ color: '#9c7a50' }}>{date}</td>
-      <td className="py-4 text-right font-bold" style={{ color: '#b8956a' }}>{amount}</td>
+    <tr className="hover:bg-[var(--bg-hover)] transition-colors cursor-pointer group" style={{ borderBottom: '1px solid var(--border-color)' }}>
+      <td className="py-5 font-mono" style={{ color: 'var(--text-muted)' }}>{id}</td>
+      <td className="py-5 font-bold" style={{ color: 'var(--text-main)' }}>{branch}</td>
+      <td className="py-5" style={{ color: 'var(--text-main)' }}>{customer}</td>
+      <td className="py-5 text-sm" style={{ color: 'var(--text-muted)' }}>{date}</td>
+      <td className="py-5 text-right font-extrabold" style={{ color: 'var(--accent)' }}>{amount}</td>
     </tr>
   );
 }
@@ -235,15 +267,15 @@ function TopProduct({ name, sales, trend }: { name: string, sales: string, trend
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#f5ebe0' }}>
-          <Coffee size={16} style={{ color: '#b8956a' }} />
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'var(--bg-hover)' }}>
+          <Coffee size={18} style={{ color: 'var(--text-muted)' }} />
         </div>
         <div>
-          <p className="text-sm font-bold" style={{ color: '#3d2d1a' }}>{name}</p>
-          <p className="text-[11px]" style={{ color: '#9c7a50' }}>ขายได้ {sales} แก้ว</p>
+          <p className="text-[1rem] font-bold" style={{ color: 'var(--text-main)' }}>{name}</p>
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>ขายได้ {sales} แก้ว</p>
         </div>
       </div>
-      <span className={`text-[11px] font-bold ${trend.startsWith('+') ? 'text-emerald-600' : 'text-rose-500'}`}>{trend}</span>
+      <span className={`text-sm font-bold ${trend.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'}`}>{trend}</span>
     </div>
   );
 }

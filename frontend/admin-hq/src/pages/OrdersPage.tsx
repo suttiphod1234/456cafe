@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 const API = 'http://localhost:5001/api';
-const C = { 50:'#fdf8f0',100:'#f5ebe0',200:'#e8d5c0',300:'#d4b896',400:'#b8956a',500:'#9c7a50',600:'#7a5c3a',700:'#5c4428',800:'#3d2d1a' };
+const C = { 50:'#0b0e14', 100:'#151821', 200:'#23283b', 300:'#475569', 400:'#7c3aed', 500:'#94a3b8', 600:'#cbd5e1', 700:'#e2e8f0', 800:'#f8fafc' };
 
 interface OrderItem { id:string; productId:string; product?:any; quantity:number; unitPrice:number; optionsPrice:number; price:number; productName?:string; customization?:any; selectedOptions?:any; }
 interface Payment { id:string; amount:number; status:string; method:string; transactionId?:string; paidAt?:string; }
@@ -215,7 +215,7 @@ export default function OrdersPage() {
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* Order List (Left) */}
-      <div className="w-[420px] shrink-0 flex flex-col overflow-hidden" style={{borderRight:`1px solid ${C[200]}`,background:'#ffffff'}}>
+      <div className="w-[420px] shrink-0 flex flex-col overflow-hidden" style={{borderRight:`1px solid ${C[200]}`,background:C[100]}}>
         {/* Stats Bar */}
         {stats&&(
           <div className="grid grid-cols-3 gap-2 px-5 pt-5 pb-3 shrink-0">

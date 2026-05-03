@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MenuService {
@@ -100,7 +101,41 @@ export class MenuService {
       include: this.menuInclude,
     });
     if (!item) throw new NotFoundException(`Menu item ${id} not found`);
+    
+    // Inject calculated cost
+    (item as any).calculatedCost = this.calculateMenuCostLocal(item.recipes);
     return item;
+  }
+
+  private calculateMenuCostLocal(recipes: any[]): number {
+    if (!recipes || recipes.length === 0) return 0;
+    return recipes.reduce((total, r) => {
+      const costPerUnit = r.ingredient?.costPerUnit || 0;
+      return total + (r.quantity * costPerUnit);
+    }, 0);
+  }
+
+  // Calculate and return cost for all menu items
+  async getMenuCosting() {
+    const items = await this.prisma.product.findMany({
+      include: {
+        category: true,
+        recipes: { include: { ingredient: true } }
+      }
+    });
+
+    return items.map(item => {
+      const cogs = this.calculateMenuCostLocal(item.recipes);
+      const profit = item.price - cogs;
+      const margin = item.price > 0 ? (profit / item.price) * 100 : 0;
+      
+      return {
+        ...item,
+        cogs,
+        profit,
+        marginPercentage: margin
+      };
+    });
   }
 
   async createMenuItem(data: {
@@ -143,8 +178,10 @@ export class MenuService {
     },
   ) {
     await this.getMenuItemById(id);
-    const updateData: any = { ...data };
-    if (data.tags !== undefined) updateData.tags = JSON.stringify(data.tags);
+    const updateData: Prisma.ProductUpdateInput = {
+      ...data,
+      tags: data.tags !== undefined ? JSON.stringify(data.tags) : undefined,
+    };
     return this.prisma.product.update({
       where: { id },
       data: updateData,
@@ -293,5 +330,23 @@ export class MenuService {
 
   async getAllIngredients() {
     return this.prisma.ingredient.findMany({ orderBy: { name: 'asc' } });
+  }
+
+  async createIngredient(data: { name: string; unit: string; costPerUnit?: number; sku?: string }) {
+    return this.prisma.ingredient.create({
+      data: {
+        name: data.name,
+        unit: data.unit,
+        costPerUnit: data.costPerUnit || 0,
+        sku: data.sku,
+      }
+    });
+  }
+
+  async updateIngredient(id: string, data: { name?: string; unit?: string; costPerUnit?: number; sku?: string }) {
+    return this.prisma.ingredient.update({
+      where: { id },
+      data
+    });
   }
 }

@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 
 const API = 'http://localhost:5001/api';
-const C = { 50:'#fdf8f0',100:'#f5ebe0',200:'#e8d5c0',300:'#d4b896',400:'#b8956a',500:'#9c7a50',600:'#7a5c3a',700:'#5c4428',800:'#3d2d1a',900:'#1e160d' };
+const C = { 50:'#0b0e14', 100:'#151821', 200:'#23283b', 300:'#475569', 400:'#7c3aed', 500:'#94a3b8', 600:'#cbd5e1', 700:'#e2e8f0', 800:'#f8fafc', 900:'#ffffff' };
 
 interface Manager { id:string; branchId:string; name:string; email:string|null; phone:string|null; role:string; lineUid:string|null; createdAt:string; }
 interface Branch { id:string; name:string; location:string|null; address:string|null; latitude:number|null; longitude:number|null; isOpen:boolean; openTime:string|null; closeTime:string|null; phone:string|null; promptpayId:string|null; promptpayName:string|null; imageUrl:string|null; managers:Manager[]; createdAt:string; _count:{orders:number;inventory:number}; }
@@ -373,7 +373,7 @@ export default function BranchesPage() {
 
   return (
     <div className="flex-1 flex overflow-hidden">
-      <div className="w-72 shrink-0 flex flex-col overflow-hidden" style={{borderRight:`1px solid ${C[200]}`,background:'#ffffff'}}>
+      <div className="w-72 shrink-0 flex flex-col overflow-hidden" style={{borderRight:`1px solid ${C[200]}`,background:C[100]}}>
         <div className="px-6 pt-8 pb-4 shrink-0">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-bold flex items-center gap-2" style={{color:C[800]}}><Store size={16} style={{color:C[400]}}/>สาขาทั้งหมด</h2>

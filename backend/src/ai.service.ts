@@ -1,25 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
+
+interface ProductSummary {
+  name: string;
+  description?: string | null;
+  price: number;
+}
 
 @Injectable()
 export class AiService {
-  private genAI: GoogleGenerativeAI;
-  private model: any;
+  private genAI: GoogleGenerativeAI | null = null;
+  private model: GenerativeModel | null = null;
 
   constructor() {
-    const apiKey = process.env.GEMINI_API_KEY || '';
+    const apiKey = process.env.GEMINI_API_KEY ?? '';
     if (apiKey) {
       this.genAI = new GoogleGenerativeAI(apiKey);
       this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     }
   }
 
-  async recommendCoffee(userInput: string, products: any[]) {
+  async recommendCoffee(userInput: string, products: ProductSummary[]) {
     if (!this.model)
       return "I can't recommend coffee right now, but our Dirty Coffee is great!";
 
     const productList = products
-      .map((p) => `${p.name}: ${p.description} (฿${p.price})`)
+      .map((p) => `${p.name}: ${p.description ?? ''} (฿${p.price})`)
       .join('\n');
 
     const prompt = `
@@ -35,7 +41,7 @@ export class AiService {
 
     try {
       const result = await this.model.generateContent(prompt);
-      const response = await result.response;
+      const response = result.response;
       return response.text();
     } catch (error) {
       console.error('Gemini error:', error);
@@ -55,7 +61,7 @@ export class AiService {
 
     try {
       const result = await this.model.generateContent(prompt);
-      const response = await result.response;
+      const response = result.response;
       return response.text().trim();
     } catch (error) {
       console.error('Translation error:', error);

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 const API = 'http://localhost:5001/api';
-const C = { 50:'#fdf8f0',100:'#f5ebe0',200:'#e8d5c0',300:'#d4b896',400:'#b8956a',500:'#9c7a50',600:'#7a5c3a',700:'#5c4428',800:'#3d2d1a',900:'#1e160d' };
+const C = { 50:'#0b0e14', 100:'#151821', 200:'#23283b', 300:'#475569', 400:'#7c3aed', 500:'#94a3b8', 600:'#cbd5e1', 700:'#e2e8f0', 800:'#f8fafc', 900:'#ffffff' };
 
 interface AuthProvider { id:string; provider:string; providerId:string; createdAt:string; }
 interface User { 

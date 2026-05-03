@@ -47,10 +47,12 @@ model Branch {
   promptpayName String?
   imageUrl      String?
   orders        Order[]
-  inventory Inventory[]
-  managers  BranchManager[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  inventory     Inventory[]
+  transactions  InventoryTransaction[]
+  cashflows     CashflowTransaction[]
+  managers      BranchManager[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model BranchManager {
@@ -122,7 +124,10 @@ model Ingredient {
   id            String   @id @default(uuid())
   name          String
   unit          String   // e.g., "ml", "g", "pcs"
+  costPerUnit   Float    @default(0) // Cost per base unit
+  sku           String?  // Optional internal SKU code
   inventory     Inventory[]
+  transactions  InventoryTransaction[]
   recipeItems   Recipe[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -259,4 +264,34 @@ model AuditLog {
   userId    String?  // Optional: User who performed the action
   details   Json?
   createdAt DateTime @default(now())
+}
+
+model InventoryTransaction {
+  id           String     @id @default(uuid())
+  branchId     String
+  branch       Branch     @relation(fields: [branchId], references: [id])
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  type         String     // STOCK_IN | STOCK_OUT | WASTE | ADJUSTMENT | ORDER_DEDUCTION
+  quantity     Float      // positive for IN, negative for OUT
+  unitCost     Float      // cost per unit at transaction time
+  totalCost    Float      // derived: quantity * unitCost
+  referenceId  String?    // e.g. orderId, PO number
+  note         String?
+  createdAt    DateTime   @default(now())
+  createdBy    String?    // user ID who made the transaction
+}
+
+model CashflowTransaction {
+  id           String     @id @default(uuid())
+  branchId     String
+  branch       Branch     @relation(fields: [branchId], references: [id])
+  type         String     // INCOME | EXPENSE
+  category     String     // e.g. SALES, INGREDIENTS, SALARY, UTILITIES, RENT, MISC
+  amount       Float
+  note         String?
+  referenceId  String?    // e.g. orderId or inventoryTransactionId
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  createdBy    String?    // Admin ID
 }

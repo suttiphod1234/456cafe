@@ -12,11 +12,12 @@ import BaristaView from './components/roles/BaristaView';
 import QCView from './components/roles/QCView';
 import DispatchView from './components/roles/DispatchView';
 import QueueMonitorView from './components/roles/QueueMonitorView';
+import StockCheckView from './components/roles/StockCheckView';
 
 const API_BASE = 'http://localhost:5001/api';
 const SOCKET_URL = 'http://localhost:5001';
 
-type Role = 'SELECTOR' | 'CASHIER' | 'BARISTA' | 'QC' | 'DISPATCHER' | 'QUEUE_MONITOR';
+type Role = 'SELECTOR' | 'CASHIER' | 'BARISTA' | 'QC' | 'DISPATCHER' | 'QUEUE_MONITOR' | 'STOCK_CHECK';
 
 export default function App() {
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
@@ -107,8 +108,8 @@ export default function App() {
              <div className="w-16 h-16 rounded-2xl bg-[#7c543c]/10 flex items-center justify-center mx-auto mb-4">
                 <Store size={32} className="text-[#7c543c]" />
              </div>
-             <h1 className="text-2xl font-black text-[#2d241e]">Branch Management</h1>
-             <p className="text-sm text-gray-400 font-bold mt-1">Select your station to begin</p>
+             <h1 className="text-2xl font-black text-[#2d241e]">ระบบจัดการสาขา</h1>
+             <p className="text-sm text-gray-400 font-bold mt-1">กรุณาเลือกสาขาที่ท่านปฏิบัติงานอยู่</p>
           </div>
           <div className="space-y-4">
             {branches.map(b => (
@@ -134,11 +135,12 @@ export default function App() {
   if (activeRole === 'SELECTOR') {
      const currentBranch = branches.find(b => b.id === selectedBranchId);
      const roles = [
-       { id: 'CASHIER', label: 'Cashier / POS', desc: 'Menu & Order Entry', icon: <Store />, color: 'bg-emerald-500' },
-       { id: 'BARISTA', label: 'Barista (KDS)', desc: 'Production Monitor', icon: <Coffee />, color: 'bg-amber-500' },
-       { id: 'QC', label: 'Inspector (QC)', desc: 'Quality Verification', icon: <CheckSquare />, color: 'bg-blue-500' },
-       { id: 'DISPATCHER', label: 'Dispatcher', desc: 'Handover & Pickup', icon: <Truck />, color: 'bg-orange-500' },
-       { id: 'QUEUE_MONITOR', label: 'Queue Board', desc: 'Customer Monitor', icon: <Bell />, color: 'bg-rose-500' },
+       { id: 'CASHIER', label: 'แคชเชียร์ / POS', desc: 'หน้าจอสั่งอาหารและรับชำระเงิน', icon: <Store />, color: 'bg-emerald-500' },
+       { id: 'BARISTA', label: 'บาริสต้า (KDS)', desc: 'หน้าจอแสดงรายการที่ต้องทำ', icon: <Coffee />, color: 'bg-amber-500' },
+       { id: 'QC', label: 'ตรวจความเรียบร้อย (QC)', desc: 'หน้าจอเช็คความถูกต้องของสินค้า', icon: <CheckSquare />, color: 'bg-blue-500' },
+       { id: 'DISPATCHER', label: 'ฝ่ายส่งมอบสินค้า', desc: 'หน้าจอสำหรับเรียกคิวและส่งของ', icon: <Truck />, color: 'bg-orange-500' },
+       { id: 'QUEUE_MONITOR', label: 'จอแสดงลำดับคิว', desc: 'สำหรับติดตั้งให้ลูกค้าดูสถานะ', icon: <Bell />, color: 'bg-rose-500' },
+       { id: 'STOCK_CHECK', label: 'เช็คสต็อควัตถุดิบ', desc: 'การนับวัสดุเปิด-ปิดร้าน', icon: <CheckSquare />, color: 'bg-indigo-500' },
      ];
 
      return (
@@ -146,8 +148,8 @@ export default function App() {
           <div className="w-full max-w-5xl">
              <div className="flex items-center justify-between mb-12">
                 <div>
-                   <h2 className="text-4xl font-black text-[#2d241e] italic uppercase tracking-tighter">Station: {currentBranch?.name}</h2>
-                   <p className="text-gray-400 font-bold mt-1">Please select your primary role for this session</p>
+                   <h2 className="text-4xl font-black text-[#2d241e] italic uppercase tracking-tighter">ประจำจุด: {currentBranch?.name}</h2>
+                   <p className="text-gray-400 font-bold mt-1">กรุณาเลือกตำแหน่งหน้าที่ที่ต้องการเข้าใช้งานในรอบนี้</p>
                 </div>
                 <button 
                   onClick={() => setSelectedBranchId(null)}
@@ -172,16 +174,16 @@ export default function App() {
                      <h3 className="text-xl font-black text-[#2d241e] mb-2">{r.label}</h3>
                      <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{r.desc}</p>
                      <div className="mt-8 flex items-center gap-2 text-[#7c543c] font-black text-sm group-hover:gap-4 transition-all">
-                        SELECT ROLE <ChevronRight size={16} />
+                        เข้าสู่ระบบตำแหน่งนี้ <ChevronRight size={16} />
                      </div>
                   </motion.button>
                 ))}
              </div>
 
              <div className="mt-20 flex justify-center gap-12 opacity-30 grayscale pointer-events-none">
-                <div className="flex items-center gap-2 font-black text-xs"><Bell size={14}/> ALERT SYSTEM ACTIVE</div>
-                <div className="flex items-center gap-2 font-black text-xs"><Settings size={14}/> AUTO-SYNC ENABLED</div>
-                <div className="flex items-center gap-2 font-black text-xs"><HelpCircle size={14}/> HELP CENTER</div>
+                <div className="flex items-center gap-2 font-black text-xs"><Bell size={14}/> ระบบแจ้งเตือนทำงานปกติ</div>
+                <div className="flex items-center gap-2 font-black text-xs"><Settings size={14}/> เชื่อมต่อคลาวด์อัตโนมัติ</div>
+                <div className="flex items-center gap-2 font-black text-xs"><HelpCircle size={14}/> ศูนย์ช่วยเหลือ</div>
              </div>
           </div>
        </div>
@@ -202,7 +204,7 @@ export default function App() {
             onClick={() => setActiveRole('SELECTOR')}
             className="text-[10px] font-black uppercase tracking-widest hover:text-rose-400 transition-colors flex items-center gap-2"
           >
-             Switch Role <Settings size={10} />
+             เปลี่ยนตำแหน่งงาน <Settings size={10} />
           </button>
        </div>
 
@@ -212,6 +214,7 @@ export default function App() {
           {activeRole === 'QC' && <QCView orders={orders} updateStatus={updateStatus} />}
           {activeRole === 'DISPATCHER' && <DispatchView orders={orders} updateStatus={updateStatus} />}
           {activeRole === 'QUEUE_MONITOR' && <QueueMonitorView branch={branches.find(b=>b.id===selectedBranchId)} orders={orders} />}
+          {activeRole === 'STOCK_CHECK' && <StockCheckView branch={branches.find(b=>b.id===selectedBranchId)} />}
        </div>
     </div>
   );

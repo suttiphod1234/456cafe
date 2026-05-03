@@ -13,11 +13,28 @@ describe('AppController', () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [
-        { provide: OrderService, useValue: { getGlobalStats: jest.fn().mockResolvedValue({ total: 0 }) } },
-        { provide: BranchService, useValue: { getAllBranches: jest.fn().mockResolvedValue([]) } },
-        { provide: InventoryService, useValue: { getBranchInventory: jest.fn().mockResolvedValue([]) } },
-        { provide: ProductService, useValue: { getAllProducts: jest.fn().mockResolvedValue([]) } },
-        { provide: MenuService, useValue: { getAllMenuItems: jest.fn().mockResolvedValue([]) } },
+        {
+          provide: OrderService,
+          useValue: {
+            getGlobalStats: jest.fn().mockResolvedValue({ total: 0 }),
+          },
+        },
+        {
+          provide: BranchService,
+          useValue: { getAllBranches: jest.fn().mockResolvedValue([]) },
+        },
+        {
+          provide: InventoryService,
+          useValue: { getBranchInventory: jest.fn().mockResolvedValue([]) },
+        },
+        {
+          provide: ProductService,
+          useValue: { getAllProducts: jest.fn().mockResolvedValue([]) },
+        },
+        {
+          provide: MenuService,
+          useValue: { getAllMenuItems: jest.fn().mockResolvedValue([]) },
+        },
       ],
     }).compile();
 

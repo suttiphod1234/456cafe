@@ -37,7 +37,18 @@ export class AddressController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() body: any) {
+  async update(
+    @Param('id') id: string,
+    @Body()
+    body: {
+      userId: string;
+      label?: string;
+      address?: string;
+      latitude?: number;
+      longitude?: number;
+      isDefault?: boolean;
+    },
+  ) {
     // Note: In real app, verify userId matches
     return this.addressService.update(id, body.userId, body);
   }

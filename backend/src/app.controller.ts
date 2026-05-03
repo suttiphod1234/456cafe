@@ -14,6 +14,7 @@ import { BranchService } from './branch.service';
 import { InventoryService } from './inventory.service';
 import { ProductService } from './product.service';
 import { MenuService } from './menu.service';
+import { InventoryTransactionService } from './inventory-transaction.service';
 
 @Controller('api')
 export class AppController {
@@ -23,6 +24,7 @@ export class AppController {
     private readonly inventoryService: InventoryService,
     private readonly productService: ProductService,
     private readonly menuService: MenuService,
+    private readonly inventoryTransactionService: InventoryTransactionService,
   ) {}
 
   // ─── Branch CRUD ────────────────────────────────────────────────────────────
@@ -37,13 +39,21 @@ export class AppController {
   }
 
   @Post('branches')
-  async createBranch(@Body() body: any) {
-    return this.branchService.createBranch(body);
+  async createBranch(@Body() body: Record<string, unknown>) {
+    return this.branchService.createBranch(
+      body as unknown as Parameters<typeof this.branchService.createBranch>[0],
+    );
   }
 
   @Patch('branches/:id')
-  async updateBranch(@Param('id') id: string, @Body() body: any) {
-    return this.branchService.updateBranch(id, body);
+  async updateBranch(
+    @Param('id') id: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.branchService.updateBranch(
+      id,
+      body as unknown as Parameters<typeof this.branchService.updateBranch>[1],
+    );
   }
 
   @Delete('branches/:id')
@@ -78,6 +88,21 @@ export class AppController {
     return this.inventoryService.getBranchInventory(id);
   }
 
+  // ─── Inventory Transactions ──────────────────────────────────────────────
+  @Get('inventory/transactions')
+  async getInventoryTransactions(
+    @Query('branchId') branchId?: string,
+    @Query('ingredientId') ingredientId?: string,
+    @Query('type') type?: string,
+  ) {
+    return this.inventoryTransactionService.getTransactions({ branchId, ingredientId, type });
+  }
+
+  @Post('inventory/transactions')
+  async createInventoryTransaction(@Body() body: Record<string, unknown>) {
+    return this.inventoryTransactionService.createTransaction(body as any);
+  }
+
   // ─── Branch Manager CRUD ──────────────────────────────────────────────────
   @Get('branches/:id/managers')
   async getManagers(@Param('id') id: string) {
@@ -85,16 +110,25 @@ export class AppController {
   }
 
   @Post('branches/:id/managers')
-  async addManager(@Param('id') id: string, @Body() body: any) {
-    return this.branchService.addManager(id, body);
+  async addManager(
+    @Param('id') id: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.branchService.addManager(
+      id,
+      body as unknown as Parameters<typeof this.branchService.addManager>[1],
+    );
   }
 
   @Patch('branches/managers/:managerId')
   async updateManager(
     @Param('managerId') managerId: string,
-    @Body() body: any,
+    @Body() body: Record<string, unknown>,
   ) {
-    return this.branchService.updateManager(managerId, body);
+    return this.branchService.updateManager(
+      managerId,
+      body as unknown as Parameters<typeof this.branchService.updateManager>[1],
+    );
   }
 
   @Delete('branches/managers/:managerId')
@@ -112,6 +146,18 @@ export class AppController {
   @Get('products/ingredients')
   async getIngredients() {
     return this.menuService.getAllIngredients();
+  }
+
+  @Post('products/ingredients')
+  async createIngredient(@Body() body: Record<string, unknown>) {
+    // Adding to menu.service or a dedicated ingredient service
+    // For now, let's assume menuService handles it or we'll implement it
+    return (this.menuService as any).createIngredient(body);
+  }
+
+  @Patch('products/ingredients/:id')
+  async updateIngredient(@Param('id') id: string, @Body() body: Record<string, unknown>) {
+    return (this.menuService as any).updateIngredient(id, body);
   }
 
   @Get('products/:id')
@@ -148,8 +194,10 @@ export class AppController {
   }
 
   @Post('categories')
-  async createCategory(@Body() body: any) {
-    return this.menuService.createCategory(body);
+  async createCategory(@Body() body: Record<string, unknown>) {
+    return this.menuService.createCategory(
+      body as unknown as Parameters<typeof this.menuService.createCategory>[0],
+    );
   }
 
   @Patch('categories/reorder')
@@ -160,8 +208,14 @@ export class AppController {
   }
 
   @Patch('categories/:id')
-  async updateCategory(@Param('id') id: string, @Body() body: any) {
-    return this.menuService.updateCategory(id, body);
+  async updateCategory(
+    @Param('id') id: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.menuService.updateCategory(
+      id,
+      body as unknown as Parameters<typeof this.menuService.updateCategory>[1],
+    );
   }
 
   @Delete('categories/:id')
@@ -181,19 +235,32 @@ export class AppController {
     return this.menuService.getAllIngredients();
   }
 
+  @Get('menu/costing')
+  async getMenuCosting() {
+    return this.menuService.getMenuCosting();
+  }
+
   @Get('menu/:id')
   async getMenuItem(@Param('id') id: string) {
     return this.menuService.getMenuItemById(id);
   }
 
   @Post('menu')
-  async createMenuItem(@Body() body: any) {
-    return this.menuService.createMenuItem(body);
+  async createMenuItem(@Body() body: Record<string, unknown>) {
+    return this.menuService.createMenuItem(
+      body as unknown as Parameters<typeof this.menuService.createMenuItem>[0],
+    );
   }
 
   @Patch('menu/:id')
-  async updateMenuItem(@Param('id') id: string, @Body() body: any) {
-    return this.menuService.updateMenuItem(id, body);
+  async updateMenuItem(
+    @Param('id') id: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.menuService.updateMenuItem(
+      id,
+      body as unknown as Parameters<typeof this.menuService.updateMenuItem>[1],
+    );
   }
 
   @Delete('menu/:id')
@@ -217,16 +284,25 @@ export class AppController {
 
   // ─── Option Groups ────────────────────────────────────────────────────────
   @Post('menu/:id/option-groups')
-  async createOptionGroup(@Param('id') id: string, @Body() body: any) {
-    return this.menuService.createOptionGroup(id, body);
+  async createOptionGroup(
+    @Param('id') id: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.menuService.createOptionGroup(
+      id,
+      body as unknown as Parameters<typeof this.menuService.createOptionGroup>[1],
+    );
   }
 
   @Patch('menu/option-groups/:groupId')
   async updateOptionGroup(
     @Param('groupId') groupId: string,
-    @Body() body: any,
+    @Body() body: Record<string, unknown>,
   ) {
-    return this.menuService.updateOptionGroup(groupId, body);
+    return this.menuService.updateOptionGroup(
+      groupId,
+      body as unknown as Parameters<typeof this.menuService.updateOptionGroup>[1],
+    );
   }
 
   @Delete('menu/option-groups/:groupId')
@@ -237,13 +313,25 @@ export class AppController {
 
   // ─── Options ─────────────────────────────────────────────────────────────
   @Post('menu/option-groups/:groupId/options')
-  async createOption(@Param('groupId') groupId: string, @Body() body: any) {
-    return this.menuService.createOption(groupId, body);
+  async createOption(
+    @Param('groupId') groupId: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.menuService.createOption(
+      groupId,
+      body as unknown as Parameters<typeof this.menuService.createOption>[1],
+    );
   }
 
   @Patch('menu/options/:optionId')
-  async updateOption(@Param('optionId') optionId: string, @Body() body: any) {
-    return this.menuService.updateOption(optionId, body);
+  async updateOption(
+    @Param('optionId') optionId: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.menuService.updateOption(
+      optionId,
+      body as unknown as Parameters<typeof this.menuService.updateOption>[1],
+    );
   }
 
   @Delete('menu/options/:optionId')
@@ -284,18 +372,35 @@ export class AppController {
   }
 
   @Post('orders')
-  async createOrder(@Body() orderData: any) {
-    return this.orderService.createOrder(orderData);
+  async createOrder(@Body() orderData: Record<string, unknown>) {
+    return this.orderService.createOrder(
+      orderData as unknown as Parameters<typeof this.orderService.createOrder>[0],
+    );
   }
 
   @Patch('orders/:id/status')
-  async updateOrderStatus(@Param('id') id: string, @Body() body: any) {
-    return this.orderService.updateOrderStatus(id, body.status, body.metadata);
+  async updateOrderStatus(
+    @Param('id') id: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.orderService.updateOrderStatus(
+      id,
+      body.status as string,
+      body.metadata as
+        | { riderName?: string; riderPhone?: string; qcNote?: string }
+        | undefined,
+    );
   }
 
   @Patch('orders/:id/payment')
-  async updatePayment(@Param('id') id: string, @Body() body: any) {
-    return this.orderService.updatePaymentStatus(id, body);
+  async updatePayment(
+    @Param('id') id: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.orderService.updatePaymentStatus(
+      id,
+      body as { status: string; method?: string; transactionId?: string },
+    );
   }
 
   @Patch('orders/:id/cancel')

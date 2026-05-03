@@ -14,11 +14,11 @@ export default function DispatchView({ orders, updateStatus }: any) {
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
                <Truck size={24} className="text-orange-500" />
             </div>
-            <h1 className="text-xl font-black uppercase tracking-widest text-slate-800">Dispactcher / Logistics</h1>
+            <h1 className="text-xl font-black uppercase tracking-widest text-slate-800">การจัดส่ง / โลจิสติกส์</h1>
          </div>
          <div className="flex items-center gap-6">
             <div className="text-right">
-               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Awaiting Rider</p>
+               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">รอไรเดอร์มารับ</p>
                <p className="text-xl font-black text-orange-600">{readyOrders.length}</p>
             </div>
          </div>
@@ -31,7 +31,7 @@ export default function DispatchView({ orders, updateStatus }: any) {
                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                <input 
                   type="text" 
-                  placeholder="ค้นหา Order ID / ชื่อ Rider..."
+                  placeholder="ค้นหาเลขที่ออเดอร์ / ชื่อไรเดอร์..."
                   className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border border-orange-100 text-sm focus:ring-2 focus:ring-orange-500/20"
                />
             </div>
@@ -53,16 +53,16 @@ export default function DispatchView({ orders, updateStatus }: any) {
                        </span>
                        <span className={`text-[10px] font-bold ${selectedOrder?.id === order.id ? 'text-white/60' : 'text-gray-400'}`}>#{order.orderNo.slice(-4)}</span>
                     </div>
-                    <h4 className="text-lg font-black italic truncate">{order.customerName || 'Delivery Order'}</h4>
+                    <h4 className="text-lg font-black italic truncate">{order.customerName || 'ออเดอร์จัดส่ง'}</h4>
                     <p className={`text-[10px] font-bold mt-1 ${selectedOrder?.id === order.id ? 'text-white/60' : 'text-gray-400'}`}>
-                       {order.items?.length} items • Ready {Math.floor((Date.now() - new Date(order.updatedAt).getTime())/60000)}m ago
+                       {order.items?.length} รายการ • พร้อมส่ง {Math.floor((Date.now() - new Date(order.updatedAt).getTime())/60000)} นาทีที่แล้ว
                     </p>
                  </motion.button>
                ))}
                {readyOrders.length === 0 && (
                   <div className="py-20 flex flex-col items-center justify-center opacity-10">
                      <Package size={64} />
-                     <p className="mt-4 font-black uppercase tracking-widest text-xs">No Pending Pickup</p>
+                     <p className="mt-4 font-black uppercase tracking-widest text-xs">ไม่มีรายการรอรับส่ง</p>
                   </div>
                )}
             </div>
@@ -82,8 +82,8 @@ export default function DispatchView({ orders, updateStatus }: any) {
                      <div className="p-8 bg-orange-50/50 border-b border-orange-100">
                         <div className="flex justify-between items-start">
                            <div>
-                              <h2 className="text-3xl font-black italic text-slate-800">{selectedOrder.customerName || 'Delivery'}</h2>
-                              <p className="text-sm font-bold text-orange-600">HANDOVER TO RIDER</p>
+                              <h2 className="text-3xl font-black italic text-slate-800">{selectedOrder.customerName || 'ลูกค้า Delivery'}</h2>
+                              <p className="text-sm font-bold text-orange-600">ส่งมอบออเดอร์ให้ไรเดอร์</p>
                            </div>
                            <button onClick={()=>setSelectedOrder(null)} className="p-2 hover:bg-orange-100 rounded-full transition-colors">
                               <ExternalLink size={20} className="text-orange-500" />
@@ -95,33 +95,33 @@ export default function DispatchView({ orders, updateStatus }: any) {
                         {/* Summary */}
                         <div className="grid grid-cols-2 gap-4">
                            <div className="p-6 rounded-3xl bg-gray-50 border border-gray-100">
-                              <p className="text-[10px] font-black text-gray-400 uppercase mb-2">Order Items</p>
+                              <p className="text-[10px] font-black text-gray-400 uppercase mb-2">รายการอาหาร/เครื่องดื่ม</p>
                               <div className="space-y-1">
                                  {selectedOrder.items?.map((item:any, idx:number)=>(
-                                    <p key={idx} className="text-sm font-bold text-slate-700">x{item.quantity} {item.productName}</p>
+                                    <p key={idx} className="text-sm font-bold text-slate-700">×{item.quantity} {item.productName}</p>
                                  ))}
                               </div>
                            </div>
                            <div className="p-6 rounded-3xl bg-gray-50 border border-gray-100">
-                              <p className="text-[10px] font-black text-gray-400 uppercase mb-2">Status History</p>
+                              <p className="text-[10px] font-black text-gray-400 uppercase mb-2">สถานะการตรวจสอบ</p>
                               <div className="flex items-center gap-2 text-sm font-bold text-emerald-600">
-                                 <CheckCircle2 size={16} /> QC PASSED
+                                 <CheckCircle2 size={16} /> ผ่านการตรวจสอบ QC
                               </div>
-                              <p className="text-[10px] font-bold text-gray-400 mt-1">Checked by Branch Supervisor</p>
+                              <p className="text-[10px] font-bold text-gray-400 mt-1">ตรวจสอบโดยหัวหน้าสาขาแล้ว</p>
                            </div>
                         </div>
 
                         {/* Rider Form */}
                         <div className="space-y-6">
-                           <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">Rider Information</h3>
+                           <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">ข้อมูลไรเดอร์</h3>
                            <div className="grid grid-cols-2 gap-6">
                               <div>
-                                 <label className="text-[10px] font-black text-gray-500 ml-2">RIDER NAME</label>
+                                 <label className="text-[10px] font-black text-gray-500 ml-2">ชื่อไรเดอร์</label>
                                  <div className="mt-1 relative">
                                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-300" size={18} />
                                     <input 
                                        type="text" 
-                                       placeholder="เช่น G-1234 (Somsak)"
+                                       placeholder="เช่น G-1234 (สมศักดิ์)"
                                        value={riderInfo.name}
                                        onChange={e => setRiderInfo({...riderInfo, name: e.target.value})}
                                        className="w-full pl-12 pr-4 py-4 bg-orange-50/30 rounded-2xl border-2 border-transparent focus:border-orange-500/20 focus:ring-0 font-bold"
@@ -129,7 +129,7 @@ export default function DispatchView({ orders, updateStatus }: any) {
                                  </div>
                               </div>
                               <div>
-                                 <label className="text-[10px] font-black text-gray-500 ml-2">PHONE NUMBER</label>
+                                 <label className="text-[10px] font-black text-gray-500 ml-2">เบอร์โทรศัพท์</label>
                                  <div className="mt-1 relative">
                                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-300" size={18} />
                                     <input 
@@ -146,7 +146,7 @@ export default function DispatchView({ orders, updateStatus }: any) {
 
                         {/* Timeline / Policy */}
                         <div className="p-6 rounded-3xl border-2 border-dashed border-gray-100">
-                           <p className="text-xs font-bold text-gray-400 italic">"Dispatcher must verify the Rider App matching order # before handover"</p>
+                           <p className="text-xs font-bold text-gray-400 italic">"Dispatcher ต้องตรวจสอบเลขที่ออเดอร์ในแอปของไรเดอร์ให้ตรงกันก่อนส่งมอบสินค้า"</p>
                         </div>
                      </div>
 
@@ -158,14 +158,14 @@ export default function DispatchView({ orders, updateStatus }: any) {
                            }}
                            className="w-full py-5 rounded-[2rem] bg-orange-600 text-white font-black uppercase tracking-[0.2em] shadow-xl shadow-orange-900/20 hover:scale-[1.02] transition-all"
                         >
-                           Confirm Handover
+                           ยืนยันการส่งมอบ
                         </button>
                      </div>
                   </motion.div>
                ) : (
                   <div className="h-full flex flex-col items-center justify-center text-gray-200">
                      <Truck size={100} strokeWidth={1} />
-                     <p className="mt-6 font-black uppercase tracking-[0.3em] text-xs">Awaiting Logistics Execution</p>
+                     <p className="mt-6 font-black uppercase tracking-[0.3em] text-xs">รอการจัดการโลจิสติกส์</p>
                   </div>
                )}
             </AnimatePresence>

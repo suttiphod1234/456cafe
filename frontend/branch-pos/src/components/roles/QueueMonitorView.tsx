@@ -24,7 +24,7 @@ export default function QueueMonitorView({ branch, orders }: any) {
              </div>
              <div>
                 <h1 className="text-5xl font-black italic tracking-tighter uppercase">{branch?.name || '456 Coffee'}</h1>
-                <p className="text-xl font-bold text-amber-500/60 uppercase tracking-widest mt-1">Order Status Monitor</p>
+                <p className="text-xl font-bold text-amber-500/60 uppercase tracking-widest mt-1">จอแสดงสถานะออเดอร์ (Order Monitor)</p>
              </div>
           </div>
           <div className="text-right">
@@ -39,7 +39,7 @@ export default function QueueMonitorView({ branch, orders }: any) {
           <div className="flex flex-col h-full">
              <div className="flex items-center gap-4 mb-8">
                 <Clock className="text-gray-500" size={32} />
-                <h2 className="text-3xl font-black uppercase tracking-widest text-gray-500">Preparing</h2>
+                <h2 className="text-3xl font-black uppercase tracking-widest text-gray-500">กำลังจัดเตรียม</h2>
              </div>
              <div className="flex-1 bg-white/5 rounded-[3rem] p-8 border border-white/5 overflow-hidden">
                 <div className="grid grid-cols-2 gap-6">
@@ -53,7 +53,7 @@ export default function QueueMonitorView({ branch, orders }: any) {
                           className="bg-white/5 rounded-2xl p-6 flex flex-col items-center justify-center border border-white/5"
                         >
                            <span className="text-5xl font-black text-white/40">#{order.queueNo || '---'}</span>
-                           <span className="text-xs font-bold text-gray-500 mt-2 uppercase">{order.customerName || 'Customer'}</span>
+                           <span className="text-xs font-bold text-gray-500 mt-2 uppercase">{order.customerName || 'ลูกค้า'}</span>
                         </motion.div>
                       ))}
                    </AnimatePresence>
@@ -61,7 +61,7 @@ export default function QueueMonitorView({ branch, orders }: any) {
                 {preparing.length === 0 && (
                    <div className="h-full flex flex-col items-center justify-center opacity-10">
                       <Clock size={80} />
-                      <p className="mt-4 font-black">WAITING FOR ORDERS</p>
+                      <p className="mt-4 font-black">รอออเดอร์ใหม่</p>
                    </div>
                 )}
              </div>
@@ -71,7 +71,7 @@ export default function QueueMonitorView({ branch, orders }: any) {
           <div className="flex flex-col h-full">
              <div className="flex items-center gap-4 mb-8">
                 <BellRing className="text-emerald-400 animate-pulse" size={32} />
-                <h2 className="text-3xl font-black uppercase tracking-widest text-emerald-400">Ready to Pickup</h2>
+                <h2 className="text-3xl font-black uppercase tracking-widest text-emerald-400">เชิญรับสินค้า</h2>
              </div>
              <div className="flex-1 bg-emerald-500/10 rounded-[3rem] p-10 border border-emerald-500/20 overflow-hidden">
                 <div className="flex flex-col gap-6">
@@ -87,8 +87,8 @@ export default function QueueMonitorView({ branch, orders }: any) {
                            <div className="flex items-center gap-8">
                               <span className="text-8xl font-black italic tracking-tighter">#{order.queueNo || '---'}</span>
                               <div>
-                                 <p className="text-2xl font-black uppercase tracking-tight leading-none">{order.customerName || 'Valued Customer'}</p>
-                                 <p className="text-sm font-bold opacity-60 mt-2">Pick up at the counter</p>
+                                 <p className="text-2xl font-black uppercase tracking-tight leading-none">{order.customerName || 'ลูกค้าผู้มีอุปการคุณ'}</p>
+                                 <p className="text-sm font-bold opacity-60 mt-2">โปรดรับสินค้าที่เคาน์เตอร์</p>
                               </div>
                            </div>
                            <CheckCircle2 size={64} className="opacity-40" />
@@ -99,7 +99,7 @@ export default function QueueMonitorView({ branch, orders }: any) {
                 {ready.length === 0 && (
                    <div className="h-full flex flex-col items-center justify-center opacity-10">
                       <BellRing size={80} />
-                      <p className="mt-4 font-black">NO READY ORDERS</p>
+                      <p className="mt-4 font-black">ยังไม่มีรายการที่เสร็จ</p>
                    </div>
                 )}
              </div>
@@ -112,9 +112,10 @@ export default function QueueMonitorView({ branch, orders }: any) {
           <p className="font-bold uppercase tracking-[0.3em] text-xs">Fresh Coffee • Premium Experience • Since 2024</p>
           <div className="flex gap-8 font-black text-xs uppercase tracking-widest">
              <span>Wifi: 456Coffee_Guest</span>
-             <span>Pass: coffee1234</span>
+             <span>รหัสผ่าน: coffee1234</span>
           </div>
        </div>
     </div>
   );
 }
+

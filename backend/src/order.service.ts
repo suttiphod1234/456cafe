@@ -7,6 +7,31 @@ import { PrismaService } from './prisma.service';
 import { OrderGateway } from './order.gateway';
 import { AiService } from './ai.service';
 import { InventoryService } from './inventory.service';
+import { Prisma, OrderStatus, PaymentStatus } from '@prisma/client';
+
+export interface CreateOrderDto {
+  branchId: string;
+  userId?: string;
+  customerUid?: string;
+  customerName?: string;
+  totalAmount: number;
+  fulfillmentType?: string;
+  note?: string;
+  scheduledAt?: string | Date;
+  paymentMethod?: string;
+  platform?: string;
+  items: Array<{
+    productId: string;
+    quantity: number;
+    unitPrice?: number;
+    price: number;
+    optionsPrice?: number;
+    productName?: string;
+    name?: string;
+    customization?: any;
+    selectedOptions?: any;
+  }>;
+}
 
 @Injectable()
 export class OrderService {
@@ -39,7 +64,7 @@ export class OrderService {
   }
 
   // ─── Create Order ───────────────────────────────────────────────────────
-  async createOrder(data: any) {
+  async createOrder(data: CreateOrderDto) {
     const {
       branchId,
       userId,
@@ -83,15 +108,17 @@ export class OrderService {
           queueNo, // New field
           status: data.platform === 'STORE' ? 'PAID' : 'PENDING', // Store orders are PAID by default
           items: {
-            create: items.map((item: any) => ({
+            create: items.map((item) => ({
               productId: item.productId,
               quantity: item.quantity,
               unitPrice: item.unitPrice || item.price,
               optionsPrice: item.optionsPrice || 0,
               price: item.price * item.quantity,
               productName: item.productName || item.name || null,
-              customization: item.customization || null,
-              selectedOptions: item.selectedOptions || null,
+              customization:
+                (item.customization as Prisma.InputJsonValue) ?? null,
+              selectedOptions:
+                (item.selectedOptions as Prisma.InputJsonValue) ?? null,
             })),
           },
           payment: {
@@ -126,8 +153,14 @@ export class OrderService {
   }
 
   // ─── Update Order Status ────────────────────────────────────────────────
-  async updateOrderStatus(orderId: string, status: string, metadata?: any) {
-    const data: any = { status: status as any };
+  async updateOrderStatus(
+    orderId: string,
+    status: string,
+    metadata?: { riderName?: string; riderPhone?: string; qcNote?: string },
+  ) {
+    const data: Prisma.OrderUpdateInput = {
+      status: status as OrderStatus,
+    };
     if (metadata?.riderName) data.riderName = metadata.riderName;
     if (metadata?.riderPhone) data.riderPhone = metadata.riderPhone;
     if (metadata?.qcNote) data.qcNote = metadata.qcNote;
@@ -155,11 +188,12 @@ export class OrderService {
             result.lowStockAlerts,
           );
         }
-      } catch (e: any) {
-        console.error(`Inventory deduction failed for ${orderId}:`, e.message);
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'Unknown error';
+        console.error(`Inventory deduction failed for ${orderId}:`, msg);
         this.gateway.server
           .to(`branch-${order.branchId}`)
-          .emit('inventory-error', { orderId, message: e.message });
+          .emit('inventory-error', { orderId, message: msg });
       }
     }
 
@@ -176,7 +210,7 @@ export class OrderService {
     const payment = await this.prisma.payment.update({
       where: { orderId },
       data: {
-        status: data.status as any,
+        status: data.status as PaymentStatus,
         method: data.method,
         transactionId: data.transactionId,
         paidAt: data.status === 'PAID' ? new Date() : undefined,
@@ -209,6 +243,18 @@ export class OrderService {
           });
         }
       }
+
+      // Auto-record to Cashflow
+      await this.prisma.cashflowTransaction.create({
+        data: {
+          branchId: order.branchId,
+          type: 'INCOME',
+          category: 'SALES',
+          amount: order.totalAmount,
+          referenceId: order.id,
+          note: `รายได้จากออเดอร์ #${order.orderNo}`,
+        }
+      });
     }
 
     return payment;
@@ -221,9 +267,9 @@ export class OrderService {
     date?: string;
     search?: string;
   }) {
-    const where: any = {};
+    const where: Prisma.OrderWhereInput = {};
     if (filters?.branchId) where.branchId = filters.branchId;
-    if (filters?.status) where.status = filters.status;
+    if (filters?.status) where.status = filters.status as OrderStatus;
     if (filters?.date) {
       const d = new Date(filters.date);
       where.createdAt = { gte: d, lt: new Date(d.getTime() + 86400000) };
