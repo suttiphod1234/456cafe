@@ -7,6 +7,7 @@ import { PrismaService } from './prisma.service';
 import { OrderGateway } from './order.gateway';
 import { AiService } from './ai.service';
 import { InventoryService } from './inventory.service';
+import { UserService } from './user.service';
 import { Prisma, OrderStatus, PaymentStatus } from '@prisma/client';
 
 export interface CreateOrderDto {
@@ -40,19 +41,20 @@ export class OrderService {
     private gateway: OrderGateway,
     private ai: AiService,
     private inventory: InventoryService,
+    private userService: UserService,
   ) {}
 
-  // ─── Order Include ──────────────────────────────────────────────────────
+  // --- Order Include ---
   private orderInclude = {
     items: { include: { product: true } },
     branch: true,
     payment: true,
   };
 
-  // ─── Generate Order No ──────────────────────────────────────────────────
+  // --- Generate Order No ---
   private async generateOrderNo(): Promise<string> {
     const today = new Date();
-    const prefix = `ORD-${today.getFullYear().toString().slice(-2)}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
+    const prefix = "ORD-" + today.getFullYear().toString().slice(-2) + (today.getMonth() + 1).toString().padStart(2, '0') + today.getDate().toString().padStart(2, '0');
     const count = await this.prisma.order.count({
       where: {
         createdAt: {
@@ -60,10 +62,10 @@ export class OrderService {
         },
       },
     });
-    return `${prefix}-${(count + 1).toString().padStart(4, '0')}`;
+    return prefix + "-" + (count + 1).toString().padStart(4, '0');
   }
 
-  // ─── Create Order ───────────────────────────────────────────────────────
+  // --- Create Order ---
   async createOrder(data: CreateOrderDto) {
     const {
       branchId,
@@ -116,9 +118,9 @@ export class OrderService {
               price: item.price * item.quantity,
               productName: item.productName || item.name || null,
               customization:
-                (item.customization as Prisma.InputJsonValue) ?? null,
+                (item.customization) ?? null,
               selectedOptions:
-                (item.selectedOptions as Prisma.InputJsonValue) ?? null,
+                (item.selectedOptions) ?? null,
             })),
           },
           payment: {
@@ -152,14 +154,14 @@ export class OrderService {
     }
   }
 
-  // ─── Update Order Status ────────────────────────────────────────────────
+  // --- Update Order Status ---
   async updateOrderStatus(
     orderId: string,
     status: string,
     metadata?: { riderName?: string; riderPhone?: string; qcNote?: string },
   ) {
-    const data: Prisma.OrderUpdateInput = {
-      status: status as OrderStatus,
+    const data = {
+      status: status,
     };
     if (metadata?.riderName) data.riderName = metadata.riderName;
     if (metadata?.riderPhone) data.riderPhone = metadata.riderPhone;
@@ -172,15 +174,12 @@ export class OrderService {
     });
 
     // If READY_FOR_QC or READY_FOR_PICKUP, cut stock if not already cut
-    // (In a more advanced system, we might cut stock at PAID or PREPARING)
     if (
       status === 'READY_FOR_QC' ||
       status === 'READY' ||
       status === 'READY_FOR_PICKUP'
     ) {
       try {
-        // We check inventory here if we haven't already.
-        // For simplicity, we'll keep logic in deductInventoryForOrder idempotent or check before calling.
         const result = await this.inventory.deductInventoryForOrder(orderId);
         if (result.lowStockAlerts) {
           this.gateway.notifyInventoryAlert(
@@ -188,11 +187,11 @@ export class OrderService {
             result.lowStockAlerts,
           );
         }
-      } catch (e: unknown) {
+      } catch (e) {
         const msg = e instanceof Error ? e.message : 'Unknown error';
-        console.error(`Inventory deduction failed for ${orderId}:`, msg);
+        console.error("Inventory deduction failed for " + orderId + ":", msg);
         this.gateway.server
-          .to(`branch-${order.branchId}`)
+          .to("branch-" + order.branchId)
           .emit('inventory-error', { orderId, message: msg });
       }
     }
@@ -202,7 +201,7 @@ export class OrderService {
     return order;
   }
 
-  // ─── Update Payment Status ──────────────────────────────────────────────
+  // --- Update Payment Status ---
   async updatePaymentStatus(
     orderId: string,
     data: { status: string; method?: string; transactionId?: string },
@@ -210,7 +209,7 @@ export class OrderService {
     const payment = await this.prisma.payment.update({
       where: { orderId },
       data: {
-        status: data.status as PaymentStatus,
+        status: data.status,
         method: data.method,
         transactionId: data.transactionId,
         paidAt: data.status === 'PAID' ? new Date() : undefined,
@@ -228,19 +227,12 @@ export class OrderService {
       if (order.userId) {
         const pointsEarned = Math.floor(order.totalAmount / 10);
         if (pointsEarned > 0) {
-          await this.prisma.user.update({
-            where: { id: order.userId },
-            data: { points: { increment: pointsEarned } },
-          });
-
-          await this.prisma.pointTransaction.create({
-            data: {
-              userId: order.userId,
-              orderId,
-              delta: pointsEarned,
-              reason: `ได้แต้มจากออเดอร์ #${order.orderNo}`,
-            },
-          });
+          await this.userService.updatePoints(
+            order.userId,
+            pointsEarned,
+            "ได้แต้มจากออเดอร์ #" + order.orderNo,
+            orderId,
+          );
         }
       }
 
@@ -252,7 +244,7 @@ export class OrderService {
           category: 'SALES',
           amount: order.totalAmount,
           referenceId: order.id,
-          note: `รายได้จากออเดอร์ #${order.orderNo}`,
+          note: "รายได้จากออเดอร์ #" + order.orderNo,
         }
       });
     }
@@ -260,16 +252,16 @@ export class OrderService {
     return payment;
   }
 
-  // ─── Get All Orders (with filters) ──────────────────────────────────────
+  // --- Get All Orders (with filters) ---
   async getAllOrders(filters?: {
     branchId?: string;
     status?: string;
     date?: string;
     search?: string;
   }) {
-    const where: Prisma.OrderWhereInput = {};
+    const where = {};
     if (filters?.branchId) where.branchId = filters.branchId;
-    if (filters?.status) where.status = filters.status as OrderStatus;
+    if (filters?.status) where.status = filters.status;
     if (filters?.date) {
       const d = new Date(filters.date);
       where.createdAt = { gte: d, lt: new Date(d.getTime() + 86400000) };
@@ -290,17 +282,17 @@ export class OrderService {
     });
   }
 
-  // ─── Get Order by ID ────────────────────────────────────────────────────
+  // --- Get Order by ID ---
   async getOrderById(id: string) {
     const order = await this.prisma.order.findUnique({
       where: { id },
       include: this.orderInclude,
     });
-    if (!order) throw new NotFoundException(`Order ${id} not found`);
+    if (!order) throw new NotFoundException("Order " + id + " not found");
     return order;
   }
 
-  // ─── Recent Orders ─────────────────────────────────────────────────────
+  // --- Recent Orders ---
   async getRecentOrders(limit = 10) {
     return this.prisma.order.findMany({
       orderBy: { createdAt: 'desc' },
@@ -309,7 +301,7 @@ export class OrderService {
     });
   }
 
-  // ─── Customer Order History ─────────────────────────────────────────────
+  // --- Customer Order History ---
   async getCustomerOrders(customerUid: string) {
     return this.prisma.order.findMany({
       where: { customerUid },
@@ -319,7 +311,7 @@ export class OrderService {
     });
   }
 
-  // ─── Order Stats ────────────────────────────────────────────────────────
+  // --- Order Stats ---
   async getOrderStats(branchId?: string) {
     const where = branchId ? { branchId } : {};
     const today = new Date();
@@ -352,7 +344,7 @@ export class OrderService {
     };
   }
 
-  // ─── Global Stats ──────────────────────────────────────────────────────
+  // --- Global Stats ---
   async getGlobalStats() {
     const totalOrders = await this.prisma.order.count();
     const aggregate = await this.prisma.order.aggregate({
@@ -370,7 +362,7 @@ export class OrderService {
     };
   }
 
-  // ─── Cancel Order ───────────────────────────────────────────────────────
+  // --- Cancel Order ---
   async cancelOrder(orderId: string, reason?: string) {
     const order = await this.getOrderById(orderId);
     if (['COMPLETED', 'PICKED_UP', 'CANCELLED'].includes(order.status)) {
@@ -404,7 +396,7 @@ export class OrderService {
     return updated;
   }
 
-  // ─── AI ─────────────────────────────────────────────────────────────────
+  // --- AI ---
   async getAiRecommendation(userInput: string) {
     const products = await this.prisma.product.findMany({ take: 5 });
     return this.ai.recommendCoffee(userInput, products);
