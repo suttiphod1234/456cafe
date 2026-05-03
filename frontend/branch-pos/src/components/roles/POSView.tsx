@@ -25,6 +25,12 @@ export default function POSView({ branch, orders, updateStatus }: any) {
     note: ''
   });
   const [viewingReceipt, setViewingReceipt] = useState<any>(null);
+  
+  // Member Search State
+  const [memberSearch, setMemberSearch] = useState('');
+  const [searchingMember, setSearchingMember] = useState(false);
+  const [foundMember, setFoundMember] = useState<any>(null);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
 
   // Print function
   const handlePrint = () => {
@@ -79,6 +85,25 @@ export default function POSView({ branch, orders, updateStatus }: any) {
     setSelectedOptions({});
   };
 
+  const handleSearchMember = async () => {
+    if (!memberSearch.trim()) return;
+    setSearchingMember(true);
+    setFoundMember(null);
+    try {
+      const res = await fetch(`${API_BASE}/users?search=${memberSearch}`);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setFoundMember(data[0]); // Take the first match
+      } else {
+        alert("ไม่พบสมาชิกในระบบ");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSearchingMember(false);
+    }
+  };
+
   const removeFromCart = (index: number) => {
     setCart(cart.filter((_, i) => i !== index));
   };
@@ -96,6 +121,7 @@ export default function POSView({ branch, orders, updateStatus }: any) {
           customerName: checkoutData.customerName || 'Walk-in',
           note: checkoutData.note,
           totalAmount: cartTotal,
+          userId: selectedMember?.id,
           items: cart.map(item => ({
             productId: item.productId,
             name: item.productName,
@@ -171,8 +197,8 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                        </div>
                        <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-[10px] font-black text-blue-500 uppercase">Q#{order.queueNo}</span>
-                            <span className="px-2 py-0.5 rounded-full bg-gray-100 text-[10px] font-bold text-gray-400">{order.status}</span>
+                            <span className="text-[10px] font-black text-blue-500 uppercase">Q#${order.queueNo}</span>
+                            <span className="px-2 py-0.5 rounded-full bg-gray-100 text-[10px] font-bold text-gray-400">${order.status}</span>
                           </div>
                           <h4 className="font-black text-slate-800">{order.customerName || 'ลูกค้าหน้าร้าน'}</h4>
                           <p className="text-[10px] text-gray-400 mt-0.5">{order.items?.length} รายการ • {new Date(order.createdAt).toLocaleTimeString()}</p>
@@ -265,6 +291,54 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                       <div className="h-full flex flex-col items-center justify-center opacity-20 py-20">
                          <ShoppingBag size={48} />
                          <p className="mt-4 font-black">ยังไม่มีสินค้าในตะกร้า</p>
+                      </div>
+                   )}
+                </div>
+
+                {/* Member Section */}
+                <div className="px-6 py-4 border-t border-gray-100 bg-white">
+                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      <User size={12} className="text-[#7c543c]" /> ข้อมูลสมาชิก
+                   </p>
+                   {selectedMember ? (
+                      <div className="flex items-center justify-between bg-amber-50 p-3 rounded-2xl border border-amber-100">
+                         <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md"><User size={20} /></div>
+                            <div>
+                               <p className="font-bold text-slate-800 text-xs">{selectedMember.name}</p>
+                               <p className="text-[10px] text-amber-600 font-bold">{selectedMember.points} แต้ม</p>
+                            </div>
+                         </div>
+                         <button onClick={() => setSelectedMember(null)} className="text-gray-300 hover:text-rose-500"><X size={16} /></button>
+                      </div>
+                   ) : (
+                      <div className="space-y-2">
+                         <div className="relative">
+                            <input 
+                               type="text" 
+                               value={memberSearch}
+                               onChange={e => setMemberSearch(e.target.value)}
+                               placeholder="เบอร์โทรศัพท์/ชื่อสมาชิก..." 
+                               className="w-full pl-4 pr-10 py-2.5 bg-gray-50 rounded-xl border-none text-[10px] font-bold focus:ring-2 focus:ring-[#7c543c]/10" 
+                            />
+                            <button 
+                               onClick={handleSearchMember}
+                               disabled={searchingMember}
+                               className="absolute right-2 top-1/2 -translate-y-1/2 text-[#7c543c]"
+                            >
+                               <Search size={16} />
+                            </button>
+                         </div>
+                         {foundMember && (
+                            <motion.button 
+                               initial={{ opacity: 0, y: 5 }}
+                               animate={{ opacity: 1, y: 0 }}
+                               onClick={() => { setSelectedMember(foundMember); setFoundMember(null); setMemberSearch(''); }}
+                               className="w-full p-2.5 rounded-xl border-2 border-dashed border-[#7c543c]/30 text-[#7c543c] text-[10px] font-black flex items-center justify-center gap-2 hover:bg-amber-50 transition-all"
+                            >
+                               เลือก {foundMember.name} ?
+                            </motion.button>
+                         )}
                       </div>
                    )}
                 </div>
@@ -397,19 +471,19 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                      </div>
                      
                      <div className="flex justify-between text-sm mb-1 font-medium text-slate-700">
-                        <span>ออเดอร์: #{viewingReceipt.orderNo || viewingReceipt.id?.slice(0,8)}</span>
-                        <span>คิว: {viewingReceipt.queueNo || '-'}</span>
+                        <span>ออเดอร์: #${viewingReceipt.orderNo || viewingReceipt.id?.slice(0,8)}</span>
+                        <span>คิว: ${viewingReceipt.queueNo || '-'}</span>
                      </div>
                      <div className="flex justify-between text-sm mb-4 font-medium text-slate-700">
-                        <span>วันที่: {new Date(viewingReceipt.createdAt || Date.now()).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })}</span>
-                        <span>{viewingReceipt.paymentMethod || 'CASH'}</span>
+                        <span>วันที่: ${new Date(viewingReceipt.createdAt || Date.now()).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })}</span>
+                        <span>${viewingReceipt.paymentMethod || 'CASH'}</span>
                      </div>
 
                      <div className="border-t-2 border-dashed border-gray-300 my-4"></div>
                      
                      <div className="space-y-3">
-                        {viewingReceipt.items?.map((item: any, idx: number) => {
-                          let opts: any[] = [];
+                        {viewingReceipt.items?.map((item, idx) => {
+                          let opts = [];
                           if (typeof item.selectedOptions === 'string') {
                             try { opts = JSON.parse(item.selectedOptions); } catch(e){}
                           } else if (Array.isArray(item.selectedOptions)) {
@@ -420,10 +494,10 @@ export default function POSView({ branch, orders, updateStatus }: any) {
                             <div key={idx} className="text-sm font-medium text-slate-800">
                                <div className="flex justify-between items-start">
                                   <div className="flex-1 pr-2 leading-tight">
-                                     {item.quantity}x {item.productName || item.product?.name || 'Item'}
+                                     ${item.quantity}x ${item.productName || item.product?.name || 'Item'}
                                      {opts && opts.length > 0 && (
                                         <div className="text-[11px] text-gray-500 mt-0.5 ml-4">
-                                           {opts.map((o:any)=>o.label).join(', ')}
+                                           {opts.map(o=>o.label).join(', ')}
                                         </div>
                                      )}
                                   </div>
