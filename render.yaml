@@ -6,7 +6,7 @@ services:
     region: oregon
     rootDir: backend
     buildCommand: npm install --include=dev && npx prisma generate && npm run build
-    startCommand: npm run start:prod
+    startCommand: node dist-new/src/main.js
     envVars:
       - key: DATABASE_URL
         value: file:./dev.db
