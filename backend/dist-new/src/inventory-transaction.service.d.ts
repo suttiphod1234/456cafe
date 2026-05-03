@@ -34,9 +34,9 @@ export declare class InventoryTransactionService {
     }): Promise<({
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;

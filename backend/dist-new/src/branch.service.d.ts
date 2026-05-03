@@ -24,230 +24,230 @@ export declare class BranchService {
     private prisma;
     constructor(prisma: PrismaService);
     getAllBranches(): Promise<({
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     })[]>;
     getBranchById(id: string): Promise<{
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     createBranch(data: BranchDetailDto & {
         name: string;
     }): Promise<{
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     updateBranch(id: string, data: BranchDetailDto): Promise<{
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     toggleBranchOpen(id: string): Promise<{
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     deleteBranch(id: string): Promise<{
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     getManagers(branchId: string): Promise<{
         id: string;
-        name: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         branchId: string;
         email: string | null;
+        phone: string | null;
         role: string;
         lineUid: string | null;
     }[]>;
     addManager(branchId: string, data: CreateManagerDto): Promise<{
         id: string;
-        name: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         branchId: string;
         email: string | null;
+        phone: string | null;
         role: string;
         lineUid: string | null;
     }>;
     updateManager(managerId: string, data: Partial<CreateManagerDto>): Promise<{
         id: string;
-        name: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         branchId: string;
         email: string | null;
+        phone: string | null;
         role: string;
         lineUid: string | null;
     }>;
     deleteManager(managerId: string): Promise<{
         id: string;
-        name: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         branchId: string;
         email: string | null;
+        phone: string | null;
         role: string;
         lineUid: string | null;
     }>;
@@ -260,40 +260,40 @@ export declare class BranchService {
             items: ({
                 product: {
                     id: string;
-                    name: string;
-                    imageUrl: string | null;
                     createdAt: Date;
                     updatedAt: Date;
+                    name: string;
                     description: string | null;
-                    sortOrder: number;
-                    tags: string;
+                    status: string;
                     price: number;
                     categoryId: string | null;
-                    status: string;
+                    imageUrl: string | null;
+                    tags: string;
+                    sortOrder: number;
                 };
             } & {
                 id: string;
-                price: number;
-                productId: string;
                 quantity: number;
                 orderId: string;
+                productId: string;
                 unitPrice: number;
                 optionsPrice: number;
+                price: number;
                 productName: string | null;
                 customization: import("@prisma/client/runtime/library").JsonValue | null;
                 selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
             })[];
         } & {
             id: string;
+            userId: string | null;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.OrderStatus;
-            userId: string | null;
             branchId: string;
             orderNo: string;
             customerUid: string;
             customerName: string | null;
             totalAmount: number;
+            status: import(".prisma/client").$Enums.OrderStatus;
             fulfillmentType: string;
             note: string | null;
             platform: string;
@@ -313,40 +313,40 @@ export declare class BranchService {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: import("@prisma/client/runtime/library").JsonValue | null;
             selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -360,31 +360,31 @@ export declare class BranchService {
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
         })[];
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     })[]>;
     getBranchStats(branchId: string): Promise<{
         totalOrders: number;

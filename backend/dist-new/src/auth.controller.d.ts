@@ -16,11 +16,11 @@ export declare class AuthController {
         name?: string;
     }): Promise<{
         id: string;
-        name: string | null;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
         email: string | null;
+        phone: string | null;
         points: number;
         role: string;
     }>;
@@ -31,48 +31,48 @@ export declare class AuthController {
         email?: string;
     }): Promise<{
         id: string;
-        name: string | null;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
         email: string | null;
+        phone: string | null;
         points: number;
         role: string;
     }>;
     getMe(userId: string): Promise<({
         authProviders: {
             id: string;
-            createdAt: Date;
             userId: string;
+            createdAt: Date;
             provider: string;
             providerId: string;
         }[];
         addresses: {
-            id: string;
             address: string;
+            id: string;
+            userId: string;
+            label: string;
             latitude: number | null;
             longitude: number | null;
+            isDefault: boolean;
             createdAt: Date;
             updatedAt: Date;
-            label: string;
-            isDefault: boolean;
-            userId: string;
         }[];
         pointHistory: {
             id: string;
-            createdAt: Date;
             userId: string;
+            createdAt: Date;
             orderId: string | null;
             delta: number;
             reason: string;
         }[];
     } & {
         id: string;
-        name: string | null;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
         email: string | null;
+        phone: string | null;
         points: number;
         role: string;
     }) | null>;

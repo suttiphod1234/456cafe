@@ -1,5 +1,5 @@
 import { PrismaService } from './prisma.service';
-export interface CreateCashflowDto {
+export declare class CreateCashflowDto {
     branchId: string;
     type: string;
     category: string;
@@ -12,10 +12,10 @@ export declare class FinanceService {
     private prisma;
     constructor(prisma: PrismaService);
     createTransaction(data: CreateCashflowDto): Promise<{
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        category: string;
         branchId: string;
         note: string | null;
         type: string;
@@ -29,10 +29,10 @@ export declare class FinanceService {
         startDate?: string;
         endDate?: string;
     }): Promise<{
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        category: string;
         branchId: string;
         note: string | null;
         type: string;

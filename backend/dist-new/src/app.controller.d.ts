@@ -13,186 +13,186 @@ export declare class AppController {
     private readonly inventoryTransactionService;
     constructor(orderService: OrderService, branchService: BranchService, inventoryService: InventoryService, productService: ProductService, menuService: MenuService, inventoryTransactionService: InventoryTransactionService);
     getBranches(): Promise<({
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     })[]>;
     getBranch(id: string): Promise<{
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     createBranch(body: Record<string, unknown>): Promise<{
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     updateBranch(id: string, body: Record<string, unknown>): Promise<{
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     deleteBranch(id: string): Promise<{
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     toggleBranchOpen(id: string): Promise<{
+        _count: {
+            inventory: number;
+            orders: number;
+        };
         managers: {
             id: string;
-            name: string;
-            phone: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             branchId: string;
             email: string | null;
+            phone: string | null;
             role: string;
             lineUid: string | null;
         }[];
-        _count: {
-            orders: number;
-            inventory: number;
-        };
     } & {
-        id: string;
-        name: string;
-        location: string | null;
         address: string | null;
+        id: string;
         latitude: number | null;
         longitude: number | null;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        imageUrl: string | null;
+        phone: string | null;
+        location: string | null;
         isOpen: boolean;
         openTime: string | null;
         closeTime: string | null;
-        phone: string | null;
         promptpayId: string | null;
         promptpayName: string | null;
-        imageUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     getBranchStats(id: string): Promise<{
         totalOrders: number;
@@ -207,40 +207,40 @@ export declare class AppController {
             items: ({
                 product: {
                     id: string;
-                    name: string;
-                    imageUrl: string | null;
                     createdAt: Date;
                     updatedAt: Date;
+                    name: string;
                     description: string | null;
-                    sortOrder: number;
-                    tags: string;
+                    status: string;
                     price: number;
                     categoryId: string | null;
-                    status: string;
+                    imageUrl: string | null;
+                    tags: string;
+                    sortOrder: number;
                 };
             } & {
                 id: string;
-                price: number;
-                productId: string;
                 quantity: number;
                 orderId: string;
+                productId: string;
                 unitPrice: number;
                 optionsPrice: number;
+                price: number;
                 productName: string | null;
                 customization: import("@prisma/client/runtime/library").JsonValue | null;
                 selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
             })[];
         } & {
             id: string;
+            userId: string | null;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.OrderStatus;
-            userId: string | null;
             branchId: string;
             orderNo: string;
             customerUid: string;
             customerName: string | null;
             totalAmount: number;
+            status: import(".prisma/client").$Enums.OrderStatus;
             fulfillmentType: string;
             note: string | null;
             platform: string;
@@ -260,40 +260,40 @@ export declare class AppController {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: import("@prisma/client/runtime/library").JsonValue | null;
             selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -306,9 +306,9 @@ export declare class AppController {
     getInventory(id: string): Promise<({
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;
@@ -324,9 +324,9 @@ export declare class AppController {
     getInventoryTransactions(branchId?: string, ingredientId?: string, type?: string): Promise<({
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;
@@ -359,114 +359,114 @@ export declare class AppController {
     }>;
     getManagers(id: string): Promise<{
         id: string;
-        name: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         branchId: string;
         email: string | null;
+        phone: string | null;
         role: string;
         lineUid: string | null;
     }[]>;
     addManager(id: string, body: Record<string, unknown>): Promise<{
         id: string;
-        name: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         branchId: string;
         email: string | null;
+        phone: string | null;
         role: string;
         lineUid: string | null;
     }>;
     updateManager(managerId: string, body: Record<string, unknown>): Promise<{
         id: string;
-        name: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         branchId: string;
         email: string | null;
+        phone: string | null;
         role: string;
         lineUid: string | null;
     }>;
     deleteManager(managerId: string): Promise<{
         id: string;
-        name: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         branchId: string;
         email: string | null;
+        phone: string | null;
         role: string;
         lineUid: string | null;
     }>;
     getProducts(): Promise<({
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     })[]>;
     getIngredients(): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         unit: string;
         costPerUnit: number;
         sku: string | null;
@@ -476,63 +476,63 @@ export declare class AppController {
     getProduct(id: string): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     addRecipeLegacy(id: string, body: {
         ingredientId: string;
@@ -540,40 +540,40 @@ export declare class AppController {
     }): Promise<{
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;
         };
     } & {
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
     updateRecipeLegacy(recipeId: string, quantity: number): Promise<{
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;
         };
     } & {
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
     deleteRecipeLegacy(recipeId: string): Promise<{
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
     getCategories(): Promise<({
         _count: {
@@ -581,13 +581,13 @@ export declare class AppController {
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     })[]>;
     createCategory(body: Record<string, unknown>): Promise<{
@@ -596,13 +596,13 @@ export declare class AppController {
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     }>;
     reorderCategories(body: {
@@ -616,13 +616,13 @@ export declare class AppController {
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     })[]>;
     updateCategory(id: string, body: Record<string, unknown>): Promise<{
@@ -631,92 +631,92 @@ export declare class AppController {
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     }>;
     deleteCategory(id: string): Promise<{
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     }>;
     getMenu(categoryId?: string): Promise<({
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     })[]>;
     getMenuIngredients(): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         unit: string;
         costPerUnit: number;
         sku: string | null;
@@ -727,299 +727,299 @@ export declare class AppController {
         marginPercentage: number;
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
         })[];
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }[]>;
     getMenuItem(id: string): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     createMenuItem(body: Record<string, unknown>): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     updateMenuItem(id: string, body: Record<string, unknown>): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     deleteMenuItem(id: string): Promise<{
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     setMenuStatus(id: string, status: string): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     addMenuRecipe(id: string, body: {
         ingredientId: string;
@@ -1027,102 +1027,102 @@ export declare class AppController {
     }): Promise<{
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;
         };
     } & {
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
     createOptionGroup(id: string, body: Record<string, unknown>): Promise<{
         options: {
             id: string;
-            sortOrder: number;
             label: string;
-            priceAddon: number;
             isDefault: boolean;
+            sortOrder: number;
             groupId: string;
+            priceAddon: number;
         }[];
     } & {
         id: string;
         name: string;
-        sortOrder: number;
         productId: string;
+        sortOrder: number;
         isRequired: boolean;
         maxSelect: number;
     }>;
     updateOptionGroup(groupId: string, body: Record<string, unknown>): Promise<{
         options: {
             id: string;
-            sortOrder: number;
             label: string;
-            priceAddon: number;
             isDefault: boolean;
+            sortOrder: number;
             groupId: string;
+            priceAddon: number;
         }[];
     } & {
         id: string;
         name: string;
-        sortOrder: number;
         productId: string;
+        sortOrder: number;
         isRequired: boolean;
         maxSelect: number;
     }>;
     deleteOptionGroup(groupId: string): Promise<{
         id: string;
         name: string;
-        sortOrder: number;
         productId: string;
+        sortOrder: number;
         isRequired: boolean;
         maxSelect: number;
     }>;
     createOption(groupId: string, body: Record<string, unknown>): Promise<{
         id: string;
-        sortOrder: number;
         label: string;
-        priceAddon: number;
         isDefault: boolean;
+        sortOrder: number;
         groupId: string;
+        priceAddon: number;
     }>;
     updateOption(optionId: string, body: Record<string, unknown>): Promise<{
         id: string;
-        sortOrder: number;
         label: string;
-        priceAddon: number;
         isDefault: boolean;
+        sortOrder: number;
         groupId: string;
+        priceAddon: number;
     }>;
     deleteOption(optionId: string): Promise<{
         id: string;
-        sortOrder: number;
         label: string;
-        priceAddon: number;
         isDefault: boolean;
+        sortOrder: number;
         groupId: string;
+        priceAddon: number;
     }>;
     getOrders(branchId?: string, status?: string, date?: string, search?: string): Promise<({
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -1139,40 +1139,40 @@ export declare class AppController {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: import("@prisma/client/runtime/library").JsonValue | null;
             selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -1184,21 +1184,21 @@ export declare class AppController {
     })[]>;
     getRecentOrders(limit?: string): Promise<({
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -1215,40 +1215,40 @@ export declare class AppController {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: import("@prisma/client/runtime/library").JsonValue | null;
             selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -1269,21 +1269,21 @@ export declare class AppController {
     }>;
     getCustomerOrders(uid: string): Promise<({
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -1300,40 +1300,40 @@ export declare class AppController {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: import("@prisma/client/runtime/library").JsonValue | null;
             selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -1345,21 +1345,21 @@ export declare class AppController {
     })[]>;
     getOrder(id: string): Promise<{
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -1376,40 +1376,40 @@ export declare class AppController {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: import("@prisma/client/runtime/library").JsonValue | null;
             selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -1421,21 +1421,21 @@ export declare class AppController {
     }>;
     createOrder(orderData: Record<string, unknown>): Promise<{
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -1452,40 +1452,40 @@ export declare class AppController {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: import("@prisma/client/runtime/library").JsonValue | null;
             selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -1497,21 +1497,21 @@ export declare class AppController {
     }>;
     updateOrderStatus(id: string, body: Record<string, unknown>): Promise<{
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -1528,40 +1528,40 @@ export declare class AppController {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: import("@prisma/client/runtime/library").JsonValue | null;
             selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -1585,21 +1585,21 @@ export declare class AppController {
     }>;
     cancelOrder(id: string, reason?: string): Promise<{
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -1616,40 +1616,40 @@ export declare class AppController {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: import("@prisma/client/runtime/library").JsonValue | null;
             selectedOptions: import("@prisma/client/runtime/library").JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;

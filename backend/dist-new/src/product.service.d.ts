@@ -20,152 +20,152 @@ export declare class ProductService {
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     })[]>;
     getProductById(id: string): Promise<{
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     createProduct(data: CreateProductDto): Promise<{
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     updateProduct(id: string, data: UpdateProductDto): Promise<{
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     deleteProduct(id: string): Promise<{
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     getAllIngredients(): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         unit: string;
         costPerUnit: number;
         sku: string | null;
@@ -173,39 +173,39 @@ export declare class ProductService {
     addRecipe(productId: string, ingredientId: string, quantity: number): Promise<{
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;
         };
     } & {
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
     updateRecipe(recipeId: string, quantity: number): Promise<{
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;
         };
     } & {
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
     deleteRecipe(recipeId: string): Promise<{
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
 }

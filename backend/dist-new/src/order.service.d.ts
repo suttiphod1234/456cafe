@@ -36,21 +36,21 @@ export declare class OrderService {
     private generateOrderNo;
     createOrder(data: CreateOrderDto): Promise<{
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -67,40 +67,40 @@ export declare class OrderService {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: Prisma.JsonValue | null;
             selectedOptions: Prisma.JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -116,21 +116,21 @@ export declare class OrderService {
         qcNote?: string;
     }): Promise<{
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -147,40 +147,40 @@ export declare class OrderService {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: Prisma.JsonValue | null;
             selectedOptions: Prisma.JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -213,21 +213,21 @@ export declare class OrderService {
         search?: string;
     }): Promise<({
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -244,40 +244,40 @@ export declare class OrderService {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: Prisma.JsonValue | null;
             selectedOptions: Prisma.JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -289,21 +289,21 @@ export declare class OrderService {
     })[]>;
     getOrderById(id: string): Promise<{
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -320,40 +320,40 @@ export declare class OrderService {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: Prisma.JsonValue | null;
             selectedOptions: Prisma.JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -365,21 +365,21 @@ export declare class OrderService {
     }>;
     getRecentOrders(limit?: number): Promise<({
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -396,40 +396,40 @@ export declare class OrderService {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: Prisma.JsonValue | null;
             selectedOptions: Prisma.JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -441,21 +441,21 @@ export declare class OrderService {
     })[]>;
     getCustomerOrders(customerUid: string): Promise<({
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -472,40 +472,40 @@ export declare class OrderService {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: Prisma.JsonValue | null;
             selectedOptions: Prisma.JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;
@@ -532,21 +532,21 @@ export declare class OrderService {
     }>;
     cancelOrder(orderId: string, reason?: string): Promise<{
         branch: {
-            id: string;
-            name: string;
-            location: string | null;
             address: string | null;
+            id: string;
             latitude: number | null;
             longitude: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            imageUrl: string | null;
+            phone: string | null;
+            location: string | null;
             isOpen: boolean;
             openTime: string | null;
             closeTime: string | null;
-            phone: string | null;
             promptpayId: string | null;
             promptpayName: string | null;
-            imageUrl: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         payment: {
             id: string;
@@ -563,40 +563,40 @@ export declare class OrderService {
         items: ({
             product: {
                 id: string;
-                name: string;
-                imageUrl: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
-                sortOrder: number;
-                tags: string;
+                status: string;
                 price: number;
                 categoryId: string | null;
-                status: string;
+                imageUrl: string | null;
+                tags: string;
+                sortOrder: number;
             };
         } & {
             id: string;
-            price: number;
-            productId: string;
             quantity: number;
             orderId: string;
+            productId: string;
             unitPrice: number;
             optionsPrice: number;
+            price: number;
             productName: string | null;
             customization: Prisma.JsonValue | null;
             selectedOptions: Prisma.JsonValue | null;
         })[];
     } & {
         id: string;
+        userId: string | null;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        userId: string | null;
         branchId: string;
         orderNo: string;
         customerUid: string;
         customerName: string | null;
         totalAmount: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
         fulfillmentType: string;
         note: string | null;
         platform: string;

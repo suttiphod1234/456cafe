@@ -3,10 +3,10 @@ export declare class FinanceController {
     private readonly financeService;
     constructor(financeService: FinanceService);
     createTransaction(data: CreateCashflowDto): Promise<{
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        category: string;
         branchId: string;
         note: string | null;
         type: string;
@@ -15,10 +15,10 @@ export declare class FinanceController {
         amount: number;
     }>;
     getTransactions(branchId?: string, type?: string, startDate?: string, endDate?: string): Promise<{
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        category: string;
         branchId: string;
         note: string | null;
         type: string;

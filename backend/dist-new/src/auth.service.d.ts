@@ -11,11 +11,11 @@ export declare class AuthService {
         name?: string;
     }): Promise<{
         id: string;
-        name: string | null;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
         email: string | null;
+        phone: string | null;
         points: number;
         role: string;
     }>;
@@ -25,11 +25,11 @@ export declare class AuthService {
         email?: string;
     }): Promise<{
         id: string;
-        name: string | null;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
         email: string | null;
+        phone: string | null;
         points: number;
         role: string;
     }>;

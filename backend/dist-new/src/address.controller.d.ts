@@ -3,15 +3,15 @@ export declare class AddressController {
     private addressService;
     constructor(addressService: AddressService);
     getByUser(userId: string): Promise<{
-        id: string;
         address: string;
+        id: string;
+        userId: string;
+        label: string;
         latitude: number | null;
         longitude: number | null;
+        isDefault: boolean;
         createdAt: Date;
         updatedAt: Date;
-        label: string;
-        isDefault: boolean;
-        userId: string;
     }[]>;
     create(body: {
         userId: string;
@@ -21,15 +21,15 @@ export declare class AddressController {
         longitude?: number;
         isDefault?: boolean;
     }): Promise<{
-        id: string;
         address: string;
+        id: string;
+        userId: string;
+        label: string;
         latitude: number | null;
         longitude: number | null;
+        isDefault: boolean;
         createdAt: Date;
         updatedAt: Date;
-        label: string;
-        isDefault: boolean;
-        userId: string;
     }>;
     update(id: string, body: {
         userId: string;
@@ -39,25 +39,25 @@ export declare class AddressController {
         longitude?: number;
         isDefault?: boolean;
     }): Promise<{
-        id: string;
         address: string;
+        id: string;
+        userId: string;
+        label: string;
         latitude: number | null;
         longitude: number | null;
+        isDefault: boolean;
         createdAt: Date;
         updatedAt: Date;
-        label: string;
-        isDefault: boolean;
-        userId: string;
     }>;
     delete(id: string): Promise<{
-        id: string;
         address: string;
+        id: string;
+        userId: string;
+        label: string;
         latitude: number | null;
         longitude: number | null;
+        isDefault: boolean;
         createdAt: Date;
         updatedAt: Date;
-        label: string;
-        isDefault: boolean;
-        userId: string;
     }>;
 }

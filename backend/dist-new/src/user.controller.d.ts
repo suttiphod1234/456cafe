@@ -5,8 +5,8 @@ export declare class UserController {
     getAllUsers(search?: string): Promise<({
         authProviders: {
             id: string;
-            createdAt: Date;
             userId: string;
+            createdAt: Date;
             provider: string;
             providerId: string;
         }[];
@@ -15,44 +15,51 @@ export declare class UserController {
         };
     } & {
         id: string;
-        name: string | null;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
         email: string | null;
+        phone: string | null;
         points: number;
         role: string;
     })[]>;
     getUserById(id: string): Promise<{
+        authProviders: {
+            id: string;
+            userId: string;
+            createdAt: Date;
+            provider: string;
+            providerId: string;
+        }[];
         orders: ({
             branch: {
-                id: string;
-                name: string;
-                location: string | null;
                 address: string | null;
+                id: string;
                 latitude: number | null;
                 longitude: number | null;
+                createdAt: Date;
+                updatedAt: Date;
+                name: string;
+                imageUrl: string | null;
+                phone: string | null;
+                location: string | null;
                 isOpen: boolean;
                 openTime: string | null;
                 closeTime: string | null;
-                phone: string | null;
                 promptpayId: string | null;
                 promptpayName: string | null;
-                imageUrl: string | null;
-                createdAt: Date;
-                updatedAt: Date;
             };
         } & {
             id: string;
+            userId: string | null;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.OrderStatus;
-            userId: string | null;
             branchId: string;
             orderNo: string;
             customerUid: string;
             customerName: string | null;
             totalAmount: number;
+            status: import(".prisma/client").$Enums.OrderStatus;
             fulfillmentType: string;
             note: string | null;
             platform: string;
@@ -62,20 +69,13 @@ export declare class UserController {
             scheduledAt: Date | null;
             queueNo: number;
         })[];
-        authProviders: {
-            id: string;
-            createdAt: Date;
-            userId: string;
-            provider: string;
-            providerId: string;
-        }[];
     } & {
         id: string;
-        name: string | null;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
         email: string | null;
+        phone: string | null;
         points: number;
         role: string;
     }>;
@@ -84,11 +84,11 @@ export declare class UserController {
         reason?: string;
     }): Promise<{
         id: string;
-        name: string | null;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
         email: string | null;
+        phone: string | null;
         points: number;
         role: string;
     }>;
@@ -96,11 +96,11 @@ export declare class UserController {
         role: string;
     }): Promise<{
         id: string;
-        name: string | null;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
         email: string | null;
+        phone: string | null;
         points: number;
         role: string;
     }>;

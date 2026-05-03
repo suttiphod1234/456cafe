@@ -10,47 +10,47 @@ export declare class AddressService {
     private prisma;
     constructor(prisma: PrismaService);
     getByUser(userId: string): Promise<{
-        id: string;
         address: string;
+        id: string;
+        userId: string;
+        label: string;
         latitude: number | null;
         longitude: number | null;
+        isDefault: boolean;
         createdAt: Date;
         updatedAt: Date;
-        label: string;
-        isDefault: boolean;
-        userId: string;
     }[]>;
     create(userId: string, data: CreateAddressDto): Promise<{
-        id: string;
         address: string;
+        id: string;
+        userId: string;
+        label: string;
         latitude: number | null;
         longitude: number | null;
+        isDefault: boolean;
         createdAt: Date;
         updatedAt: Date;
-        label: string;
-        isDefault: boolean;
-        userId: string;
     }>;
     update(id: string, userId: string, data: Partial<CreateAddressDto>): Promise<{
-        id: string;
         address: string;
+        id: string;
+        userId: string;
+        label: string;
         latitude: number | null;
         longitude: number | null;
+        isDefault: boolean;
         createdAt: Date;
         updatedAt: Date;
-        label: string;
-        isDefault: boolean;
-        userId: string;
     }>;
     delete(id: string): Promise<{
-        id: string;
         address: string;
+        id: string;
+        userId: string;
+        label: string;
         latitude: number | null;
         longitude: number | null;
+        isDefault: boolean;
         createdAt: Date;
         updatedAt: Date;
-        label: string;
-        isDefault: boolean;
-        userId: string;
     }>;
 }

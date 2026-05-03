@@ -35,7 +35,7 @@ __decorate([
     (0, common_1.Post)('cashflow'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [finance_service_1.CreateCashflowDto]),
     __metadata("design:returntype", Promise)
 ], FinanceController.prototype, "createTransaction", null);
 __decorate([

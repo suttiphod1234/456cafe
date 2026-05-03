@@ -8,13 +8,13 @@ export declare class MenuService {
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     })[]>;
     createCategory(data: {
@@ -30,13 +30,13 @@ export declare class MenuService {
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     }>;
     updateCategory(id: string, data: {
@@ -52,24 +52,24 @@ export declare class MenuService {
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     }>;
     deleteCategory(id: string): Promise<{
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     }>;
     reorderCategories(items: {
@@ -81,137 +81,137 @@ export declare class MenuService {
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        icon: string | null;
+        imageUrl: string | null;
         sortOrder: number;
+        icon: string | null;
         isVisible: boolean;
     })[]>;
     private menuInclude;
     getAllMenuItems(categoryId?: string): Promise<({
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     })[]>;
     getMenuItemById(id: string): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     private calculateMenuCostLocal;
     getMenuCosting(): Promise<{
@@ -220,42 +220,42 @@ export declare class MenuService {
         marginPercentage: number;
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
         })[];
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }[]>;
     createMenuItem(data: {
         name: string;
@@ -269,63 +269,63 @@ export declare class MenuService {
     }): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     updateMenuItem(id: string, data: {
         name?: string;
@@ -339,198 +339,198 @@ export declare class MenuService {
     }): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     toggleMenuStatus(id: string): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     setMenuStatus(id: string, status: string): Promise<{
         category: {
             id: string;
-            name: string;
-            imageUrl: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
-            icon: string | null;
+            imageUrl: string | null;
             sortOrder: number;
+            icon: string | null;
             isVisible: boolean;
         } | null;
-        optionGroups: ({
-            options: {
-                id: string;
-                sortOrder: number;
-                label: string;
-                priceAddon: number;
-                isDefault: boolean;
-                groupId: string;
-            }[];
-        } & {
-            id: string;
-            name: string;
-            sortOrder: number;
-            productId: string;
-            isRequired: boolean;
-            maxSelect: number;
-        })[];
         recipes: ({
             ingredient: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 unit: string;
                 costPerUnit: number;
                 sku: string | null;
             };
         } & {
             id: string;
-            productId: string;
             ingredientId: string;
             quantity: number;
+            productId: string;
+        })[];
+        optionGroups: ({
+            options: {
+                id: string;
+                label: string;
+                isDefault: boolean;
+                sortOrder: number;
+                groupId: string;
+                priceAddon: number;
+            }[];
+        } & {
+            id: string;
+            name: string;
+            productId: string;
+            sortOrder: number;
+            isRequired: boolean;
+            maxSelect: number;
         })[];
         _count: {
             orderItems: number;
         };
     } & {
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     deleteMenuItem(id: string): Promise<{
         id: string;
-        name: string;
-        imageUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
-        sortOrder: number;
-        tags: string;
+        status: string;
         price: number;
         categoryId: string | null;
-        status: string;
+        imageUrl: string | null;
+        tags: string;
+        sortOrder: number;
     }>;
     createOptionGroup(productId: string, data: {
         name: string;
@@ -540,17 +540,17 @@ export declare class MenuService {
     }): Promise<{
         options: {
             id: string;
-            sortOrder: number;
             label: string;
-            priceAddon: number;
             isDefault: boolean;
+            sortOrder: number;
             groupId: string;
+            priceAddon: number;
         }[];
     } & {
         id: string;
         name: string;
-        sortOrder: number;
         productId: string;
+        sortOrder: number;
         isRequired: boolean;
         maxSelect: number;
     }>;
@@ -562,25 +562,25 @@ export declare class MenuService {
     }): Promise<{
         options: {
             id: string;
-            sortOrder: number;
             label: string;
-            priceAddon: number;
             isDefault: boolean;
+            sortOrder: number;
             groupId: string;
+            priceAddon: number;
         }[];
     } & {
         id: string;
         name: string;
-        sortOrder: number;
         productId: string;
+        sortOrder: number;
         isRequired: boolean;
         maxSelect: number;
     }>;
     deleteOptionGroup(groupId: string): Promise<{
         id: string;
         name: string;
-        sortOrder: number;
         productId: string;
+        sortOrder: number;
         isRequired: boolean;
         maxSelect: number;
     }>;
@@ -591,11 +591,11 @@ export declare class MenuService {
         sortOrder?: number;
     }): Promise<{
         id: string;
-        sortOrder: number;
         label: string;
-        priceAddon: number;
         isDefault: boolean;
+        sortOrder: number;
         groupId: string;
+        priceAddon: number;
     }>;
     updateOption(optionId: string, data: {
         label?: string;
@@ -604,63 +604,63 @@ export declare class MenuService {
         sortOrder?: number;
     }): Promise<{
         id: string;
-        sortOrder: number;
         label: string;
-        priceAddon: number;
         isDefault: boolean;
+        sortOrder: number;
         groupId: string;
+        priceAddon: number;
     }>;
     deleteOption(optionId: string): Promise<{
         id: string;
-        sortOrder: number;
         label: string;
-        priceAddon: number;
         isDefault: boolean;
+        sortOrder: number;
         groupId: string;
+        priceAddon: number;
     }>;
     addRecipe(productId: string, ingredientId: string, quantity: number): Promise<{
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;
         };
     } & {
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
     updateRecipe(recipeId: string, quantity: number): Promise<{
         ingredient: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             unit: string;
             costPerUnit: number;
             sku: string | null;
         };
     } & {
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
     deleteRecipe(recipeId: string): Promise<{
         id: string;
-        productId: string;
         ingredientId: string;
         quantity: number;
+        productId: string;
     }>;
     getAllIngredients(): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         unit: string;
         costPerUnit: number;
         sku: string | null;
@@ -672,9 +672,9 @@ export declare class MenuService {
         sku?: string;
     }): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         unit: string;
         costPerUnit: number;
         sku: string | null;
@@ -686,9 +686,9 @@ export declare class MenuService {
         sku?: string;
     }): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         unit: string;
         costPerUnit: number;
         sku: string | null;
